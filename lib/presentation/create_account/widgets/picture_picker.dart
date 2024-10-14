@@ -21,7 +21,7 @@ class PicturePicker extends StatelessWidget {
               aspectRatio: 1 / 1,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.orange,
@@ -48,9 +48,6 @@ class PicturePicker extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 16,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

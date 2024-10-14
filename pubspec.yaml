@@ -33,6 +33,7 @@ dependencies:
   dartz: ^0.10.1
   firebase_auth: ^5.3.1
   firebase_core: ^3.6.0
+  firebase_storage: ^12.3.3
   firebase_ui_auth: ^1.16.0
   firebase_ui_oauth_google: ^1.4.0
   flutter:

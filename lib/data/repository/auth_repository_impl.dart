@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:fitness_project/data/auth/models/update_user_req.dart';
 import 'package:fitness_project/data/auth/models/user.dart';
 import 'package:fitness_project/data/source/auth_firebase_service.dart';
 import 'package:fitness_project/domain/repository/auth/auth.dart';
@@ -11,6 +12,9 @@ class AuthRepositoryImpl extends AuthRepository {
     return user.fold((error) {
       return Left(error);
     }, (data) {
+      if (data == null) {
+        return const Left('User not found');
+      }
       return Right(UserModel.fromMap(data).toEntity());
     });
   }
@@ -23,5 +27,10 @@ class AuthRepositoryImpl extends AuthRepository {
     }, (data) {
       return Right(data);
     });
+  }
+
+  @override
+  Future<Either> updateUser(UpdateUserReq updateUserReq) {
+    return sl<AuthFirebaseService>().updateUser(updateUserReq);
   }
 }

@@ -30,15 +30,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-          useMaterial3: true,
-        ),
-        home: CreateAccountPage(userId: "test")
-        // home: FirebaseAuth.instance.currentUser == null
-        //     ? const LoginPage()
-        //     : const HomePage(),
-        );
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        useMaterial3: true,
+      ),
+      home: FirebaseAuth.instance.currentUser == null
+          ? const LoginPage()
+          : const HomePage(),
+    );
   }
 }

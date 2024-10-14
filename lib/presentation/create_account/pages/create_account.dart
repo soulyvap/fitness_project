@@ -20,8 +20,8 @@ class CreateAccountPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Create an account"),
         ),
-        body: Container(
-            width: double.infinity,
+        body: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -58,7 +58,9 @@ class CreateAccountPage extends StatelessWidget {
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(), labelText: "Description"),
                 ),
-                const Spacer(flex: 1),
+                const SizedBox(
+                  height: 16,
+                ),
                 ElevatedButton(
                   onPressed: () {},
                   child: const Text("Save"),
