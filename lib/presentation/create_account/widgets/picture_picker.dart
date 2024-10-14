@@ -6,8 +6,10 @@ import 'package:image_picker/image_picker.dart';
 class PicturePicker extends StatelessWidget {
   final XFile? image;
   final Function(ImageSource) pickFrom;
+  final BoxShape? shape;
 
-  const PicturePicker({super.key, this.image, required this.pickFrom});
+  const PicturePicker(
+      {super.key, this.image, required this.pickFrom, this.shape});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +22,14 @@ class PicturePicker extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1 / 1,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 32),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.orange,
                     width: 1,
                   ),
-                  shape: BoxShape.circle,
+                  shape: shape ?? BoxShape.circle,
                   image: image != null
                       ? DecorationImage(
                           image: FileImage(File(image!.path)),

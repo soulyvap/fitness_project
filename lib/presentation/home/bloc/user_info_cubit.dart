@@ -18,10 +18,11 @@ class UserInfoCubit extends Cubit<UserEntity?> {
     var user = await sl<AuthRepository>().getUser();
     user.fold((error) {
       emit(null);
-      var userId = FirebaseAuth.instance.currentUser?.uid;
-      navigateToPage(userId == null
+      var user = FirebaseAuth.instance.currentUser;
+      navigateToPage(user == null
           ? const LoginPage()
-          : CreateAccountPage(userId: userId));
+          : CreateAccountPage(
+              userId: user.uid, userEmail: user.email ?? "no email"));
     }, (data) {
       emit(data);
     });

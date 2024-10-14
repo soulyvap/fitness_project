@@ -6,14 +6,14 @@ class UserModel {
   final String userId;
   final String displayName;
   final String email;
-  final String image;
+  final String? image;
   final String description;
 
   UserModel(
       {required this.userId,
       required this.displayName,
       required this.email,
-      required this.image,
+      this.image,
       required this.description});
 
   Map<String, dynamic> toMap() {
@@ -31,8 +31,8 @@ class UserModel {
         userId: map['userId'] as String,
         displayName: map['displayName'] as String,
         email: map['email'] as String,
-        image: map['image'] ?? '',
-        description: map['description']);
+        image: map['image'] as String?,
+        description: map['description'] as String);
   }
 
   String toJson() => json.encode(toMap());

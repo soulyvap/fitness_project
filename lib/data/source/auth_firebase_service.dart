@@ -46,7 +46,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(updateUserReq.userId)
-          .update(updateUserReq.toMap());
+          .set(updateUserReq.toMap(), SetOptions(merge: true));
       return const Right('User updated');
     } catch (e) {
       return const Left('Please try again');

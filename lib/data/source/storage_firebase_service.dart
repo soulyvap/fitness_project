@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fitness_project/data/storage/models/upload_image_req.dart';
+import 'package:fitness_project/data/storage/models/upload_file_req.dart';
 
 abstract class StorageFirebaseService {
   Future<Either> uploadFile(UploadFileReq uploadFileReq);
 }
 
-class ImageFirebaseServiceImpl implements StorageFirebaseService {
+class StorageFirebaseServiceImpl implements StorageFirebaseService {
   final storageRef = FirebaseStorage.instance.ref();
 
   @override
