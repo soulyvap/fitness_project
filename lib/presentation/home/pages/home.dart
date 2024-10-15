@@ -1,9 +1,8 @@
 import 'dart:developer';
-
 import 'package:fitness_project/domain/entities/auth/user.dart';
-import 'package:fitness_project/domain/usecases/auth/get_user.dart';
 import 'package:fitness_project/domain/usecases/auth/logout.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
+import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
 import 'package:fitness_project/presentation/home/bloc/user_info_cubit.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +29,15 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider(
       create: (context) => UserInfoCubit(navigateToPage),
       child: Scaffold(
-        body: BlocConsumer<UserInfoCubit, UserEntity?>(
-          listener: (context, state) {
-            log("HomePage: $state");
-          },
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CreateGroupPage()));
+            },
+            child: const Icon(Icons.add)),
+        body: BlocBuilder<UserInfoCubit, UserEntity?>(
           builder: (context, state) {
             return Center(
               child: Column(

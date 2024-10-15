@@ -7,9 +7,16 @@ class PicturePicker extends StatelessWidget {
   final XFile? image;
   final Function(ImageSource) pickFrom;
   final BoxShape? shape;
+  final Widget? placeholder;
+  final BorderRadius? borderRadius;
 
   const PicturePicker(
-      {super.key, this.image, required this.pickFrom, this.shape});
+      {super.key,
+      this.image,
+      required this.pickFrom,
+      this.shape,
+      this.placeholder,
+      this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +29,13 @@ class PicturePicker extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1 / 1,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 32),
-                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.orange,
                     width: 1,
                   ),
                   shape: shape ?? BoxShape.circle,
+                  borderRadius: borderRadius,
                   image: image != null
                       ? DecorationImage(
                           image: FileImage(File(image!.path)),
@@ -39,12 +45,13 @@ class PicturePicker extends StatelessWidget {
                 ),
                 child: SizedBox.expand(
                   child: image == null
-                      ? const FittedBox(
+                      ? FittedBox(
                           fit: BoxFit.contain,
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                          ),
+                          child: placeholder ??
+                              const Icon(
+                                Icons.person,
+                                color: Colors.grey,
+                              ),
                         )
                       : null,
                 ),

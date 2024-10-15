@@ -3,6 +3,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:fitness_project/presentation/auth/pages/Login.dart';
 import 'package:fitness_project/presentation/home/pages/Home.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       home: FirebaseAuth.instance.currentUser == null
           ? const LoginPage()
-          : const HomePage(),
+          : const Navigation(),
     );
   }
 }

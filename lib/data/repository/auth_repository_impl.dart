@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_project/data/auth/models/update_user_req.dart';
 import 'package:fitness_project/data/auth/models/user.dart';
 import 'package:fitness_project/data/source/auth_firebase_service.dart';
-import 'package:fitness_project/domain/repository/auth/auth.dart';
+import 'package:fitness_project/domain/repository/auth.dart';
 import 'package:fitness_project/service_locator.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -27,10 +26,5 @@ class AuthRepositoryImpl extends AuthRepository {
     }, (data) {
       return Right(data);
     });
-  }
-
-  @override
-  Future<Either> updateUser(UpdateUserReq updateUserReq) {
-    return sl<AuthFirebaseService>().updateUser(updateUserReq);
   }
 }

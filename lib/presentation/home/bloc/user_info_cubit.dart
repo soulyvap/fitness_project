@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/domain/entities/auth/user.dart';
-import 'package:fitness_project/domain/repository/auth/auth.dart';
+import 'package:fitness_project/domain/repository/auth.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/create_account/pages/create_account.dart';
 import 'package:fitness_project/service_locator.dart';

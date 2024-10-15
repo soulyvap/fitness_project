@@ -1,18 +1,18 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/data/auth/models/update_user_req.dart';
+import 'package:fitness_project/data/db/models/update_user_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
-import 'package:fitness_project/domain/repository/auth/auth.dart';
-import 'package:fitness_project/domain/repository/storage/storage.dart';
+import 'package:fitness_project/domain/repository/db.dart';
+import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
-import 'package:fitness_project/presentation/create_account/bloc/profile_pic_selection_cubit.dart';
+import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'picture_picker.dart';
+import '../../../common/widgets/picture_picker.dart';
 
 class CreateAccountForm extends StatefulWidget {
   const CreateAccountForm({super.key});
@@ -59,7 +59,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
       });
     }
 
-    var userUpdate = await sl<AuthRepository>().updateUser(UpdateUserReq(
+    var userUpdate = await sl<DBRepository>().updateUser(UpdateUserReq(
         userId: user.uid,
         displayName: displayNameCon.text,
         description: description.text,
@@ -78,7 +78,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfilePicSelectionCubit, XFile?>(
+    return BlocBuilder<PicSelectionCubit, XFile?>(
       builder: (context, state) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -86,7 +86,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             PicturePicker(
               image: state,
               pickFrom: (source) {
-                context.read<ProfilePicSelectionCubit>().pickFrom(source);
+                context.read<PicSelectionCubit>().pickFrom(source);
               },
             ),
             const SizedBox(
