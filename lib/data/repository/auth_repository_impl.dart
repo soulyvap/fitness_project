@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_project/data/auth/models/user.dart';
+import 'package:fitness_project/data/db/models/user.dart';
 import 'package:fitness_project/data/source/auth_firebase_service.dart';
 import 'package:fitness_project/domain/repository/auth.dart';
 import 'package:fitness_project/service_locator.dart';

@@ -36,13 +36,17 @@ class BottomBar extends StatelessWidget {
       SizedBox(
         width: 68,
         height: 68,
-        child: FloatingActionButton(
-            backgroundColor: Colors.orangeAccent,
-            foregroundColor: Colors.white,
-            onPressed: () {},
-            child: const Icon(
-              Icons.fitness_center,
-              size: 36,
+        child: InkWell(
+            splashFactory: InkRipple.splashFactory,
+            onTap: () {},
+            child: const Card(
+              color: Colors.orangeAccent,
+              elevation: 4,
+              child: Icon(
+                Icons.fitness_center,
+                size: 32,
+                color: Colors.white,
+              ),
             )),
       )
     ]);

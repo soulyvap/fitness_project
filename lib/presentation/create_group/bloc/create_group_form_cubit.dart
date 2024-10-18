@@ -1,25 +1,25 @@
-import 'dart:developer';
-
-import 'package:flutter/widgets.dart';
+import 'package:fitness_project/domain/entities/auth/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateGroupFormState {
-  String name;
-  String description;
-  DateTime startTime;
-  DateTime endTime;
-  int maxSimultaneousChallenges;
-  int minutesPerChallenge;
-  bool isPrivate;
+  String? name;
+  String? description;
+  DateTime? startTime;
+  DateTime? endTime;
+  int? maxSimultaneousChallenges;
+  int? minutesPerChallenge;
+  bool isPrivate = false;
+  List<UserEntity> allowedUsers;
 
   CreateGroupFormState({
-    this.name = '',
-    this.description = '',
-    required this.startTime,
-    required this.endTime,
-    this.maxSimultaneousChallenges = 1,
-    this.minutesPerChallenge = 1,
+    this.name,
+    this.description,
+    this.startTime,
+    this.endTime,
+    this.maxSimultaneousChallenges,
+    this.minutesPerChallenge,
     this.isPrivate = false,
+    required this.allowedUsers,
   });
 
   @override
@@ -29,9 +29,9 @@ class CreateGroupFormState {
 }
 
 class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
-  CreateGroupFormCubit()
-      : super(CreateGroupFormState(
-            startTime: DateTime.now(), endTime: DateTime.now()));
+  final List<UserEntity> allowedUsers;
+  CreateGroupFormCubit({required this.allowedUsers})
+      : super(CreateGroupFormState(allowedUsers: allowedUsers));
 
   void onValuesChanged({
     String? name,
@@ -41,6 +41,7 @@ class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
     int? maxSimultaneousChallenges,
     int? minutesPerChallenge,
     bool? isPrivate,
+    List<UserEntity>? allowedUsers,
   }) {
     emit(CreateGroupFormState(
       name: name ?? state.name,
@@ -51,7 +52,19 @@ class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
           maxSimultaneousChallenges ?? state.maxSimultaneousChallenges,
       minutesPerChallenge: minutesPerChallenge ?? state.minutesPerChallenge,
       isPrivate: isPrivate ?? state.isPrivate,
+      allowedUsers: allowedUsers ?? state.allowedUsers,
     ));
-    debugPrint(state.toString());
+  }
+
+  void addMember(UserEntity user) {
+    if (state.allowedUsers.map((u) => u.userId).contains(user.userId)) return;
+    onValuesChanged(allowedUsers: [...state.allowedUsers, user]);
+  }
+
+  void removeMember(UserEntity user) {
+    if (!state.allowedUsers.map((u) => u.userId).contains(user.userId)) return;
+    onValuesChanged(
+        allowedUsers:
+            state.allowedUsers.where((u) => u.userId != user.userId).toList());
   }
 }

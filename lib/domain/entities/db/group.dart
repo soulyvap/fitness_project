@@ -8,6 +8,7 @@ class GroupEntity {
   final int maxSimultaneousChallenges;
   final int minutesPerChallenge;
   final bool isPrivate;
+  final List<String> allowedUsers;
 
   GroupEntity({
     required this.groupeId,
@@ -19,5 +20,6 @@ class GroupEntity {
     required this.maxSimultaneousChallenges,
     required this.minutesPerChallenge,
     required this.isPrivate,
+    required this.allowedUsers,
   });
 }

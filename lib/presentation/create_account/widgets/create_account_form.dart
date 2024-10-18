@@ -1,12 +1,16 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_project/common/bloc/user_bloc.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/domain/repository/storage.dart';
+import 'package:fitness_project/domain/usecases/db/update_user.dart';
+import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,8 +54,8 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
     if (imageFile != null) {
       var file = File(imageFile.path);
       var path = 'images/profile_pictures/${user.uid}';
-      var upload = await sl<StorageRepository>()
-          .uploadFile(UploadFileReq(path: path, file: file));
+      var upload = await sl<UploadFileUseCase>()
+          .call(params: UploadFileReq(path: path, file: file));
       imageUrl = upload.fold((error) {
         return null;
       }, (data) {
@@ -59,11 +63,13 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
       });
     }
 
-    var userUpdate = await sl<DBRepository>().updateUser(UpdateUserReq(
-        userId: user.uid,
-        displayName: displayNameCon.text,
-        description: description.text,
-        image: imageUrl));
+    var userUpdate = await sl<UpdateUserUseCase>().call(
+        params: UpdateUserReq(
+            userId: user.uid,
+            email: user.email ?? "",
+            displayName: displayNameCon.text,
+            description: description.text,
+            image: imageUrl));
 
     userUpdate.fold((error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +78,10 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
         ),
       );
     }, (data) {
-      Navigator.pop(context);
+      context.read<UserBloc>().add(LoadUser());
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return const Navigation();
+      }));
     });
   }
 

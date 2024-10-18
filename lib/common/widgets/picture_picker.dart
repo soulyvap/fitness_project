@@ -31,8 +31,8 @@ class PicturePicker extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.orange,
-                    width: 1,
+                    color: Colors.grey,
+                    width: 2,
                   ),
                   shape: shape ?? BoxShape.circle,
                   borderRadius: borderRadius,

@@ -1,5 +1,5 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:fitness_project/presentation/home/pages/home.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
       actions: [
         AuthStateChangeAction<SignedIn>((context, state) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
+              MaterialPageRoute(builder: (context) => const Navigation()));
         }),
       ],
     );

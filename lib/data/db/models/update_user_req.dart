@@ -1,12 +1,12 @@
 class UpdateUserReq {
-  final String userId;
+  final String? userId;
   final String? email;
   final String? displayName;
   final String? description;
   final String? image;
 
   UpdateUserReq(
-      {required this.userId,
+      {this.userId,
       this.email,
       this.displayName,
       this.description,

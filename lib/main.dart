@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:fitness_project/common/bloc/user_bloc.dart';
 import 'package:fitness_project/presentation/auth/pages/Login.dart';
-import 'package:fitness_project/presentation/home/pages/Home.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
@@ -20,7 +21,8 @@ void main() async {
     GoogleProvider(clientId: dotenv.env['GOOGLE_CLIENT_ID'] as String),
   ]);
   await initializeDependencies();
-  runApp(const MyApp());
+  runApp(BlocProvider<UserBloc>(
+      create: (context) => UserBloc(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Fitness Project',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,
