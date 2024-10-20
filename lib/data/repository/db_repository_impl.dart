@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:fitness_project/data/db/models/exercise.dart';
+import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/group.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
@@ -43,8 +45,9 @@ class DBRepositoryImpl extends DBRepository {
   }
 
   @override
-  Future<Either> getGroupsByUser(String userId) async {
-    final groups = await sl<FirestoreFirebaseService>().getGroupsByUser(userId);
+  Future<Either> getGroupsByUser(GetGroupsByUserReq getGroupsByUserReq) async {
+    final groups = await sl<FirestoreFirebaseService>()
+        .getGroupsByUser(getGroupsByUserReq);
     return groups.fold((error) {
       return Left(error);
     }, (data) {
@@ -58,5 +61,24 @@ class DBRepositoryImpl extends DBRepository {
       debugPrint('HELLO');
       return Right(groupEntities);
     });
+  }
+
+  @override
+  Future<Either> getAllExercises() async {
+    final exercises = await sl<FirestoreFirebaseService>().getAllExercises();
+    return exercises.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        if (data == null) {
+          return const Left('Exercises not found');
+        }
+        final List<Map<String, dynamic>> exercises = data;
+        final exerciseEntities =
+            exercises.map((e) => ExerciseModel.fromMap(e).toEntity()).toList();
+        return Right(exerciseEntities);
+      },
+    );
   }
 }

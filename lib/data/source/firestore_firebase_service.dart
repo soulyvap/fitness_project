@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
+import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
-import 'package:flutter/material.dart';
 
 abstract class FirestoreFirebaseService {
   Future<Either> updateUser(UpdateUserReq updateUserReq);
   Future<Either> updateGroup(UpdateGroupReq updateGroupReq);
   Future<Either> getUsersByDisplayName(String query);
   Future<Either> addGroupMember(AddGroupMemberReq addGroupMemberReq);
-  Future<Either> getGroupsByUser(String userId);
+  Future<Either> getGroupsByUser(GetGroupsByUserReq getGroupsByUserReq);
+  Future<Either> getAllExercises();
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -87,14 +88,35 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
   }
 
   @override
-  Future<Either> getGroupsByUser(String userId) async {
+  Future<Either> getGroupsByUser(GetGroupsByUserReq getGroupsByUserReq) async {
     try {
-      final groups = await FirebaseFirestore.instance
-          .collection('groups')
-          .where('members', arrayContains: userId)
+      final groups = getGroupsByUserReq.onlyActive
+          ? await FirebaseFirestore.instance
+              .collection('groups')
+              .where('members', arrayContains: getGroupsByUserReq.userId)
+              .where('startTime', isLessThan: Timestamp.now())
+              .where('endTime', isGreaterThan: Timestamp.now())
+              .get()
+              .then((value) => value.docs.map((d) => d.data()).toList())
+          : await FirebaseFirestore.instance
+              .collection('groups')
+              .where('members', arrayContains: getGroupsByUserReq.userId)
+              .get()
+              .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(groups);
+    } catch (e) {
+      return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> getAllExercises() async {
+    try {
+      final exercises = await FirebaseFirestore.instance
+          .collection('exercises')
           .get()
           .then((value) => value.docs.map((d) => d.data()).toList());
-      return Right(groups);
+      return Right(exercises);
     } catch (e) {
       return const Left('Please try again');
     }

@@ -20,4 +20,28 @@ class ChallengeEntity {
     required this.createdAt,
     required this.endsAt,
   });
+
+  ChallengeEntity copyWith({
+    String? challengeId,
+    String? groupId,
+    String? exerciseId,
+    int? reps,
+    int? minutesToComplete,
+    String? extraInstructions,
+    String? userId,
+    DateTime? createdAt,
+    DateTime? endsAt,
+  }) {
+    return ChallengeEntity(
+      challengeId: challengeId ?? this.challengeId,
+      groupId: groupId ?? this.groupId,
+      exerciseId: exerciseId ?? this.exerciseId,
+      reps: reps ?? this.reps,
+      minutesToComplete: minutesToComplete ?? this.minutesToComplete,
+      extraInstructions: extraInstructions ?? this.extraInstructions,
+      userId: userId ?? this.userId,
+      createdAt: createdAt ?? this.createdAt,
+      endsAt: endsAt ?? this.endsAt,
+    );
+  }
 }

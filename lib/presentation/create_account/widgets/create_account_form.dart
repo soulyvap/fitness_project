@@ -103,7 +103,9 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
               controller: displayNameCon,
               decoration: const InputDecoration(
                   helperText: "This will be the name used to find you",
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
                   labelText: "Display Name"),
             ),
             const SizedBox(
@@ -112,7 +114,10 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             TextField(
               controller: description,
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Description"),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  labelText: "Description"),
             ),
             const SizedBox(
               height: 16,

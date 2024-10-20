@@ -36,7 +36,9 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
               label: const Text('Search for users to invite'),
               fillColor: Colors.grey[200],
               filled: true,
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
               prefixIcon: const Icon(Icons.search),
               suffixIcon: loading
                   ? Transform.scale(

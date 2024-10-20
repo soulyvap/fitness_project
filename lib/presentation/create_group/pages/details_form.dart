@@ -61,10 +61,13 @@ class _DetailsFormState extends State<DetailsForm> {
             const SizedBox(height: 16),
             TextFormField(
               controller: nameCon,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.group),
                   labelText: 'Group Name',
-                  border: OutlineInputBorder()),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  )),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a group name';
@@ -76,11 +79,14 @@ class _DetailsFormState extends State<DetailsForm> {
             const SizedBox(height: 16),
             TextFormField(
               controller: descriptionCon,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               maxLines: null,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.description),
                   labelText: 'Description',
-                  border: OutlineInputBorder()),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  )),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a description';

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 
 class DateRangeSelection extends StatelessWidget {
-  final DateTime startTime;
-  final DateTime endTime;
+  final DateTime? startTime;
+  final DateTime? endTime;
   final TextEditingController startTimeCon;
   final TextEditingController endTimeCon;
   final Function(DateTime) onStartTimeChanged;
   final Function(DateTime) onEndTimeChanged;
-  const DateRangeSelection(
-      {super.key,
-      required this.startTime,
-      required this.endTime,
-      required this.startTimeCon,
-      required this.endTimeCon,
-      required this.onStartTimeChanged,
-      required this.onEndTimeChanged});
+
+  const DateRangeSelection({
+    super.key,
+    this.startTime,
+    this.endTime,
+    required this.startTimeCon,
+    required this.endTimeCon,
+    required this.onStartTimeChanged,
+    required this.onEndTimeChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +38,13 @@ class DateRangeSelection extends StatelessWidget {
           child: AbsorbPointer(
             child: TextFormField(
               controller: startTimeCon,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.date_range),
                   labelText: 'Start Time',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
                   helperMaxLines: 2,
                   helperText: 'When the group will be active.'),
               validator: (value) {
@@ -58,8 +63,8 @@ class DateRangeSelection extends StatelessWidget {
             final date = await showDatePicker(
                 context: context,
                 initialDate: endTime,
-                firstDate: startTime,
-                lastDate: DateTime.now().add(const Duration(days: 365)));
+                firstDate: startTime ?? DateTime.now(),
+                lastDate: DateTime.now().add(const Duration(days: 3650)));
             if (date != null) {
               onEndTimeChanged(date);
             }
@@ -67,10 +72,13 @@ class DateRangeSelection extends StatelessWidget {
           child: AbsorbPointer(
             child: TextFormField(
               controller: endTimeCon,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.date_range),
                   labelText: 'End Time',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
                   helperMaxLines: 2,
                   helperText: 'When the group will be closed.'),
               validator: (value) {

@@ -1,3 +1,4 @@
+import 'package:fitness_project/presentation/navigation/widgets/start_a_challenge_sheet.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {
@@ -38,7 +39,14 @@ class BottomBar extends StatelessWidget {
         height: 68,
         child: InkWell(
             splashFactory: InkRipple.splashFactory,
-            onTap: () {},
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  showDragHandle: true,
+                  backgroundColor: Colors.white,
+                  builder: (context) => const StartAChallengeSheet());
+            },
             child: const Card(
               color: Colors.orangeAccent,
               elevation: 4,

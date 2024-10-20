@@ -21,8 +21,8 @@ class SettingsForm extends StatefulWidget {
 
 class _SettingsFormState extends State<SettingsForm> {
   final _formKey = GlobalKey<FormState>();
-  DateTime startTime = DateTime.now();
-  DateTime endTime = DateTime.now();
+  DateTime? startTime;
+  DateTime? endTime;
   final TextEditingController startTimeCon = TextEditingController();
   final TextEditingController endTimeCon = TextEditingController();
   final TextEditingController simultaneousChallengesCon =
@@ -41,10 +41,10 @@ class _SettingsFormState extends State<SettingsForm> {
 
   @override
   void initState() {
-    startTime = widget.state.startTime ?? DateTime.now();
-    endTime = widget.state.endTime ?? DateTime.now();
-    startTimeCon.text = startTime.toDateString();
-    endTimeCon.text = endTime.toDateString();
+    startTime = widget.state.startTime;
+    endTime = widget.state.endTime;
+    startTimeCon.text = startTime?.toDateString() ?? '';
+    endTimeCon.text = endTime?.toDateString() ?? '';
     simultaneousChallengesCon.text =
         widget.state.maxSimultaneousChallenges?.toString() ?? '';
     // minutesPerChallengeCon.text =
@@ -69,9 +69,12 @@ class _SettingsFormState extends State<SettingsForm> {
                   setState(() {
                     startTime = date;
                     startTimeCon.text = date.toDateString();
-                    if (endTime.isBefore(startTime)) {
+                    if (endTime == null || startTime == null) {
+                      return;
+                    }
+                    if (endTime!.isBefore(startTime!)) {
                       endTime = startTime;
-                      endTimeCon.text = startTime.toDateString();
+                      endTimeCon.text = startTime!.toDateString();
                     }
                   });
                 },
@@ -79,19 +82,25 @@ class _SettingsFormState extends State<SettingsForm> {
                   setState(() {
                     endTime = date;
                     endTimeCon.text = date.toDateString();
-                    if (endTime.isBefore(startTime)) {
+                    if (endTime == null || startTime == null) {
+                      return;
+                    }
+                    if (startTime!.isAfter(endTime!)) {
                       startTime = endTime;
-                      startTimeCon.text = endTime.toDateString();
+                      startTimeCon.text = endTime!.toDateString();
                     }
                   });
                 }),
             const SizedBox(height: 16),
             TextFormField(
               controller: simultaneousChallengesCon,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.numbers),
                   labelText: 'Maximum challenges at the same time',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
                   helperMaxLines: 2,
                   helperText:
                       'How many challenges can be active at the same time. Enter 0 for unlimited.'),
@@ -107,11 +116,6 @@ class _SettingsFormState extends State<SettingsForm> {
                     r'^[1-9][0-9]*')), // No leading zero, only positive integers
               ],
               textInputAction: TextInputAction.next,
-              onChanged: (value) {
-                if (value.isNotEmpty) {
-                  _formKey.currentState?.validate();
-                }
-              },
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
@@ -120,7 +124,10 @@ class _SettingsFormState extends State<SettingsForm> {
             //   decoration: const InputDecoration(
             //       prefixIcon: Icon(Icons.timer_outlined),
             //       labelText: 'Minutes to complete a challenge',
-            //       border: OutlineInputBorder(),
+            //       border: OutlineInputBorder(
+            //   borderRadius:
+            //       BorderRadius.all(Radius.circular(8)),
+            // ),
             //       helperMaxLines: 2,
             //       helperText:
             //           'How many minutes a user has to submit an attempt before a challenge ends.'),
