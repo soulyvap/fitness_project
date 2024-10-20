@@ -42,16 +42,20 @@ class _DetailsFormState extends State<DetailsForm> {
       child: Form(
           key: _formKey,
           child: Column(children: [
-            PicturePicker(
-              image: widget.image,
-              pickFrom: (source) {
-                context.read<PicSelectionCubit>().pickFrom(source);
-              },
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(28),
-              placeholder: const Icon(
-                Icons.people_outlined,
-                color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PicturePicker(
+                image: widget.image,
+                pickFrom: (source) {
+                  context.read<PicSelectionCubit>().pickFrom(source);
+                },
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(28),
+                placeholder: const Text(
+                  "Add group picture",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(height: 16),

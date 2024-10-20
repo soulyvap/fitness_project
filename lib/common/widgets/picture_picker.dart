@@ -29,34 +29,26 @@ class PicturePicker extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1 / 1,
               child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 2,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 2,
+                    ),
+                    shape: shape ?? BoxShape.circle,
+                    borderRadius: borderRadius,
+                    color: Colors.grey[400],
+                    image: image != null
+                        ? DecorationImage(
+                            image: FileImage(File(image!.path)),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
-                  shape: shape ?? BoxShape.circle,
-                  borderRadius: borderRadius,
-                  image: image != null
-                      ? DecorationImage(
-                          image: FileImage(File(image!.path)),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                ),
-                child: SizedBox.expand(
-                  child: image == null
-                      ? FittedBox(
-                          fit: BoxFit.contain,
-                          child: placeholder ??
-                              const Icon(
-                                Icons.person,
-                                color: Colors.grey,
-                              ),
-                        )
-                      : null,
-                ),
-              ),
+                  child: Center(child: placeholder)),
             ),
+          ),
+          const SizedBox(
+            height: 16,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

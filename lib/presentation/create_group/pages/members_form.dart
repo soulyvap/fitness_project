@@ -1,12 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/common/bloc/user_bloc.dart';
-import 'package:fitness_project/domain/entities/auth/user.dart';
-import 'package:fitness_project/domain/repository/db.dart';
+import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/presentation/create_group/bloc/create_group_form_cubit.dart';
-import 'package:fitness_project/presentation/create_group/bloc/user_autocomplete_cubit.dart';
-import 'package:fitness_project/presentation/create_group/widgets/user_autocomplete.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_list_tile.dart';
-import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,12 +68,23 @@ class _MembersFormState extends State<MembersForm> {
           const SizedBox(
             height: 16,
           ),
+          const Text(
+            'Invite members to your group.\nYou can also invite them later.',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
           ElevatedButton.icon(
-              onPressed: () {
-                widget.showAddMemberSheet();
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Invite members')),
+            onPressed: () {
+              widget.showAddMemberSheet();
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Invite members'),
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.separated(

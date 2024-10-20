@@ -1,6 +1,6 @@
 class GroupMemberEntity {
   final String groupMemberId;
-  final String groupeId;
+  final String groupId;
   final String userId;
   final int score;
   final bool isAdmin;
@@ -9,7 +9,7 @@ class GroupMemberEntity {
 
   GroupMemberEntity({
     required this.groupMemberId,
-    required this.groupeId,
+    required this.groupId,
     required this.userId,
     required this.score,
     required this.isAdmin,

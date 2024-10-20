@@ -27,7 +27,7 @@ class _SettingsFormState extends State<SettingsForm> {
   final TextEditingController endTimeCon = TextEditingController();
   final TextEditingController simultaneousChallengesCon =
       TextEditingController();
-  final TextEditingController minutesPerChallengeCon = TextEditingController();
+  // final TextEditingController minutesPerChallengeCon = TextEditingController();
   bool isPrivate = false;
 
   @override
@@ -35,7 +35,7 @@ class _SettingsFormState extends State<SettingsForm> {
     startTimeCon.dispose();
     endTimeCon.dispose();
     simultaneousChallengesCon.dispose();
-    minutesPerChallengeCon.dispose();
+    // minutesPerChallengeCon.dispose();
     super.dispose();
   }
 
@@ -47,8 +47,8 @@ class _SettingsFormState extends State<SettingsForm> {
     endTimeCon.text = endTime.toDateString();
     simultaneousChallengesCon.text =
         widget.state.maxSimultaneousChallenges?.toString() ?? '';
-    minutesPerChallengeCon.text =
-        widget.state.minutesPerChallenge?.toString() ?? '';
+    // minutesPerChallengeCon.text =
+    //     widget.state.minutesPerChallenge?.toString() ?? '';
     isPrivate = widget.state.isPrivate;
     super.initState();
   }
@@ -115,34 +115,34 @@ class _SettingsFormState extends State<SettingsForm> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: minutesPerChallengeCon,
-              decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.timer_outlined),
-                  labelText: 'Minutes to complete a challenge',
-                  border: OutlineInputBorder(),
-                  helperMaxLines: 2,
-                  helperText:
-                      'How many minutes a user has to submit an attempt before a challenge ends.'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an amount of minutes';
-                }
-                return null;
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Allows only digits
-                FilteringTextInputFormatter.allow(RegExp(
-                    r'^[1-9][0-9]*')), // No leading zero, only positive integers
-              ],
-              textInputAction: TextInputAction.done,
-              onChanged: (value) {
-                if (value.isNotEmpty) {
-                  _formKey.currentState?.validate();
-                }
-              },
-              keyboardType: TextInputType.number,
-            ),
+            // TextFormField(
+            //   controller: minutesPerChallengeCon,
+            //   decoration: const InputDecoration(
+            //       prefixIcon: Icon(Icons.timer_outlined),
+            //       labelText: 'Minutes to complete a challenge',
+            //       border: OutlineInputBorder(),
+            //       helperMaxLines: 2,
+            //       helperText:
+            //           'How many minutes a user has to submit an attempt before a challenge ends.'),
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Please enter an amount of minutes';
+            //     }
+            //     return null;
+            //   },
+            //   inputFormatters: [
+            //     FilteringTextInputFormatter.digitsOnly, // Allows only digits
+            //     FilteringTextInputFormatter.allow(RegExp(
+            //         r'^[1-9][0-9]*')), // No leading zero, only positive integers
+            //   ],
+            //   textInputAction: TextInputAction.done,
+            //   onChanged: (value) {
+            //     if (value.isNotEmpty) {
+            //       _formKey.currentState?.validate();
+            //     }
+            //   },
+            //   keyboardType: TextInputType.number,
+            // ),
             const SizedBox(height: 16),
             CheckboxListTile(
                 title: const Text('Private group'),
@@ -164,8 +164,8 @@ class _SettingsFormState extends State<SettingsForm> {
                           endTime: endTime,
                           maxSimultaneousChallenges:
                               int.tryParse(simultaneousChallengesCon.text),
-                          minutesPerChallenge:
-                              int.tryParse(minutesPerChallengeCon.text),
+                          // minutesPerChallenge:
+                          //     int.tryParse(minutesPerChallengeCon.text),
                           isPrivate: isPrivate);
                       widget.onNext();
                     }
@@ -182,8 +182,8 @@ class _SettingsFormState extends State<SettingsForm> {
                         endTime: endTime,
                         maxSimultaneousChallenges:
                             int.tryParse(simultaneousChallengesCon.text),
-                        minutesPerChallenge:
-                            int.tryParse(minutesPerChallengeCon.text),
+                        // minutesPerChallenge:
+                        //     int.tryParse(minutesPerChallengeCon.text),
                         isPrivate: isPrivate);
                     widget.onPrev();
                   },

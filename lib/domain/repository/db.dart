@@ -8,4 +8,5 @@ abstract class DBRepository {
   Future<Either> updateGroup(UpdateGroupReq updateGroupReq);
   Future<Either> getUsersByDisplayName(String query);
   Future<Either> addGroupMember(AddGroupMemberReq addGroupMemberReq);
+  Future<Either> getGroupsByUser(String userId);
 }

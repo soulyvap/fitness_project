@@ -1,4 +1,4 @@
-import 'package:fitness_project/domain/entities/auth/user.dart';
+import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_list_tile.dart';
 import 'package:fitness_project/service_locator.dart';

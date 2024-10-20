@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fitness_project/domain/entities/auth/user.dart';
+import 'package:fitness_project/domain/entities/db/user.dart';
 
 class UserModel {
   final String userId;

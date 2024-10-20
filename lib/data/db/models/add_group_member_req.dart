@@ -15,7 +15,7 @@ class AddGroupMemberReq {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'groupeId': groupId,
+      'groupId': groupId,
       'userId': userId,
       'score': score,
       'isAdmin': isAdmin,

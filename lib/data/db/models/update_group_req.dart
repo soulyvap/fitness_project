@@ -8,9 +8,10 @@ class UpdateGroupReq {
   final Timestamp? startTime;
   final Timestamp? endTime;
   final int? maxSimultaneousChallenges;
-  final int? minutesPerChallenge;
+  // final int? minutesPerChallenge;
   final bool? isPrivate;
   final List<String>? allowedUsers;
+  final List<String>? members;
 
   UpdateGroupReq(
       {this.groupId,
@@ -20,22 +21,24 @@ class UpdateGroupReq {
       this.startTime,
       this.endTime,
       this.maxSimultaneousChallenges,
-      this.minutesPerChallenge,
+      // this.minutesPerChallenge,
       this.isPrivate,
-      this.allowedUsers});
+      this.allowedUsers,
+      this.members});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = {
-      'groupeId': groupId,
+      'groupId': groupId,
       'name': name,
       'description': description,
       'imageUrl': imageUrl,
       'startTime': startTime,
       'endTime': endTime,
       'maxSimultaneousChallenges': maxSimultaneousChallenges,
-      'minutesPerChallenge': minutesPerChallenge,
+      // 'minutesPerChallenge': minutesPerChallenge,
       'isPrivate': isPrivate,
-      'allowedUsers': allowedUsers
+      'allowedUsers': allowedUsers,
+      'members': members
     };
 
     // Remove entries where the value is null

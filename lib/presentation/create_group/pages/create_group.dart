@@ -51,6 +51,8 @@ class _CreateGroupPageState extends State<CreateGroupPage>
 
   Future<void> onSubmit(
       CreateGroupFormState state, XFile? image, String currentUserId) async {
+    final editedEndTime =
+        state.endTime?.add(const Duration(hours: 23, minutes: 59, seconds: 59));
     final updateGroupReq = UpdateGroupReq(
         name: state.name,
         description: state.description,
@@ -58,14 +60,15 @@ class _CreateGroupPageState extends State<CreateGroupPage>
             ? Timestamp.fromDate(state.startTime!)
             : null,
         endTime:
-            state.endTime != null ? Timestamp.fromDate(state.endTime!) : null,
+            editedEndTime != null ? Timestamp.fromDate(editedEndTime) : null,
         maxSimultaneousChallenges: state.maxSimultaneousChallenges,
-        minutesPerChallenge: state.minutesPerChallenge,
+        // minutesPerChallenge: state.minutesPerChallenge,
         isPrivate: state.isPrivate,
-        allowedUsers: state.allowedUsers.map((u) => u.userId).toList());
+        allowedUsers: state.allowedUsers.map((u) => u.userId).toList(),
+        members: [currentUserId]);
     final groupUpload =
         await sl<UpdateGroupUseCase>().call(params: updateGroupReq);
-    groupUpload.fold(
+    await groupUpload.fold(
       (error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Error creating group: ${error.toString()}')));
@@ -90,7 +93,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
       final imageUpload = await sl<UploadFileUseCase>().call(
           params: UploadFileReq(
               path: 'images/group_pictures/$groupId', file: File(image.path)));
-      imageUpload.fold(
+      await imageUpload.fold(
         (error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content:
@@ -181,6 +184,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                       if (authUser != null) {
                         await onSubmit(stateCreateGroupForm, statePicSelection,
                             authUser.userId);
+                        await Future.delayed(const Duration(seconds: 1));
                         if (context.mounted) {
                           Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) {

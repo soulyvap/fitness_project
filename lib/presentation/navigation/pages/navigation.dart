@@ -16,20 +16,20 @@ class Navigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+    return BlocBuilder<UserBloc, UserState>(builder: (context, userState) {
       final authUser = FirebaseAuth.instance.currentUser;
       if (authUser == null) {
         return const LoginPage();
-      } else if (state is UserLoading) {
+      } else if (userState is UserLoading) {
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(),
           ),
         );
-      } else if (state is UserNotFound) {
+      } else if (userState is UserNotFound) {
         return CreateAccountPage(
             userId: authUser.uid, userEmail: authUser.email ?? "no email");
-      } else if (state is UserLoaded) {
+      } else if (userState is UserLoaded) {
         return BlocProvider(
             create: (context) => NavIndexCubit(initialIndex),
             child: BlocBuilder<NavIndexCubit, int>(
@@ -45,15 +45,16 @@ class Navigation extends StatelessWidget {
                       child: const Icon(Icons.add)),
                   body: IndexedStack(
                     index: state,
-                    children: const [
-                      HomePage(),
-                      Center(
+                    children: [
+                      HomePage(currentUser: userState.user),
+                      const Center(
                         child: Text("Find Page"),
                       ),
-                      Center(
+                      const Center(),
+                      const Center(
                         child: Text("Profile Page"),
                       ),
-                      Center(
+                      const Center(
                         child: Text("Alerts Page"),
                       ),
                     ],
@@ -66,9 +67,9 @@ class Navigation extends StatelessWidget {
                 );
               },
             ));
-      } else if (state is UserError) {
+      } else if (userState is UserError) {
         return Center(
-          child: Text(state.errorMessage),
+          child: Text(userState.errorMessage),
         );
       } else {
         return const SizedBox();

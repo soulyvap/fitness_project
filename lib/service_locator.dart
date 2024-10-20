@@ -10,6 +10,7 @@ import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/domain/usecases/auth/get_user.dart';
 import 'package:fitness_project/domain/usecases/auth/logout.dart';
 import 'package:fitness_project/domain/usecases/db/add_group_member.dart';
+import 'package:fitness_project/domain/usecases/db/get_groups_by_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_users_by_display_name.dart';
 import 'package:fitness_project/domain/usecases/db/update_group.dart';
 import 'package:fitness_project/domain/usecases/db/update_user.dart';
@@ -41,5 +42,6 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetUsersByDisplayNameUseCase>(
       GetUsersByDisplayNameUseCase());
   sl.registerSingleton<AddGroupMemberUseCase>(AddGroupMemberUseCase());
+  sl.registerSingleton<GetGroupsByUserUseCase>(GetGroupsByUserUseCase());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

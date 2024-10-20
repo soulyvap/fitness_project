@@ -1,4 +1,4 @@
-import 'package:fitness_project/domain/entities/auth/user.dart';
+import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateGroupFormState {
@@ -7,7 +7,7 @@ class CreateGroupFormState {
   DateTime? startTime;
   DateTime? endTime;
   int? maxSimultaneousChallenges;
-  int? minutesPerChallenge;
+  // int? minutesPerChallenge;
   bool isPrivate = false;
   List<UserEntity> allowedUsers;
 
@@ -17,15 +17,10 @@ class CreateGroupFormState {
     this.startTime,
     this.endTime,
     this.maxSimultaneousChallenges,
-    this.minutesPerChallenge,
+    // this.minutesPerChallenge,
     this.isPrivate = false,
     required this.allowedUsers,
   });
-
-  @override
-  String toString() {
-    return 'CreateGroupFormState(name: $name, description: $description, startTime: $startTime, endTime: $endTime, maxSimultaneousChallenges: $maxSimultaneousChallenges, minutesPerChallenge: $minutesPerChallenge, isPrivate: $isPrivate)';
-  }
 }
 
 class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
@@ -39,7 +34,7 @@ class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
     DateTime? startTime,
     DateTime? endTime,
     int? maxSimultaneousChallenges,
-    int? minutesPerChallenge,
+    // int? minutesPerChallenge,
     bool? isPrivate,
     List<UserEntity>? allowedUsers,
   }) {
@@ -50,7 +45,7 @@ class CreateGroupFormCubit extends Cubit<CreateGroupFormState> {
       endTime: endTime ?? state.endTime,
       maxSimultaneousChallenges:
           maxSimultaneousChallenges ?? state.maxSimultaneousChallenges,
-      minutesPerChallenge: minutesPerChallenge ?? state.minutesPerChallenge,
+      // minutesPerChallenge: minutesPerChallenge ?? state.minutesPerChallenge,
       isPrivate: isPrivate ?? state.isPrivate,
       allowedUsers: allowedUsers ?? state.allowedUsers,
     ));

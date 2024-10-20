@@ -3,12 +3,14 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
+import 'package:flutter/material.dart';
 
 abstract class FirestoreFirebaseService {
   Future<Either> updateUser(UpdateUserReq updateUserReq);
   Future<Either> updateGroup(UpdateGroupReq updateGroupReq);
   Future<Either> getUsersByDisplayName(String query);
   Future<Either> addGroupMember(AddGroupMemberReq addGroupMemberReq);
+  Future<Either> getGroupsByUser(String userId);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -20,6 +22,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
     }
     final userId = updateUserReq.userId ??
         FirebaseFirestore.instance.collection('users').doc().id;
+    dataMap['userId'] = userId;
     try {
       await FirebaseFirestore.instance
           .collection('users')
@@ -39,6 +42,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
     }
     final groupId = updateGroupReq.groupId ??
         FirebaseFirestore.instance.collection('groups').doc().id;
+    dataMap['groupId'] = groupId;
     try {
       FirebaseFirestore.instance
           .collection('groups')
@@ -77,6 +81,20 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
     try {
       await ref.set(dataMap);
       return const Right('User added to group');
+    } catch (e) {
+      return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> getGroupsByUser(String userId) async {
+    try {
+      final groups = await FirebaseFirestore.instance
+          .collection('groups')
+          .where('members', arrayContains: userId)
+          .get()
+          .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(groups);
     } catch (e) {
       return const Left('Please try again');
     }

@@ -5,7 +5,7 @@ import 'package:fitness_project/domain/entities/db/group_member.dart';
 
 class GroupMemberModel {
   final String groupMemberId;
-  final String groupeId;
+  final String groupId;
   final String userId;
   final int score;
   final bool isAdmin;
@@ -14,7 +14,7 @@ class GroupMemberModel {
 
   GroupMemberModel({
     required this.groupMemberId,
-    required this.groupeId,
+    required this.groupId,
     required this.userId,
     required this.score,
     required this.isAdmin,
@@ -25,7 +25,7 @@ class GroupMemberModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'groupMemberId': groupMemberId,
-      'groupeId': groupeId,
+      'groupId': groupId,
       'userId': userId,
       'score': score,
       'isAdmin': isAdmin,
@@ -37,7 +37,7 @@ class GroupMemberModel {
   factory GroupMemberModel.fromMap(Map<String, dynamic> map) {
     return GroupMemberModel(
       groupMemberId: map['groupMemberId'] as String,
-      groupeId: map['groupeId'] as String,
+      groupId: map['groupId'] as String,
       userId: map['userId'] as String,
       score: map['score'] as int,
       isAdmin: map['isAdmin'] as bool,
@@ -56,7 +56,7 @@ extension GroupMemberXModel on GroupMemberModel {
   GroupMemberEntity toEntity() {
     return GroupMemberEntity(
       groupMemberId: groupMemberId,
-      groupeId: groupeId,
+      groupId: groupId,
       userId: userId,
       score: score,
       isAdmin: isAdmin,
