@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
+import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
 import 'package:fitness_project/presentation/navigation/bloc/new_challenge_form_cubit.dart';
 import 'package:fitness_project/presentation/navigation/bloc/start_a_challenge_cubit.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/presentation/navigation/widgets/custom_dropdown.dart';
 import 'package:fitness_project/presentation/navigation/widgets/exercise_list_tile.dart';
 import 'package:fitness_project/presentation/navigation/widgets/group_list_tile.dart';
+import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +22,15 @@ class StartAChallengeSheet extends StatefulWidget {
 }
 
 class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
+  bool isSubmitting = false;
+
+  String? errorMessage;
+  void resetError() {
+    setState(() {
+      errorMessage = null;
+    });
+  }
+
   Widget? selectedGroupTile(List<GroupEntity> groups, String? selectedGroup) {
     if (selectedGroup == null) {
       return null;
@@ -51,6 +64,61 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
     }
   }
 
+  Future<void> onSubmit(UpdateChallengeReq req) async {
+    if (req.groupId == null) {
+      setState(() {
+        errorMessage = "Please select a group";
+      });
+      return;
+    }
+    if (req.exerciseId == null) {
+      setState(() {
+        errorMessage = "Please select an exercise";
+      });
+      return;
+    }
+    if (req.reps == null) {
+      setState(() {
+        errorMessage = "Please enter reps";
+      });
+      return;
+    }
+    if (req.minutesToComplete == null) {
+      setState(() {
+        errorMessage = "Please enter minutes to complete";
+      });
+      return;
+    }
+    setState(() {
+      isSubmitting = true;
+    });
+    try {
+      final challengeUpload =
+          await sl<UpdateChallengeUseCase>().call(params: req);
+      challengeUpload.fold((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+          ),
+        );
+      }, (data) {
+        Future.delayed(const Duration(seconds: 1));
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return const Navigation();
+            }),
+          );
+        }
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -59,6 +127,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
         child: Text("User not found"),
       );
     }
+
     return MultiBlocProvider(
         providers: [
           BlocProvider<StartAChallengeCubit>(
@@ -69,7 +138,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
         ],
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: 400 + MediaQuery.of(context).viewInsets.bottom,
+          height: 440 + MediaQuery.of(context).viewInsets.bottom,
           child: Builder(
             builder: (cubitContext) {
               final startAChallengeState =
@@ -92,6 +161,18 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                       const Text("Start a challenge",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
+                      const Row(
+                        children: [
+                          Icon(Icons.warning, color: Colors.red),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "Do not make the challenge too long to complete\n(no longer than 2 minutes)",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                       const SizedBox(
                         height: 16,
                       ),
@@ -111,7 +192,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const SizedBox(
-                                  height: 32,
+                                  height: 16,
                                 ),
                                 const Text(
                                   "Select a group",
@@ -120,7 +201,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
-                                  height: 400,
+                                  height: 360,
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount:
@@ -136,6 +217,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                                 .onValuesChanged(
                                                     groupId: group.groupId);
                                             Navigator.pop(modalContext);
+                                            resetError();
                                           },
                                           trailing: group.groupId ==
                                                   newChallengeFormState.groupId
@@ -145,6 +227,15 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                     },
                                   ),
                                 ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(modalContext);
+                                    },
+                                    child: const Text("Close"),
+                                  ),
+                                )
                               ],
                             ),
                           );
@@ -170,7 +261,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             child: Column(
                               children: [
                                 const SizedBox(
-                                  height: 32,
+                                  height: 16,
                                 ),
                                 const Text(
                                   "Select an exercise",
@@ -179,7 +270,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
-                                  height: 400,
+                                  height: 360,
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount:
@@ -197,6 +288,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                                       exerciseId:
                                                           exercise.exerciseId);
                                               Navigator.pop(modalContext);
+                                              resetError();
                                             },
                                             trailing: exercise.exerciseId ==
                                                     newChallengeFormState
@@ -208,6 +300,15 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                     },
                                   ),
                                 ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(modalContext);
+                                    },
+                                    child: const Text("Close"),
+                                  ),
+                                )
                               ],
                             ),
                           );
@@ -233,6 +334,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                     .onValuesChanged(
                                       reps: int.tryParse(value),
                                     );
+                                resetError();
                               },
                               inputFormatters: [
                                 FilteringTextInputFormatter
@@ -248,9 +350,10 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             width: 8,
                           ),
                           Expanded(
+                            flex: 2,
                             child: TextField(
                               decoration: const InputDecoration(
-                                  labelText: "Time",
+                                  labelText: "Challenge expires in",
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8)),
@@ -261,8 +364,9 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                 cubitContext
                                     .read<NewChallengeFormCubit>()
                                     .onValuesChanged(
-                                      reps: int.tryParse(value),
+                                      minutesToComplete: int.tryParse(value),
                                     );
+                                resetError();
                               },
                               inputFormatters: [
                                 FilteringTextInputFormatter
@@ -281,6 +385,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                       ),
                       TextField(
                         maxLines: 2,
+                        maxLength: 100,
                         decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.description),
                             labelText: 'Extra instructions',
@@ -300,13 +405,51 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                         },
                       ),
                       const SizedBox(
-                        height: 16,
+                        height: 8,
                       ),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text("Start challenge"),
+                          onPressed: () async {
+                            final exerciseName =
+                                newChallengeFormState.exerciseId == null
+                                    ? null
+                                    : startAChallengeState.exercises
+                                        .firstWhere((element) =>
+                                            element.exerciseId ==
+                                            newChallengeFormState.exerciseId)
+                                        .name;
+                            final req = UpdateChallengeReq(
+                              userId: currentUserId,
+                              groupId: newChallengeFormState.groupId,
+                              exerciseId: newChallengeFormState.exerciseId,
+                              title: newChallengeFormState.reps == null ||
+                                      exerciseName == null
+                                  ? null
+                                  : "${newChallengeFormState.reps} $exerciseName",
+                              reps: newChallengeFormState.reps,
+                              minutesToComplete:
+                                  newChallengeFormState.minutesToComplete,
+                              extraInstructions:
+                                  newChallengeFormState.instructions,
+                            );
+                            await onSubmit(req);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: errorMessage == null
+                                ? null
+                                : const WidgetStatePropertyAll(Colors.red),
+                            foregroundColor: errorMessage == null
+                                ? null
+                                : const WidgetStatePropertyAll(Colors.white),
+                          ),
+                          child: isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Text(errorMessage ?? "Start challenge"),
                         ),
                       )
                     ],

@@ -83,9 +83,9 @@ class _CreateGroupPageState extends State<CreateGroupPage>
   }
 
   Future<void> addUserToMembers(String userId, String groupId) async {
-    await sl<AddGroupMemberUseCase>().call(
-        params:
-            AddGroupMemberReq(groupId: groupId, userId: userId, isAdmin: true));
+    await sl<UpdateGroupMemberUseCase>().call(
+        params: UpdateGroupMemberReq(
+            groupId: groupId, userId: userId, isAdmin: true));
   }
 
   Future<void> uploadGroupPicture(String groupId, XFile? image) async {

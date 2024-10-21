@@ -1,7 +1,10 @@
+import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/usecases/auth/logout.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
+import 'package:fitness_project/presentation/home/widgets/active_challenge_tile.dart';
+import 'package:fitness_project/presentation/home/widgets/active_challenges.dart';
 import 'package:fitness_project/presentation/home/widgets/your_groups_list.dart';
 import 'package:fitness_project/presentation/navigation/widgets/custom_dropdown.dart';
 import 'package:fitness_project/presentation/navigation/widgets/group_list_tile.dart';
@@ -26,6 +29,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  final testChallenge = ChallengeEntity(
+    challengeId: "1",
+    exerciseId: "8lJ2FGzKhbtp1iVLxwQF",
+    groupId: "3JS3uMPoIx0xTfvIouKe",
+    title: "test",
+    reps: 30,
+    minutesToComplete: 30,
+    userId: "1",
+    createdAt: DateTime.now(),
+    endsAt: DateTime.now().add(const Duration(minutes: 30)),
+  );
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeDataCubit>(
@@ -42,21 +57,20 @@ class _HomePageState extends State<HomePage> {
           );
         } else if (homeDataState is HomeDataLoaded) {
           final groups = homeDataState.myGroups;
+          final exercises = homeDataState.allExercises;
+          final challenges = homeDataState.myChallenges;
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Home"),
+              title: Text("Welcome back ${widget.currentUser.displayName}"),
             ),
             body: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
-                  Column(
-                    children: [
-                      Text("Welcome ${widget.currentUser.displayName}"),
-                      Text("Email: ${widget.currentUser.email}"),
-                      Text("User ID: ${widget.currentUser.userId}"),
-                    ],
-                  ),
+                  ActiveChallenges(
+                      groups: groups,
+                      challenges: challenges,
+                      exercises: exercises),
                   const SizedBox(
                     height: 16,
                   ),
@@ -64,6 +78,13 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     height: 16,
                   ),
+                  // ActiveChallengeTile(
+                  //     challenge: testChallenge,
+                  //     exercise: exercises.firstWhere(
+                  //         (e) => e.exerciseId == testChallenge.exerciseId),
+                  //     group: groups.firstWhere(
+                  //         (g) => g.groupId == testChallenge.groupId)),
+
                   ElevatedButton(
                       onPressed: () async {
                         var result = await sl<LogoutUseCase>().call();
@@ -81,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ));
                       },
-                      child: const Text("Logout"))
+                      child: const Text("Logout")),
                 ],
               ),
             ),

@@ -1,20 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddGroupMemberReq {
+class UpdateGroupMemberReq {
+  final String? groupMemberId;
   final String groupId;
-  final String userId;
-  final int score = 0;
-  final bool isAdmin;
-  final Timestamp joinedAt = Timestamp.now();
+  final String? userId;
+  final int? score;
+  final bool? isAdmin;
+  final Timestamp? joinedAt;
 
-  AddGroupMemberReq({
+  UpdateGroupMemberReq({
+    this.groupMemberId,
     required this.groupId,
-    required this.userId,
-    required this.isAdmin,
+    this.userId,
+    this.score,
+    this.isAdmin,
+    this.joinedAt,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'groupMemberId': groupMemberId,
       'groupId': groupId,
       'userId': userId,
       'score': score,

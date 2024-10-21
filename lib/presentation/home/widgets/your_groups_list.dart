@@ -1,6 +1,8 @@
 import 'package:fitness_project/domain/entities/db/group.dart';
+import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
 import 'package:fitness_project/presentation/group/pages/group.dart';
-import 'package:fitness_project/presentation/home/widgets/group_tiles.dart';
+import 'package:fitness_project/presentation/home/widgets/add_group_tile.dart';
+import 'package:fitness_project/presentation/home/widgets/group_tile.dart';
 import 'package:flutter/material.dart';
 
 class YourGroupsList extends StatelessWidget {
@@ -23,21 +25,29 @@ class YourGroupsList extends StatelessWidget {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: groups.length,
+              itemCount: groups.length + 1,
               itemBuilder: (context, index) {
-                final group = groups[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: GroupTile(
-                      group: group,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GroupPage(group: group),
-                          ),
-                        );
-                      }),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: index == groups.length
+                      ? AddGroupTile(onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CreateGroupPage()));
+                        })
+                      : GroupTile(
+                          group: groups[index],
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    GroupPage(group: groups[index]),
+                              ),
+                            );
+                          }),
                 );
               },
             ),

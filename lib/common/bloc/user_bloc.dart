@@ -1,5 +1,5 @@
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/domain/usecases/auth/get_user.dart';
+import 'package:fitness_project/domain/usecases/db/get_user.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onUserLoaded(LoadUser event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
-      final user = await sl<GetUserUseCase>().call();
+      final user = await sl<GetUserUseCase>().call(params: null);
       user.fold((error) {
         emit(UserNotFound());
       }, (data) {
