@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -8,7 +9,7 @@ class PicturePicker extends StatelessWidget {
   final Function(ImageSource) pickFrom;
   final BoxShape? shape;
   final Widget? placeholder;
-  final BorderRadius? borderRadius;
+  final Radius? borderRadius;
 
   const PicturePicker(
       {super.key,
@@ -28,23 +29,25 @@ class PicturePicker extends StatelessWidget {
             width: double.infinity,
             child: AspectRatio(
               aspectRatio: 1 / 1,
-              child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 2,
+              child: DottedBorder(
+                dashPattern: const [6, 6],
+                color: image == null ? Colors.black : Colors.transparent,
+                borderType: BorderType.RRect,
+                radius: borderRadius ?? const Radius.circular(1000),
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                          borderRadius ?? const Radius.circular(1000)),
+                      shape: shape ?? BoxShape.circle,
+                      image: image != null
+                          ? DecorationImage(
+                              image: FileImage(File(image!.path)),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
-                    shape: shape ?? BoxShape.circle,
-                    borderRadius: borderRadius,
-                    color: Colors.grey[400],
-                    image: image != null
-                        ? DecorationImage(
-                            image: FileImage(File(image!.path)),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: Center(child: placeholder)),
+                    child: image == null ? Center(child: placeholder) : null),
+              ),
             ),
           ),
           const SizedBox(

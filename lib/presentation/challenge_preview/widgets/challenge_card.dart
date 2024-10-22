@@ -42,7 +42,7 @@ class ChallengeCard extends StatelessWidget {
             subtitle: Text(group.name),
           ),
           AspectRatio(
-            aspectRatio: 1,
+            aspectRatio: 1.2,
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(

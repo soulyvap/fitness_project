@@ -200,6 +200,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                     state: stateCreateGroupForm,
                     showAddMemberSheet: () {
                       showModalBottomSheet(
+                          isScrollControlled: true,
                           context: context,
                           builder: (context) {
                             return UserAutocomplete(

@@ -24,19 +24,16 @@ class ActiveChallengeTile extends StatefulWidget {
 }
 
 class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
-  int? secondsLeft;
+  late int secondsLeft;
 
   void _startCountdown(DateTime challengeEndTime) {
-    if (secondsLeft == null) {
-      return;
-    }
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (secondsLeft! <= 0) {
+      if (secondsLeft <= 0) {
         timer.cancel();
         return;
       }
       setState(() {
-        secondsLeft = secondsLeft! - 1;
+        secondsLeft = secondsLeft - 1;
       });
     });
   }

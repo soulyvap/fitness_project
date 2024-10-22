@@ -27,7 +27,7 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      height: 600,
+      height: 400 + MediaQuery.of(context).viewInsets.bottom,
       child: Column(
         children: [
           TextField(
@@ -83,10 +83,10 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
             height: 16,
           ),
           SizedBox(
-            height: 380,
             child: suggestions.isEmpty
                 ? null
                 : ListView.separated(
+                    shrinkWrap: true,
                     itemCount: suggestions.length,
                     itemBuilder: (context, index) {
                       final user = suggestions[index];

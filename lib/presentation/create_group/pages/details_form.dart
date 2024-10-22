@@ -50,11 +50,18 @@ class _DetailsFormState extends State<DetailsForm> {
                   context.read<PicSelectionCubit>().pickFrom(source);
                 },
                 shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(28),
-                placeholder: const Text(
-                  "Add group picture",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                borderRadius: const Radius.circular(28),
+                placeholder: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add_a_photo),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Add group picture",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                    ),
+                  ],
                 ),
               ),
             ),

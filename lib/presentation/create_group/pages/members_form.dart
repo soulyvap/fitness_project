@@ -76,7 +76,7 @@ class _MembersFormState extends State<MembersForm> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(
-            height: 16,
+            height: 8,
           ),
           ElevatedButton.icon(
             onPressed: () {
@@ -86,6 +86,18 @@ class _MembersFormState extends State<MembersForm> {
             label: const Text('Invite members'),
           ),
           const SizedBox(height: 16),
+          Row(
+            children: [
+              Text(
+                'Members invited (${widget.state.allowedUsers.length})',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Expanded(
             child: ListView.separated(
               shrinkWrap: true,
@@ -115,15 +127,6 @@ class _MembersFormState extends State<MembersForm> {
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton(
-                onPressed: () {
-                  widget.onPrev();
-                },
-                child: const Text('Previous')),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
             child: ElevatedButton(
                 onPressed: () {
                   widget.onSubmit();
@@ -137,7 +140,16 @@ class _MembersFormState extends State<MembersForm> {
                         height: 20,
                         child: CircularProgressIndicator())
                     : const Text('Create group')),
-          )
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+                onPressed: () {
+                  widget.onPrev();
+                },
+                child: const Text('Previous')),
+          ),
         ],
       ),
     );

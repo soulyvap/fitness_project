@@ -47,10 +47,10 @@ class BottomBar extends StatelessWidget {
                   backgroundColor: Colors.white,
                   builder: (context) => const StartAChallengeSheet());
             },
-            child: const Card(
-              color: Colors.orangeAccent,
+            child: Card(
+              color: Theme.of(context).colorScheme.secondary,
               elevation: 4,
-              child: Icon(
+              child: const Icon(
                 Icons.fitness_center,
                 size: 32,
                 color: Colors.white,
