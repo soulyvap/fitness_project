@@ -12,25 +12,32 @@ class Countdown extends StatefulWidget {
 }
 
 class _CountdownState extends State<Countdown> {
-  late int timeLeft;
+  late int _timeLeft;
+  late Timer _timer;
 
   @override
   void initState() {
-    timeLeft = widget.secondsLeft;
+    _timeLeft = widget.secondsLeft;
     startCountdown();
     super.initState();
   }
 
   void startCountdown() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timeLeft <= 0) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_timeLeft <= 0) {
         timer.cancel();
         return;
       }
       setState(() {
-        timeLeft = timeLeft - 1;
+        _timeLeft = _timeLeft - 1;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -46,9 +53,9 @@ class _CountdownState extends State<Countdown> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.hourglass_full, color: Colors.white),
+            const Icon(Icons.hourglass_empty, color: Colors.white),
             Text(
-              timeLeft.secondsToTimeString(),
+              _timeLeft.secondsToTimeString(),
               style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

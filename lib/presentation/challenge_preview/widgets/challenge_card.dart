@@ -3,20 +3,31 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/create_group/pages/settings_form.dart';
+import 'package:fitness_project/presentation/camera/pages/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChallengeCard extends StatelessWidget {
   final ChallengeEntity challenge;
   final GroupEntity group;
   final ExerciseEntity exercise;
   final UserEntity author;
+
   const ChallengeCard(
       {super.key,
       required this.challenge,
       required this.author,
       required this.group,
       required this.exercise});
+
+  Future<bool> requestCameraPermission() async {
+    var status = await Permission.camera.status;
+    if (!status.isGranted) {
+      await Permission.camera.request();
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +91,18 @@ class ChallengeCard extends StatelessWidget {
                   onPressed: () {}, child: const Text("View posts (2)")),
               const SizedBox(width: 8),
               ElevatedButton(
-                  onPressed: () {}, child: const Text("Post an attempt"))
+                  onPressed: () async {
+                    await requestCameraPermission();
+                    if (context.mounted) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Camera(
+                              challenge: challenge,
+                              exercise: exercise,
+                              group: group,
+                              author: author)));
+                    }
+                  },
+                  child: const Text("Post an attempt"))
             ]),
           ),
         ],

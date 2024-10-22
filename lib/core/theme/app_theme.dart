@@ -31,6 +31,10 @@ ThemeData appTheme() {
           fontWeight: FontWeight.w500,
           color: Colors.grey[800],
         ),
+        titleMedium: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+        ),
       ),
       buttonTheme: ButtonThemeData(
         buttonColor:

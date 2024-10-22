@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fitness_project/common/extensions/int_extension.dart';
+import 'package:fitness_project/common/widgets/group_tile_small.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
@@ -24,25 +25,32 @@ class ActiveChallengeTile extends StatefulWidget {
 }
 
 class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
-  late int secondsLeft;
+  late int _secondsLeft;
+  late Timer _timer;
 
   void _startCountdown(DateTime challengeEndTime) {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (secondsLeft <= 0) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsLeft <= 0) {
         timer.cancel();
         return;
       }
       setState(() {
-        secondsLeft = secondsLeft - 1;
+        _secondsLeft = _secondsLeft - 1;
       });
     });
   }
 
   @override
   void initState() {
-    secondsLeft = widget.challenge.endsAt.difference(DateTime.now()).inSeconds;
+    _secondsLeft = widget.challenge.endsAt.difference(DateTime.now()).inSeconds;
     _startCountdown(widget.challenge.endsAt);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -79,19 +87,21 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        color: Theme.of(context).colorScheme.secondary,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.hourglass_bottom_rounded,
-                                  size: 14),
+                              const Icon(Icons.hourglass_empty_rounded,
+                                  size: 14, color: Colors.white),
                               Text(
-                                "${secondsLeft?.secondsToTimeString()}",
+                                _secondsLeft.secondsToTimeString(),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                                  fontSize: 14,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -124,39 +134,7 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
               ),
             ),
           ),
-          SizedBox(
-              width: 110,
-              child: Row(
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                      image: widget.group.imageUrl == null
-                          ? null
-                          : DecorationImage(
-                              image: NetworkImage(widget.group.imageUrl!),
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                    child: widget.group.imageUrl == null
-                        ? const Icon(Icons.group)
-                        : null,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    widget.group.name,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              )),
+          GroupTileSmall(group: widget.group),
         ],
       ),
     );

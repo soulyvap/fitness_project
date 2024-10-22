@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
 import 'package:fitness_project/common/bloc/user_bloc.dart';
-import 'package:fitness_project/common/widgets/back_arrow_button.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
@@ -122,7 +121,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
         ],
         child: Scaffold(
             appBar: AppBar(
-              leading: const BackArrowButton(),
+              leading: const BackButton(),
               title: const Text('Create a group'),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(72),
