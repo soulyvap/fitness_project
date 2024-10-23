@@ -4,6 +4,7 @@ import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
+import 'package:fitness_project/data/db/models/update_submission_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
 
 abstract class DBRepository {
@@ -20,4 +21,5 @@ abstract class DBRepository {
   Future<Either> getExerciseById(String exerciseId);
   Future<Either> getGroupById(String groupId);
   Future<Either> getChallengeById(String challengeId);
+  Future<Either> updateSubmission(UpdateSubmissionReq updateSubmissionReq);
 }

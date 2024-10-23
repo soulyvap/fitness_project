@@ -7,6 +7,7 @@ import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
+import 'package:fitness_project/data/db/models/update_submission_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
 
 abstract class FirestoreFirebaseService {
@@ -23,6 +24,7 @@ abstract class FirestoreFirebaseService {
   Future<Either> getExerciseById(String exerciseId);
   Future<Either> getGroupById(String groupId);
   Future<Either> getChallengeById(String challengeId);
+  Future<Either> updateSubmission(UpdateSubmissionReq updateSubmissionReq);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -250,6 +252,31 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
           .get()
           .then((value) => value.data());
       return Right(group);
+    } catch (e) {
+      return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> updateSubmission(
+      UpdateSubmissionReq updateSubmissionReq) async {
+    final dataMap = updateSubmissionReq.toMap();
+    if (dataMap.keys.length == 1) {
+      return const Left("Invalid data");
+    }
+    final submissionId = updateSubmissionReq.submissionId ??
+        FirebaseFirestore.instance.collection('submissions').doc().id;
+    dataMap['submissionId'] = submissionId;
+
+    if (updateSubmissionReq.challengeId == null) {
+      dataMap['createdAt'] = Timestamp.now();
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection('submissions')
+          .doc(submissionId)
+          .set(dataMap, SetOptions(merge: true));
+      return Right(submissionId);
     } catch (e) {
       return const Left('Please try again');
     }

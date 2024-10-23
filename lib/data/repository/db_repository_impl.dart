@@ -7,6 +7,7 @@ import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/group.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
+import 'package:fitness_project/data/db/models/update_submission_req.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
 import 'package:fitness_project/data/db/models/user.dart';
 import 'package:fitness_project/data/source/firestore_firebase_service.dart';
@@ -165,5 +166,11 @@ class DBRepositoryImpl extends DBRepository {
       final groupEntity = GroupModel.fromMap(data).toEntity();
       return Right(groupEntity);
     });
+  }
+
+  @override
+  Future<Either> updateSubmission(
+      UpdateSubmissionReq updateSubmissionReq) async {
+    return sl<FirestoreFirebaseService>().updateSubmission(updateSubmissionReq);
   }
 }

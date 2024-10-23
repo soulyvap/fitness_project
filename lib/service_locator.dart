@@ -20,6 +20,7 @@ import 'package:fitness_project/domain/usecases/db/get_groups_by_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_users_by_display_name.dart';
 import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
 import 'package:fitness_project/domain/usecases/db/update_group.dart';
+import 'package:fitness_project/domain/usecases/db/update_submission.dart';
 import 'package:fitness_project/domain/usecases/db/update_user.dart';
 import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
 import 'package:get_it/get_it.dart';
@@ -57,5 +58,6 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetExerciseByIdUseCase>(GetExerciseByIdUseCase());
   sl.registerSingleton<GetGroupByIdUseCase>(GetGroupByIdUseCase());
   sl.registerSingleton<GetChallengeByIdUseCase>(GetChallengeByIdUseCase());
+  sl.registerSingleton<UpdateSubmissionUseCase>(UpdateSubmissionUseCase());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

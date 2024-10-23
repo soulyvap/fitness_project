@@ -83,6 +83,7 @@ class _CameraState extends State<Camera> {
                   author: widget.author,
                   cameraState: state,
                   isRecording: true,
+                  recordingDelay: 3,
                 );
               });
         });

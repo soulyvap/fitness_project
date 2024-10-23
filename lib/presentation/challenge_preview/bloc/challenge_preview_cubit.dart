@@ -2,7 +2,6 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_exercise_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
