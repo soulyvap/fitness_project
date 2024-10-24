@@ -8,8 +8,8 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/camera/widgets/capture_button.dart';
-import 'package:fitness_project/presentation/camera/widgets/challenge_short_info.dart';
+import 'package:fitness_project/presentation/post_submission/widgets/capture_button.dart';
+import 'package:fitness_project/presentation/post_submission/widgets/challenge_short_info.dart';
 import 'package:flutter/material.dart';
 
 class VideoModeUi extends StatefulWidget {
@@ -31,7 +31,7 @@ class VideoModeUi extends StatefulWidget {
       required this.cameraState,
       required this.isRecording,
       this.maxSeconds = 120,
-      this.recordingDelay = 10});
+      this.recordingDelay = 5});
 
   @override
   State<VideoModeUi> createState() => _VideoModeUiState();

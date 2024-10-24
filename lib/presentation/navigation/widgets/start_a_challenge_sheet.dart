@@ -188,6 +188,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                         modalBuilder: (modalContext) {
                           return Container(
                             color: Colors.white,
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -257,7 +258,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                         modalBuilder: (modalContext) {
                           return Container(
                             color: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               children: [
                                 const SizedBox(
@@ -278,25 +279,23 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                     itemBuilder: (context, index) {
                                       final exercise =
                                           startAChallengeState.exercises[index];
-                                      return Card(
-                                        child: ExerciseListTile(
-                                            exercise: exercise,
-                                            onTap: () {
-                                              cubitContext
-                                                  .read<NewChallengeFormCubit>()
-                                                  .onValuesChanged(
-                                                      exerciseId:
-                                                          exercise.exerciseId);
-                                              Navigator.pop(modalContext);
-                                              resetError();
-                                            },
-                                            trailing: exercise.exerciseId ==
-                                                    newChallengeFormState
-                                                        .exerciseId
-                                                ? const Icon(Icons.check_circle,
-                                                    color: Colors.green)
-                                                : null),
-                                      );
+                                      return ExerciseListTile(
+                                          exercise: exercise,
+                                          onTap: () {
+                                            cubitContext
+                                                .read<NewChallengeFormCubit>()
+                                                .onValuesChanged(
+                                                    exerciseId:
+                                                        exercise.exerciseId);
+                                            Navigator.pop(modalContext);
+                                            resetError();
+                                          },
+                                          trailing: exercise.exerciseId ==
+                                                  newChallengeFormState
+                                                      .exerciseId
+                                              ? const Icon(Icons.check_circle,
+                                                  color: Colors.green)
+                                              : null);
                                     },
                                   ),
                                 ),

@@ -23,8 +23,11 @@ class CustomDropDown extends StatelessWidget {
                 context: context,
                 builder: modalBuilder);
           },
-          child: Card(
-            margin: EdgeInsets.zero,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!, width: 2),
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: selected ?? placeholder,
           ),
         ));

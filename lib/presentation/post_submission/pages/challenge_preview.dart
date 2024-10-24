@@ -1,6 +1,6 @@
-import 'package:fitness_project/presentation/challenge_preview/bloc/challenge_preview_cubit.dart';
+import 'package:fitness_project/presentation/post_submission/bloc/challenge_preview_cubit.dart';
 import 'package:fitness_project/common/widgets/countdown.dart';
-import 'package:fitness_project/presentation/challenge_preview/widgets/challenge_card.dart';
+import 'package:fitness_project/presentation/post_submission/widgets/challenge_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

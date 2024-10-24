@@ -1,7 +1,7 @@
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/presentation/challenge_preview/pages/challenge_preview.dart';
+import 'package:fitness_project/presentation/post_submission/pages/challenge_preview.dart';
 import 'package:fitness_project/presentation/home/widgets/active_challenge_tile.dart';
 import 'package:fitness_project/presentation/home/widgets/add_challenge_tile.dart';
 import 'package:fitness_project/presentation/navigation/widgets/start_a_challenge_sheet.dart';

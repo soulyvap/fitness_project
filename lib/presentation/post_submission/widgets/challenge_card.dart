@@ -3,7 +3,7 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/camera/pages/camera.dart';
+import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 

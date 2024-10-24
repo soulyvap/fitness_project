@@ -6,8 +6,8 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/camera/widgets/video_mode_ui.dart';
-import 'package:fitness_project/presentation/submissions/widgets/submission_video_preview.dart';
+import 'package:fitness_project/presentation/post_submission/widgets/video_mode_ui.dart';
+import 'package:fitness_project/presentation/post_submission/pages/submission_video_preview.dart';
 import 'package:flutter/material.dart';
 
 class Camera extends StatefulWidget {
@@ -83,7 +83,6 @@ class _CameraState extends State<Camera> {
                   author: widget.author,
                   cameraState: state,
                   isRecording: true,
-                  recordingDelay: 3,
                 );
               });
         });
