@@ -49,15 +49,16 @@ class _CountdownState extends State<Countdown> {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.hourglass_empty, color: Colors.white),
+            if (_timeLeft > 0)
+              const Icon(Icons.hourglass_empty, color: Colors.white),
             Text(
-              _timeLeft.secondsToTimeString(),
+              _timeLeft > 0 ? _timeLeft.secondsToTimeString() : 'ended',
               style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),

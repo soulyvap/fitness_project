@@ -1,4 +1,3 @@
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/repository/auth_repository_impl.dart';
 import 'package:fitness_project/data/repository/db_repository_impl.dart';
 import 'package:fitness_project/data/repository/storage_repository_impl.dart';
@@ -10,6 +9,9 @@ import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
+import 'package:fitness_project/domain/usecases/db/get_scores_by_submission.dart';
+import 'package:fitness_project/domain/usecases/db/get_submission_by_challenge_and_user.dart';
+import 'package:fitness_project/domain/usecases/db/get_submission_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_user.dart';
 import 'package:fitness_project/domain/usecases/auth/logout.dart';
 import 'package:fitness_project/domain/usecases/db/add_group_member.dart';
@@ -59,5 +61,10 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetGroupByIdUseCase>(GetGroupByIdUseCase());
   sl.registerSingleton<GetChallengeByIdUseCase>(GetChallengeByIdUseCase());
   sl.registerSingleton<UpdateSubmissionUseCase>(UpdateSubmissionUseCase());
+  sl.registerSingleton<GetScoresBySubmissionUseCase>(
+      GetScoresBySubmissionUseCase());
+  sl.registerSingleton<GetSubmissionByIdUseCase>(GetSubmissionByIdUseCase());
+  sl.registerSingleton<GetSubmissionByChallengeAndUserUserCase>(
+      GetSubmissionByChallengeAndUserUserCase());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

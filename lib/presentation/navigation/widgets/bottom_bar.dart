@@ -1,4 +1,4 @@
-import 'package:fitness_project/presentation/navigation/widgets/start_a_challenge_sheet.dart';
+import 'package:fitness_project/common/widgets/start_a_challenge_sheet.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {

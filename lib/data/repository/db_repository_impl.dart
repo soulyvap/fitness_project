@@ -4,7 +4,10 @@ import 'package:fitness_project/data/db/models/challenge.dart';
 import 'package:fitness_project/data/db/models/exercise.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/group.dart';
+import 'package:fitness_project/data/db/models/score.dart';
+import 'package:fitness_project/data/db/models/submission.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/db/models/update_submission_req.dart';
@@ -172,5 +175,64 @@ class DBRepositoryImpl extends DBRepository {
   Future<Either> updateSubmission(
       UpdateSubmissionReq updateSubmissionReq) async {
     return sl<FirestoreFirebaseService>().updateSubmission(updateSubmissionReq);
+  }
+
+  @override
+  Future<Either> getScoresBySubmission(String submissionId) async {
+    try {
+      final scores = await sl<FirestoreFirebaseService>()
+          .getScoresBySubmission(submissionId);
+      return scores.fold((error) {
+        return Left(error);
+      }, (data) {
+        if (data == null) {
+          return const Left('Scores not found');
+        }
+        final List<Map<String, dynamic>> scores = data;
+        final scoreEntities =
+            scores.map((e) => ScoreModel.fromMap(e).toEntity()).toList();
+        return Right(scoreEntities);
+      });
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either> getSubmissionByChallengeAndUser(
+      GetSubmissionByChallengeAndUserReq
+          getSubmissionByChallengeAndUserReq) async {
+    final submission = await sl<FirestoreFirebaseService>()
+        .getSubmissionByChallengeAndUser(getSubmissionByChallengeAndUserReq);
+    return submission.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        if (data == null) {
+          return const Left('Submission not found');
+        }
+        final submissionEntity = SubmissionModel.fromMap(data).toEntity();
+        return Right(submissionEntity);
+      },
+    );
+  }
+
+  @override
+  Future<Either> getSubmissionById(String submissionId) async {
+    final submission =
+        await sl<FirestoreFirebaseService>().getSubmissionById(submissionId);
+    return submission.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        if (data == null) {
+          return const Left('Submission not found');
+        }
+        final submissionEntity = SubmissionModel.fromMap(data).toEntity();
+        return Right(submissionEntity);
+      },
+    );
   }
 }

@@ -5,6 +5,7 @@ class SubmissionModel {
   final String submissionId;
   final String challengeId;
   final String userId;
+  final String groupId;
   final String videoUrl;
   final String thumbnailUrl;
   final Timestamp createdAt;
@@ -16,6 +17,7 @@ class SubmissionModel {
     required this.videoUrl,
     required this.thumbnailUrl,
     required this.createdAt,
+    required this.groupId,
   });
 
   factory SubmissionModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class SubmissionModel {
       videoUrl: map['videoUrl'],
       thumbnailUrl: map['thumbnailUrl'],
       createdAt: map['createdAt'],
+      groupId: map['groupId'],
     );
   }
 
@@ -37,6 +40,7 @@ class SubmissionModel {
       'videoUrl': videoUrl,
       'thumbnailUrl': thumbnailUrl,
       'createdAt': createdAt,
+      'groupId': groupId,
     };
   }
 }
@@ -50,6 +54,7 @@ extension SubmissionXModel on SubmissionModel {
       videoUrl: videoUrl,
       thumbnailUrl: thumbnailUrl,
       createdAt: createdAt.toDate(),
+      groupId: groupId,
     );
   }
 }

@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/data/db/models/update_submission_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
+import 'package:fitness_project/domain/entities/db/challenge.dart';
+import 'package:fitness_project/domain/entities/db/score.dart';
+import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/update_submission.dart';
 import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
 import 'package:fitness_project/service_locator.dart';
@@ -38,8 +41,24 @@ class UpdatingUrls extends SubmissionUploadState {
   UpdatingUrls() : super(message: "Updating urls");
 }
 
-class Done extends SubmissionUploadState {
-  Done() : super(message: "Done");
+class SubmissionDone extends SubmissionUploadState {
+  SubmissionDone() : super(message: "Done");
+}
+
+class CalculatingResult extends SubmissionUploadState {
+  CalculatingResult() : super(message: "Calculating result");
+}
+
+class PlacementCalculated extends SubmissionUploadState {
+  final int placement;
+  PlacementCalculated({required this.placement})
+      : super(message: "Placement calculated!");
+}
+
+class PointsCalculated extends SubmissionUploadState {
+  final List<ScoreEntity> scores;
+  PointsCalculated({required this.scores})
+      : super(message: "Points calculated!");
 }
 
 class Error extends SubmissionUploadState {
@@ -49,10 +68,13 @@ class Error extends SubmissionUploadState {
 class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
   final String challengeId;
   final File videoFile;
+  final String groupId;
+  final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
   SubmissionUploadCubit({
     required this.challengeId,
     required this.videoFile,
+    required this.groupId,
   }) : super(Initial()) {
     uploadSubmission();
   }
@@ -69,7 +91,6 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
     emit(AddingSubmission());
     final submissionId = await _addSubmission();
     if (submissionId == null) {
-      emit(Error(message: "Failed to add submission"));
       return;
     }
     emit(UploadingVideo());
@@ -90,7 +111,7 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
       emit(Error(message: "Failed to update urls"));
       return;
     }
-    emit(Done());
+    emit(SubmissionDone());
   }
 
   Future<(File, File)?> _compressVideo(File videoFile) async {
@@ -146,18 +167,20 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
   }
 
   Future<String?> _addSubmission() async {
-    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
     if (currentUserId == null) {
-      throw Exception("User not found");
+      emit(Error(message: "User not found"));
+      return null;
     }
     final addSubmission = await sl<UpdateSubmissionUseCase>().call(
       params: UpdateSubmissionReq(
         challengeId: challengeId,
         userId: currentUserId,
+        groupId: groupId,
       ),
     );
     String? returnValue = "";
     addSubmission.fold((l) {
+      emit(Error(message: l));
       returnValue = null;
     }, (r) {
       returnValue = r;
@@ -181,5 +204,41 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
       returnValue = true;
     });
     return returnValue;
+  }
+
+  Future<void> _calculateResult() async {
+    if (currentUserId == null) {
+      emit(Error(message: "User not found"));
+      return;
+    }
+    final challenge =
+        await sl<GetChallengeByIdUseCase>().call(params: challengeId);
+
+    challenge.fold(
+      (error) {
+        emit(Error(message: error));
+      },
+      (data) {
+        if (data == null) {
+          emit(Error(message: "Challenge not found"));
+          return;
+        }
+        final challengeEntity = data as ChallengeEntity;
+        final isAuthor = challengeEntity.userId == currentUserId;
+        if (!isAuthor) {
+          _calculatePlacement(challengeEntity);
+        }
+      },
+    );
+  }
+
+  Future<int?> _calculatePlacement(ChallengeEntity challenge) async {
+    if (currentUserId == null) {
+      emit(Error(message: "User not found"));
+      return null;
+    }
+    final placement = challenge.completedBy.indexOf(currentUserId!) + 1;
+    emit(PlacementCalculated(placement: placement));
+    return null;
   }
 }

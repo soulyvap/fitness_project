@@ -12,7 +12,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       await FirebaseAuth.instance.signOut();
       return const Right('Logged out');
     } catch (e) {
-      return const Left('Please try again');
+      return Left('Failed to logout: $e');
     }
   }
 }

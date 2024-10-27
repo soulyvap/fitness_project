@@ -4,6 +4,7 @@ class UpdateSubmissionReq {
   final String? submissionId;
   final String? challengeId;
   final String? userId;
+  final String? groupId;
   final String? videoUrl;
   final String? thumbnailUrl;
   final Timestamp? createdAt;
@@ -12,6 +13,7 @@ class UpdateSubmissionReq {
     this.submissionId,
     this.challengeId,
     this.userId,
+    this.groupId,
     this.videoUrl,
     this.thumbnailUrl,
     this.createdAt,
@@ -22,6 +24,7 @@ class UpdateSubmissionReq {
       'submissionId': submissionId,
       'challengeId': challengeId,
       'userId': userId,
+      'groupId': groupId,
       'videoUrl': videoUrl,
       'thumbnailUrl': thumbnailUrl,
       'createdAt': createdAt,

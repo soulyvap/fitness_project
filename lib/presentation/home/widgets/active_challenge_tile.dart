@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/int_extension.dart';
 import 'package:fitness_project/common/widgets/group_tile_small.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
@@ -55,6 +56,12 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    final isCompleted = currentUserId != null &&
+        widget.challenge.completedBy.contains(currentUserId);
+    final completedByWithoutAuthor = widget.challenge.completedBy
+        .where((id) => id != widget.challenge.userId)
+        .toList();
     return InkWell(
       onTap: widget.onTap,
       child: Column(
@@ -82,51 +89,83 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
                                 BlendMode.darken)),
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.hourglass_empty_rounded,
-                                  size: 14, color: Colors.white),
-                              Text(
-                                _secondsLeft.secondsToTimeString(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (isCompleted)
+                            const Icon(Icons.check_circle,
+                                color: Colors.greenAccent, size: 20),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            color: Theme.of(context).colorScheme.secondary,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 4),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (_secondsLeft > 0)
+                                    const Icon(Icons.hourglass_empty_rounded,
+                                        size: 14, color: Colors.white),
+                                  Text(
+                                    _secondsLeft > 0
+                                        ? _secondsLeft.secondsToTimeString()
+                                        : "ended",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      Text(
-                        "${widget.challenge.reps}",
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      Column(
+                        children: [
+                          Text(
+                            "${widget.challenge.reps}",
+                            maxLines: 1,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            widget.exercise.name,
+                            maxLines: 2,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      Text(
-                        widget.exercise.name,
-                        maxLines: 2,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          const Icon(Icons.check_circle,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text("${completedByWithoutAuthor.length}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: Colors.white,
+                              )),
+                          const SizedBox(width: 8),
+                        ],
                       ),
                     ],
                   ),

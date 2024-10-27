@@ -9,6 +9,7 @@ class ChallengeEntity {
   final String userId;
   final DateTime createdAt;
   final DateTime endsAt;
+  final List<String> completedBy;
 
   ChallengeEntity({
     required this.challengeId,
@@ -21,6 +22,7 @@ class ChallengeEntity {
     required this.userId,
     required this.createdAt,
     required this.endsAt,
+    this.completedBy = const [],
   });
 
   ChallengeEntity copyWith({
@@ -34,6 +36,7 @@ class ChallengeEntity {
     String? userId,
     DateTime? createdAt,
     DateTime? endsAt,
+    List<String>? completedBy,
   }) {
     return ChallengeEntity(
       challengeId: challengeId ?? this.challengeId,
@@ -46,6 +49,7 @@ class ChallengeEntity {
       userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       endsAt: endsAt ?? this.endsAt,
+      completedBy: completedBy ?? this.completedBy,
     );
   }
 }

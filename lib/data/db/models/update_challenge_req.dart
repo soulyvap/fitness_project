@@ -9,6 +9,7 @@ class UpdateChallengeReq {
   final String? userId;
   final DateTime? createdAt;
   final DateTime? endsAt;
+  final List<String>? completedBy;
 
   UpdateChallengeReq({
     this.challengeId,
@@ -21,6 +22,7 @@ class UpdateChallengeReq {
     this.userId,
     this.createdAt,
     this.endsAt,
+    this.completedBy,
   });
 
   Map<String, dynamic> toMap() {
@@ -35,6 +37,7 @@ class UpdateChallengeReq {
       'userId': userId,
       'createdAt': createdAt,
       'endsAt': endsAt,
+      'completedBy': completedBy,
     };
 
     dataMap.removeWhere((key, value) => value == null);

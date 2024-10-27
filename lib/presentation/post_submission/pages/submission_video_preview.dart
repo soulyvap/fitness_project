@@ -4,6 +4,7 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/challenge_short_info.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/upload_modal_content.dart';
 import 'package:flutter/material.dart';
@@ -70,132 +71,160 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
   void dispose() {
     // _controller.removeListener(cropListener);
     _controller.dispose();
+    widget.videoFile.delete();
     super.dispose();
+  }
+
+  void _handlePop() {
+    _controller.dispose();
+    widget.videoFile.delete();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Camera(
+                  challenge: widget.challenge,
+                  exercise: widget.exercise,
+                  group: widget.group,
+                  author: widget.author,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black,
-      child: Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          width: double.infinity,
-          child: Column(
-            children: [
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  _controller.value.isInitialized
-                      ? Column(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        _handlePop();
+      },
+      child: Material(
+        color: Colors.black,
+        child: Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            width: double.infinity,
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    _controller.value.isInitialized
+                        ? Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (_controller.value.isPlaying) {
+                                      _controller.pause();
+                                    } else {
+                                      _controller.play();
+                                    }
+                                  });
+                                },
+                                child: AspectRatio(
+                                  aspectRatio: 9 / 16,
+                                  child: VideoPlayer(_controller),
+                                ),
+                              ),
+                              VideoProgressIndicator(
+                                _controller,
+                                allowScrubbing: true,
+                                padding: const EdgeInsets.all(0),
+                              )
+                            ],
+                          )
+                        : const AspectRatio(
+                            aspectRatio: 9 / 16,
+                            child: Center(child: CircularProgressIndicator())),
+                    AspectRatio(
+                      aspectRatio: 9 / 16,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
                           children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (_controller.value.isPlaying) {
-                                    _controller.pause();
-                                  } else {
-                                    _controller.play();
-                                  }
-                                });
-                              },
-                              child: AspectRatio(
-                                aspectRatio: 9 / 16,
-                                child: VideoPlayer(_controller),
+                            Container(
+                              color: Colors.black.withOpacity(0.3),
+                              padding: const EdgeInsets.only(
+                                  right: 8, bottom: 8, top: 8),
+                              child: Row(
+                                children: [
+                                  BackButton(
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      _handlePop();
+                                    },
+                                  ),
+                                  const Text("Submit this attempt?",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  const Spacer(),
+                                  ElevatedButton.icon(
+                                      icon: const Icon(Icons.upload),
+                                      onPressed: () {
+                                        _controller.dispose();
+                                        showModalBottomSheet(
+                                            enableDrag: false,
+                                            isDismissible: false,
+                                            context: context,
+                                            builder: (context) {
+                                              return PopScope(
+                                                canPop: false,
+                                                child: UploadModalContent(
+                                                  challengeId: widget
+                                                      .challenge.challengeId,
+                                                  videoFile: widget.videoFile,
+                                                  groupId: widget.group.groupId,
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      label: const Text("Submit"))
+                                ],
                               ),
                             ),
-                            VideoProgressIndicator(
-                              _controller,
-                              allowScrubbing: true,
-                              padding: const EdgeInsets.all(0),
+                            const Spacer(),
+                            Container(
+                              color: Colors.black.withOpacity(0.3),
+                              padding: const EdgeInsets.all(16),
+                              child: ChallengeShortInfo(
+                                challenge: widget.challenge,
+                                exercise: widget.exercise,
+                                group: widget.group,
+                                author: widget.author,
+                              ),
                             )
                           ],
-                        )
-                      : const Center(child: CircularProgressIndicator()),
-                  AspectRatio(
-                    aspectRatio: 9 / 16,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Container(
-                            color: Colors.black.withOpacity(0.3),
-                            padding: const EdgeInsets.only(
-                                right: 8, bottom: 8, top: 8),
-                            child: Row(
-                              children: [
-                                const BackButton(
-                                  color: Colors.white,
-                                ),
-                                const Text("Submit this attempt?",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                                const Spacer(),
-                                ElevatedButton.icon(
-                                    icon: const Icon(Icons.upload),
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          enableDrag: false,
-                                          isDismissible: false,
-                                          context: context,
-                                          builder: (context) {
-                                            return PopScope(
-                                              canPop: false,
-                                              child: UploadModalContent(
-                                                challengeId: widget
-                                                    .challenge.challengeId,
-                                                videoFile: widget.videoFile,
-                                              ),
-                                            );
-                                          });
-                                    },
-                                    label: const Text("Submit"))
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          Container(
-                            color: Colors.black.withOpacity(0.3),
-                            padding: const EdgeInsets.all(16),
-                            child: ChallengeShortInfo(
-                              challenge: widget.challenge,
-                              exercise: widget.exercise,
-                              group: widget.group,
-                              author: widget.author,
-                            ),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              // RangeSlider(
-              //   values: _rangeValues,
-              //   onChanged: (values) {
-              //     setState(() {
-              //       _rangeValues = values;
-              //     });
-              //     _controller.seekTo(sliderValueToDuration(values.start));
-              //   },
-              //   onChangeStart: (values) {
-              //     _controller.pause();
-              //   },
-              //   onChangeEnd: (values) {
-              //     final startDuration = sliderValueToDuration(values.start);
-              //     final endDuration = sliderValueToDuration(values.end);
-              //     setState(() {
-              //       customStart = startDuration;
-              //       customEnd = endDuration;
-              //     });
-              //     _controller.play();
-              //   },
-              //   min: 0,
-              //   max: 1000,
-              // ),
-            ],
-          )),
+                  ],
+                ),
+                // RangeSlider(
+                //   values: _rangeValues,
+                //   onChanged: (values) {
+                //     setState(() {
+                //       _rangeValues = values;
+                //     });
+                //     _controller.seekTo(sliderValueToDuration(values.start));
+                //   },
+                //   onChangeStart: (values) {
+                //     _controller.pause();
+                //   },
+                //   onChangeEnd: (values) {
+                //     final startDuration = sliderValueToDuration(values.start);
+                //     final endDuration = sliderValueToDuration(values.end);
+                //     setState(() {
+                //       customStart = startDuration;
+                //       customEnd = endDuration;
+                //     });
+                //     _controller.play();
+                //   },
+                //   min: 0,
+                //   max: 1000,
+                // ),
+              ],
+            )),
+      ),
     );
   }
 }

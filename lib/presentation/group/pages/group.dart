@@ -1,6 +1,5 @@
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/presentation/group/pages/group_info.dart';
-import 'package:fitness_project/presentation/group/widgets/group_header.dart';
 import 'package:flutter/material.dart';
 
 class GroupPage extends StatefulWidget {

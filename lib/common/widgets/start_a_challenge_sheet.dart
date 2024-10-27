@@ -145,15 +145,15 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                   cubitContext.watch<StartAChallengeCubit>().state;
               final newChallengeFormState =
                   cubitContext.watch<NewChallengeFormCubit>().state;
-              if (startAChallengeState is Loading) {
+              if (startAChallengeState is StartAChallengeLoading) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (startAChallengeState is Error) {
+              } else if (startAChallengeState is StartAChallengeError) {
                 return Center(
                   child: Text(startAChallengeState.errorMessage),
                 );
-              } else if (startAChallengeState is Loaded) {
+              } else if (startAChallengeState is StartAChallengeLoaded) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
@@ -431,6 +431,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                   newChallengeFormState.minutesToComplete,
                               extraInstructions:
                                   newChallengeFormState.instructions,
+                              completedBy: [],
                             );
                             await onSubmit(req);
                           },

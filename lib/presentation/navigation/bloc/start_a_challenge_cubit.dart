@@ -8,22 +8,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class StartAChallengeState {}
 
-class Loading extends StartAChallengeState {}
+class StartAChallengeLoading extends StartAChallengeState {}
 
-class Loaded extends StartAChallengeState {
+class StartAChallengeLoaded extends StartAChallengeState {
   final List<GroupEntity> groups;
   final List<ExerciseEntity> exercises;
-  Loaded(this.groups, this.exercises);
+  StartAChallengeLoaded(this.groups, this.exercises);
 }
 
-class Error extends StartAChallengeState {
+class StartAChallengeError extends StartAChallengeState {
   final String errorMessage;
-  Error(this.errorMessage);
+  StartAChallengeError(this.errorMessage);
 }
 
 class StartAChallengeCubit extends Cubit<StartAChallengeState> {
   final String currentUserId;
-  StartAChallengeCubit(this.currentUserId) : super(Loading()) {
+  StartAChallengeCubit(this.currentUserId) : super(StartAChallengeLoading()) {
     _loadData();
   }
 
@@ -33,12 +33,12 @@ class StartAChallengeCubit extends Cubit<StartAChallengeState> {
       final exercises = await _fetchExercises();
       if (groups != null && exercises != null) {
         Future.delayed(const Duration(seconds: 1));
-        emit(Loaded(groups, exercises));
+        emit(StartAChallengeLoaded(groups, exercises));
       } else {
-        emit(Error('Failed to load data'));
+        emit(StartAChallengeError('Failed to load data'));
       }
     } catch (e) {
-      emit(Error(e.toString()));
+      emit(StartAChallengeError(e.toString()));
     }
   }
 
@@ -47,7 +47,7 @@ class StartAChallengeCubit extends Cubit<StartAChallengeState> {
         .call(params: GetGroupsByUserReq(userId: currentUserId));
     List<GroupEntity>? returnValue;
     groups.fold((error) {
-      emit(Error('Failed to load groups'));
+      emit(StartAChallengeError('Failed to load groups'));
       returnValue = null;
     }, (data) {
       returnValue = data;
@@ -59,7 +59,7 @@ class StartAChallengeCubit extends Cubit<StartAChallengeState> {
     final exercises = await sl<GetAllExercisesUseCase>().call();
     List<ExerciseEntity>? returnValue;
     exercises.fold((error) {
-      emit(Error('Failed to load exercises'));
+      emit(StartAChallengeError('Failed to load exercises'));
       returnValue = null;
     }, (data) {
       returnValue = data;

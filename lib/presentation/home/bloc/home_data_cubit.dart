@@ -42,8 +42,11 @@ class HomeDataCubit extends Cubit<HomeDataState> {
         emit(HomeDataError('Failed to load groups'));
         return;
       }
-      final myChallenges =
-          await _fetchMyChallenges(mygroups.map((e) => e.groupId).toList());
+      final groupsWhereIamMember = mygroups
+          .where((element) => element.members.contains(currentUser.userId))
+          .toList();
+      final myChallenges = await _fetchMyChallenges(
+          groupsWhereIamMember.map((e) => e.groupId).toList());
       if (myChallenges == null) {
         emit(HomeDataError('Failed to load challenges'));
         return;
@@ -82,7 +85,7 @@ class HomeDataCubit extends Cubit<HomeDataState> {
       myChallenges = null;
     }, (data) {
       myChallenges = data;
-      debugPrint('Challenges: $myChallenges');
+      debugPrint('Challenges: ${myChallenges!.first.challengeId}');
     });
     return myChallenges;
   }
