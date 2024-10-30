@@ -5,7 +5,6 @@ import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/home/widgets/challenge_list.dart';
 import 'package:fitness_project/presentation/home/widgets/submission_list.dart';
-import 'package:fitness_project/presentation/home/widgets/submission_tile.dart';
 import 'package:fitness_project/presentation/home/widgets/your_groups_list.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';

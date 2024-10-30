@@ -9,6 +9,9 @@ class SubmissionModel {
   final String videoUrl;
   final String thumbnailUrl;
   final Timestamp createdAt;
+  final List<String> likedBy;
+  final int commentCount;
+  final List<String> seenBy;
 
   SubmissionModel({
     required this.submissionId,
@@ -18,6 +21,9 @@ class SubmissionModel {
     required this.thumbnailUrl,
     required this.createdAt,
     required this.groupId,
+    required this.likedBy,
+    required this.commentCount,
+    required this.seenBy,
   });
 
   factory SubmissionModel.fromMap(Map<String, dynamic> map) {
@@ -29,6 +35,13 @@ class SubmissionModel {
       thumbnailUrl: map['thumbnailUrl'],
       createdAt: map['createdAt'],
       groupId: map['groupId'],
+      likedBy: map['likedBy'] == null
+          ? []
+          : (map['likedBy'] as List).map((e) => e.toString()).toList(),
+      commentCount: map['commentCount'] ?? 0,
+      seenBy: map['seenBy'] == null
+          ? []
+          : (map['seenBy'] as List).map((e) => e.toString()).toList(),
     );
   }
 
@@ -41,6 +54,9 @@ class SubmissionModel {
       'thumbnailUrl': thumbnailUrl,
       'createdAt': createdAt,
       'groupId': groupId,
+      'likedBy': likedBy,
+      'commentCount': commentCount,
+      'seenBy': seenBy,
     };
   }
 }
@@ -55,6 +71,9 @@ extension SubmissionXModel on SubmissionModel {
       thumbnailUrl: thumbnailUrl,
       createdAt: createdAt.toDate(),
       groupId: groupId,
+      likedBy: likedBy,
+      commentCount: commentCount,
+      seenBy: seenBy,
     );
   }
 }

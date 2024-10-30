@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
-import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/presentation/group/bloc/group_cubit.dart';
 import 'package:fitness_project/presentation/group/pages/group_info.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
@@ -26,13 +23,17 @@ class _GroupPageState extends State<GroupPage> with TickerProviderStateMixin {
   }
 
   void onBack(BuildContext context) {
-    final previousPage = context.read<PreviousPageCubit>().state;
-    if (previousPage == null) {
+    final previousPage = context.read<PreviousPageCubit>().state.previousPage;
+    final fallbackPage = context.read<PreviousPageCubit>().state.fallbackPage;
+
+    if (previousPage == null || fallbackPage is GroupPage) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const Navigation()));
+      return;
     } else {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => previousPage));
+      return;
     }
   }
 

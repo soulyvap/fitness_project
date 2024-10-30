@@ -3,6 +3,7 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/presentation/home/widgets/submission_tile.dart';
+import 'package:fitness_project/presentation/submissions/pages/video_scroller.dart';
 import 'package:flutter/material.dart';
 
 class SubmissionList extends StatelessWidget {
@@ -50,7 +51,8 @@ class SubmissionList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: submissions.length,
               itemBuilder: (context, index) {
-                final submission = orderedSubmissions(submissions)[index];
+                final ordered = orderedSubmissions(submissions);
+                final submission = ordered[index];
                 final challenge = challenges.firstWhere(
                     (element) => element.challengeId == submission.challengeId);
                 final exercise = exercises.firstWhere(
@@ -63,7 +65,18 @@ class SubmissionList extends StatelessWidget {
                       submission: submission,
                       challenge: challenge,
                       exercise: exercise,
-                      group: group),
+                      group: group,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoScroller(
+                              submissions: ordered,
+                              startIndex: index,
+                            ),
+                          ),
+                        );
+                      }),
                 );
               },
             ),

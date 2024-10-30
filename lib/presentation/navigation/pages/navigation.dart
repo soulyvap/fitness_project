@@ -24,6 +24,7 @@ class _NavigationState extends State<Navigation> {
   void initState() {
     context.read<UserCubit>().loadUser();
     context.read<PreviousPageCubit>().setPreviousPage(widget);
+    context.read<PreviousPageCubit>().setFallbackPage(widget);
     super.initState();
   }
 

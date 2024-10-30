@@ -2,14 +2,11 @@ import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/domain/entities/db/group_member.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
-import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/usecases/db/get_all_exercises.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_submissions_by_groups.dart';
-import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

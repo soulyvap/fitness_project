@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
+import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
@@ -32,4 +33,5 @@ abstract class DBRepository {
   Future<Either> updateGroupMember(UpdateGroupMemberReq updateGroupMemberReq);
   Future<Either> updateSubmission(UpdateSubmissionReq updateSubmissionReq);
   Future<Either> updateUser(UpdateUserReq updateUserReq);
+  Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
 }

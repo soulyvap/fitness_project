@@ -20,8 +20,16 @@ class _MyPostState extends State<MyPost> {
         VideoPlayerController.networkUrl(Uri.parse(widget.submission.videoUrl))
           ..initialize().then((_) {
             setState(() {});
+            _controller.setLooping(true);
+            _controller.play();
           });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

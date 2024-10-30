@@ -1,9 +1,7 @@
 import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
 import 'package:fitness_project/domain/usecases/db/get_scores_by_challenge_and_user.dart';
-import 'package:fitness_project/domain/usecases/db/get_scores_by_submission.dart';
 import 'package:fitness_project/service_locator.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class ScoreSummaryState {}

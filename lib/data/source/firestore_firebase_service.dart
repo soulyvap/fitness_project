@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/string_list_extension.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
 import 'package:fitness_project/data/db/models/add_score_req.dart';
+import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
 import 'package:fitness_project/data/db/models/challenge.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
@@ -41,6 +42,7 @@ abstract class FirestoreFirebaseService {
   Future<Either> updateUser(UpdateUserReq updateUserReq);
   Future<Either> getSubmissionsByChallenge(String challengeId);
   Future<Either> getSubmissionsByGroups(List<String> groupIds);
+  Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -421,6 +423,9 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
 
     if (isAdd) {
       dataMap['createdAt'] = Timestamp.now();
+      dataMap['seenBy'] = [];
+      dataMap['likedBy'] = [];
+      dataMap['commentCount'] = 0;
       final challengeId = updateSubmissionReq.challengeId;
       try {
         final userId = _currentUserId;
@@ -504,9 +509,17 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
   }
 
   @override
-  Future<Either> getSubmissionsByChallenge(String challengeId) {
-    // TODO: implement getSubmissionsByChallenge
-    throw UnimplementedError();
+  Future<Either> getSubmissionsByChallenge(String challengeId) async {
+    try {
+      final submissions = await _firestore
+          .collection('submissions')
+          .where('challengeId', isEqualTo: challengeId)
+          .get()
+          .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(submissions);
+    } catch (e) {
+      return Left('Failed to get submissions by challenge: ${e.toString()}');
+    }
   }
 
   @override
@@ -525,6 +538,22 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return Right(challenges);
     } catch (e) {
       return Left('Failed to get challenges by groups: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> addSubmissionSeen(
+      AddSubmissionSeenReq addSubmissionSeenReq) async {
+    try {
+      await _firestore
+          .collection('submissions')
+          .doc(addSubmissionSeenReq.submissionId)
+          .update({
+        'seenBy': FieldValue.arrayUnion([addSubmissionSeenReq.userId])
+      });
+      return const Right('Seenby added');
+    } catch (e) {
+      return Left('Failed to add submission seen: ${e.toString()}');
     }
   }
 }

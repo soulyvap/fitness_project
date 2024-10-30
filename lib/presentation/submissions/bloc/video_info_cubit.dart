@@ -7,9 +7,25 @@ import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_exercise_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_user.dart';
-import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+class VideoInfoData {
+  final SubmissionEntity submission;
+  final ChallengeEntity challenge;
+  final GroupEntity group;
+  final ExerciseEntity exercise;
+  final UserEntity challenger;
+  final UserEntity doer;
+  const VideoInfoData({
+    required this.submission,
+    required this.challenge,
+    required this.challenger,
+    required this.group,
+    required this.exercise,
+    required this.doer,
+  });
+}
 
 abstract class VideoInfoState {}
 
@@ -18,16 +34,11 @@ class VideoInfoInitial extends VideoInfoState {}
 class VideoInfoLoading extends VideoInfoState {}
 
 class VideoInfoLoaded extends VideoInfoState {
-  final ChallengeEntity challenge;
-  final GroupEntity group;
-  final UserEntity challenger;
-  final ExerciseEntity exercise;
+  final VideoInfoData data;
 
-  VideoInfoLoaded(
-      {required this.challenge,
-      required this.group,
-      required this.challenger,
-      required this.exercise});
+  VideoInfoLoaded({
+    required this.data,
+  });
 }
 
 class VideoInfoError extends VideoInfoState {
@@ -38,8 +49,12 @@ class VideoInfoError extends VideoInfoState {
 
 class VideoInfoCubit extends Cubit<VideoInfoState> {
   final SubmissionEntity submission;
-  VideoInfoCubit({required this.submission}) : super(VideoInfoInitial()) {
-    loadData();
+  final VideoInfoData? data;
+  VideoInfoCubit({required this.submission, this.data})
+      : super(data == null ? VideoInfoInitial() : VideoInfoLoaded(data: data)) {
+    if (data == null) {
+      loadData();
+    }
   }
 
   Future<void> loadData() async {
@@ -59,10 +74,17 @@ class VideoInfoCubit extends Cubit<VideoInfoState> {
         return;
       }
 
-      final author = await _fetchAuthor(challenge.userId);
+      final challenger = await _fetchUser(challenge.userId);
 
-      if (author == null) {
+      if (challenger == null) {
         emit(VideoInfoError('Failed to load author'));
+        return;
+      }
+
+      final doer = await _fetchUser(submission.userId);
+
+      if (doer == null) {
+        emit(VideoInfoError('Failed to load doer'));
         return;
       }
 
@@ -74,10 +96,15 @@ class VideoInfoCubit extends Cubit<VideoInfoState> {
       }
 
       emit(VideoInfoLoaded(
+        data: VideoInfoData(
+          submission: submission,
           challenge: challenge,
           group: group,
-          challenger: author,
-          exercise: exercise));
+          challenger: challenger,
+          exercise: exercise,
+          doer: doer,
+        ),
+      ));
     } catch (e) {
       emit(VideoInfoError(e.toString()));
     }
@@ -114,9 +141,9 @@ class VideoInfoCubit extends Cubit<VideoInfoState> {
     return groupEntity;
   }
 
-  Future<UserEntity?> _fetchAuthor(String authorId) async {
-    final author = await sl<GetUserUseCase>().call(params: authorId);
-    UserEntity? authorEntity;
+  Future<UserEntity?> _fetchUser(String userId) async {
+    final author = await sl<GetUserUseCase>().call(params: userId);
+    UserEntity? userEntity;
     author.fold((error) {
       emit(VideoInfoError(error));
     }, (data) {
@@ -124,9 +151,9 @@ class VideoInfoCubit extends Cubit<VideoInfoState> {
         emit(VideoInfoError('Author not found'));
         return;
       }
-      authorEntity = data;
+      userEntity = data;
     });
-    return authorEntity;
+    return userEntity;
   }
 
   Future<ExerciseEntity?> _fetchExercise(String exerciseId) async {

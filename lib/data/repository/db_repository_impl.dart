@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
+import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
 import 'package:fitness_project/data/db/models/challenge.dart';
 import 'package:fitness_project/data/db/models/exercise.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
@@ -17,7 +18,6 @@ import 'package:fitness_project/data/db/models/user.dart';
 import 'package:fitness_project/data/source/firestore_firebase_service.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/service_locator.dart';
-import 'package:flutter/material.dart';
 
 class DBRepositoryImpl extends DBRepository {
   @override
@@ -255,9 +255,22 @@ class DBRepositoryImpl extends DBRepository {
   }
 
   @override
-  Future<Either> getSubmissionsByChallenge(String challengeId) {
-    // TODO: implement getSubmissionsByChallenge
-    throw UnimplementedError();
+  Future<Either> getSubmissionsByChallenge(String challengeId) async {
+    final submissions = await sl<FirestoreFirebaseService>()
+        .getSubmissionsByChallenge(challengeId);
+    return submissions.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Submissions not found');
+      }
+      final List<Map<String, dynamic>> submissions = data;
+      final submissionEntities = submissions
+          .map((e) => SubmissionModel.fromMap(e).toEntity())
+          .toList();
+      submissionEntities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return Right(submissionEntities);
+    });
   }
 
   @override
@@ -277,5 +290,11 @@ class DBRepositoryImpl extends DBRepository {
       submissionEntities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return Right(submissionEntities);
     });
+  }
+
+  @override
+  Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq) {
+    return sl<FirestoreFirebaseService>()
+        .addSubmissionSeen(addSubmissionSeenReq);
   }
 }

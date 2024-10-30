@@ -30,6 +30,9 @@ class SubmissionTile extends StatelessWidget {
           UserCubit(userId: submission.userId, loadOnInit: true),
       child: Builder(builder: (context) {
         final userState = context.watch<UserCubit>().state;
+        final currentUserId =
+            (userState is UserLoaded) ? userState.user.userId : "";
+        final seenByCurrentUser = submission.seenBy.contains(currentUserId);
         return InkWell(
           onTap: onTap,
           child: Column(
@@ -51,26 +54,55 @@ class SubmissionTile extends StatelessWidget {
                             image: NetworkImage(submission.thumbnailUrl),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.3),
+                                Colors.black
+                                    .withOpacity(seenByCurrentUser ? 0.7 : 0.2),
                                 BlendMode.darken)),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(submission.createdAt.toTimeAgo(),
-                              maxLines: 2,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
-                                    )
-                                  ])),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(submission.createdAt.toTimeAgo(),
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black,
+                                          offset: Offset(1, 1),
+                                          blurRadius: 2,
+                                        )
+                                      ])),
+                              if (seenByCurrentUser)
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text("seen",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black,
+                                                offset: Offset(1, 1),
+                                                blurRadius: 2,
+                                              )
+                                            ])),
+                                  ],
+                                ),
+                            ],
+                          ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

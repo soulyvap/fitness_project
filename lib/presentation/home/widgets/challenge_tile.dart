@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/int_extension.dart';
@@ -65,6 +64,7 @@ class _ChallengeTileState extends State<ChallengeTile> {
     final completedByWithoutAuthor = widget.challenge.completedBy
         .where((id) => id != widget.challenge.userId)
         .toList();
+    final hasEnded = _secondsLeft <= 0;
     return InkWell(
       onTap: widget.onTap,
       child: Column(
@@ -89,7 +89,8 @@ class _ChallengeTileState extends State<ChallengeTile> {
                             image: NetworkImage(widget.exercise.imageUrl!),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.4),
+                                Colors.black
+                                    .withOpacity(isCompleted ? 0.7 : 0.3),
                                 BlendMode.darken)),
                   ),
                   child: Column(
@@ -101,6 +102,7 @@ class _ChallengeTileState extends State<ChallengeTile> {
                           if (isCompleted)
                             const Icon(Icons.check_circle,
                                 color: Colors.greenAccent, size: 20),
+                          if (isCompleted || hasEnded) const Spacer(),
                           Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -112,11 +114,11 @@ class _ChallengeTileState extends State<ChallengeTile> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  if (_secondsLeft > 0)
+                                  if (!hasEnded)
                                     const Icon(Icons.hourglass_empty_rounded,
                                         size: 14, color: Colors.white),
                                   Text(
-                                    _secondsLeft > 0
+                                    !hasEnded
                                         ? _secondsLeft.secondsToTimeString()
                                         : "Ended",
                                     style: const TextStyle(

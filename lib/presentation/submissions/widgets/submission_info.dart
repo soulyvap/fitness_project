@@ -1,32 +1,24 @@
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
 import 'package:fitness_project/common/widgets/challenged_by.dart';
 import 'package:fitness_project/common/widgets/group_tile_small.dart';
-import 'package:fitness_project/domain/entities/db/challenge.dart';
-import 'package:fitness_project/domain/entities/db/exercise.dart';
-import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/domain/entities/db/submission.dart';
-import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/presentation/submissions/bloc/video_info_cubit.dart';
 import 'package:flutter/material.dart';
 
 class SubmissionInfo extends StatelessWidget {
-  final SubmissionEntity submission;
-  final ChallengeEntity challenge;
-  final GroupEntity group;
-  final ExerciseEntity exercise;
-  final UserEntity challenger;
-  final UserEntity doer;
+  final VideoInfoData data;
   const SubmissionInfo({
     super.key,
-    required this.submission,
-    required this.challenge,
-    required this.challenger,
-    required this.group,
-    required this.exercise,
-    required this.doer,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
+    final submission = data.submission;
+    final challenge = data.challenge;
+    final group = data.group;
+    final exercise = data.exercise;
+    final challenger = data.challenger;
+    final doer = data.doer;
     return Material(
       color: Colors.transparent,
       child: SizedBox(

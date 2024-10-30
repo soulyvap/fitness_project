@@ -1,14 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
-import 'package:fitness_project/common/extensions/int_extension.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
+import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
+import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/submissions/pages/my_post.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChallengeCard extends StatelessWidget {
@@ -132,16 +135,25 @@ class ChallengeCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              if (isCompleted)
+              if (completedBy.isNotEmpty)
                 OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<PreviousPageCubit>().setPreviousPage(
+                          ChallengeDetails(challengeId: challenge.challengeId));
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SubmissionLoader(
+                            challengeId: challenge.challengeId),
+                      ));
+                    },
                     child: Text("View all posts (${completedBy.length})")),
               const SizedBox(width: 8),
               isCompleted
                   ? ElevatedButton(
                       onPressed: () {
-                        debugPrint(challenge.challengeId);
                         if (submission != null) {
+                          context.read<PreviousPageCubit>().setPreviousPage(
+                              ChallengeDetails(
+                                  challengeId: challenge.challengeId));
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
                                 MyPost(submission: submission!),

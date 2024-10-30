@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
-import 'package:fitness_project/presentation/home/pages/home.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/presentation/post_submission/bloc/submission_upload_cubit.dart';
 import 'package:flutter/material.dart';

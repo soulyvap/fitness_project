@@ -30,7 +30,7 @@ class ChallengeDetails extends StatelessWidget {
   }
 
   void onBack(BuildContext context) {
-    final previousPage = context.read<PreviousPageCubit>().state;
+    final previousPage = context.read<PreviousPageCubit>().state.previousPage;
     if (previousPage == null) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const Navigation()));
