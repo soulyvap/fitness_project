@@ -4,8 +4,10 @@ import 'package:fitness_project/common/extensions/int_extension.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
+import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
+import 'package:fitness_project/presentation/submissions/pages/my_post.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,6 +16,7 @@ class ChallengeCard extends StatelessWidget {
   final GroupEntity group;
   final ExerciseEntity exercise;
   final UserEntity author;
+  final SubmissionEntity? submission;
 
   const ChallengeCard({
     super.key,
@@ -21,6 +24,7 @@ class ChallengeCard extends StatelessWidget {
     required this.author,
     required this.group,
     required this.exercise,
+    this.submission,
   });
 
   Future<bool> requestCameraPermission() async {
@@ -43,6 +47,7 @@ class ChallengeCard extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            dense: true,
             leading: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey,
@@ -61,7 +66,7 @@ class ChallengeCard extends StatelessWidget {
             subtitle: Text(group.name),
           ),
           AspectRatio(
-            aspectRatio: 1.2,
+            aspectRatio: 1.3,
             child: Stack(
               children: [
                 Container(
@@ -97,12 +102,14 @@ class ChallengeCard extends StatelessWidget {
             ),
           ),
           ListTile(
+            dense: true,
             title: Text("${challenge.reps} ${exercise.name}"),
             subtitle: Text("Deadline: ${challenge.endsAt.toDateTimeString()}"),
-            trailing: Column(
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.check_circle),
+                const Icon(Icons.check_circle, color: Colors.green, size: 20),
                 const SizedBox(width: 4),
                 Text("${completedByWithoutAuthor.length}",
                     style: const TextStyle(
@@ -132,7 +139,16 @@ class ChallengeCard extends StatelessWidget {
               const SizedBox(width: 8),
               isCompleted
                   ? ElevatedButton(
-                      onPressed: () {}, child: const Text("Watch my post"))
+                      onPressed: () {
+                        debugPrint(challenge.challengeId);
+                        if (submission != null) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                MyPost(submission: submission!),
+                          ));
+                        }
+                      },
+                      child: const Text("Watch my post"))
                   : ElevatedButton(
                       onPressed: () async {
                         await requestCameraPermission();

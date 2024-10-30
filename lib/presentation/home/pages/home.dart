@@ -1,9 +1,11 @@
-import 'package:fitness_project/domain/entities/db/challenge.dart';
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/usecases/auth/logout.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
-import 'package:fitness_project/presentation/home/widgets/active_challenges.dart';
+import 'package:fitness_project/presentation/home/widgets/challenge_list.dart';
+import 'package:fitness_project/presentation/home/widgets/submission_list.dart';
+import 'package:fitness_project/presentation/home/widgets/submission_tile.dart';
 import 'package:fitness_project/presentation/home/widgets/your_groups_list.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +28,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  final testChallenge = ChallengeEntity(
-    challengeId: "1",
-    exerciseId: "8lJ2FGzKhbtp1iVLxwQF",
-    groupId: "3JS3uMPoIx0xTfvIouKe",
-    title: "test",
-    reps: 30,
-    minutesToComplete: 30,
-    userId: "1",
-    createdAt: DateTime.now(),
-    endsAt: DateTime.now().add(const Duration(minutes: 30)),
-  );
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeDataCubit>(
@@ -55,52 +45,70 @@ class _HomePageState extends State<HomePage> {
         } else if (homeDataState is HomeDataLoaded) {
           final groups = homeDataState.myGroups;
           final exercises = homeDataState.allExercises;
-          final challenges = homeDataState.myChallenges;
+          final activeChallenges = homeDataState.activeChallenges;
+          final previousChallenges = homeDataState.previousChallenges;
+          final allChallenges = [...activeChallenges, ...previousChallenges];
+          final submissions = homeDataState.activeSubmissions;
           return Scaffold(
             appBar: AppBar(
               title: Text("Welcome back ${widget.currentUser.displayName}"),
             ),
             body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  ActiveChallenges(
-                      groups: groups,
-                      challenges: challenges,
-                      exercises: exercises),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  YourGroupsList(groups: groups),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  // ActiveChallengeTile(
-                  //     challenge: testChallenge,
-                  //     exercise: exercises.firstWhere(
-                  //         (e) => e.exerciseId == testChallenge.exerciseId),
-                  //     group: groups.firstWhere(
-                  //         (g) => g.groupId == testChallenge.groupId)),
-
-                  ElevatedButton(
-                      onPressed: () async {
-                        var result = await sl<LogoutUseCase>().call();
-                        result.fold(
-                            (error) =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(error.toString()),
-                                  ),
-                                ),
-                            (data) => Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginPage(),
-                                  ),
-                                ));
-                      },
-                      child: const Text("Logout")),
-                ],
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ChallengeList(
+                        title: "Active challenges (${activeChallenges.length})",
+                        groups: groups,
+                        challenges: activeChallenges,
+                        exercises: exercises),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    SubmissionList(
+                        submissions: submissions,
+                        groups: groups,
+                        challenges: allChallenges,
+                        exercises: exercises,
+                        title: "Recent submissions"),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ChallengeList(
+                        title: "Previous challenges",
+                        groups: groups,
+                        challenges: previousChallenges,
+                        exercises: exercises),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    YourGroupsList(groups: groups),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          var result = await sl<LogoutUseCase>().call();
+                          result.fold(
+                              (error) =>
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(error.toString()),
+                                    ),
+                                  ), (data) {
+                            context.read<UserCubit>().clear();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          });
+                        },
+                        child: const Text("Logout")),
+                  ],
+                ),
               ),
             ),
           );

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
-import 'package:fitness_project/common/bloc/user_bloc.dart';
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
@@ -14,6 +14,7 @@ import 'package:fitness_project/presentation/create_group/pages/details_form.dar
 import 'package:fitness_project/presentation/create_group/pages/members_form.dart';
 import 'package:fitness_project/presentation/create_group/pages/settings_form.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_autocomplete.dart';
+import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +49,9 @@ class _CreateGroupPageState extends State<CreateGroupPage>
     _tabController.animateTo(index);
   }
 
-  Future<void> onSubmit(
+  Future<String?> onSubmit(
       CreateGroupFormState state, XFile? image, String currentUserId) async {
+    String? returnGroupId;
     final editedEndTime =
         state.endTime?.add(const Duration(hours: 23, minutes: 59, seconds: 59));
     final updateGroupReq = UpdateGroupReq(
@@ -73,12 +75,14 @@ class _CreateGroupPageState extends State<CreateGroupPage>
             content: Text('Error creating group: ${error.toString()}')));
       },
       (groupId) async {
+        returnGroupId = groupId;
         await addUserToMembers(currentUserId, groupId);
         if (image != null) {
           await uploadGroupPicture(groupId, image);
         }
       },
     );
+    return returnGroupId;
   }
 
   Future<void> addUserToMembers(String userId, String groupId) async {
@@ -108,7 +112,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.read<UserBloc>().state;
+    final userState = context.read<UserCubit>().state;
     return MultiBlocProvider(
         providers: [
           BlocProvider<PicSelectionCubit>(
@@ -181,15 +185,18 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                       final authUser =
                           userState is UserLoaded ? userState.user : null;
                       if (authUser != null) {
-                        await onSubmit(stateCreateGroupForm, statePicSelection,
-                            authUser.userId);
+                        final groupId = await onSubmit(stateCreateGroupForm,
+                            statePicSelection, authUser.userId);
                         await Future.delayed(const Duration(seconds: 1));
-                        if (context.mounted) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(
+                        if (context.mounted && groupId != null) {
+                          Navigator.pushAndRemoveUntil(context,
+                              MaterialPageRoute(
                             builder: (context) {
-                              return const Navigation();
+                              return GroupPage(groupId: groupId);
                             },
-                          ));
+                          ), (route) {
+                            return route is Navigation;
+                          });
                         }
                       }
                     },

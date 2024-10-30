@@ -15,7 +15,6 @@ class UserAutocompleteCubit extends Cubit<List<UserEntity>?> {
         (l) => emit([]),
         (r) {
           emit(r);
-          debugPrint('Users: $r');
         },
       );
     } catch (e) {

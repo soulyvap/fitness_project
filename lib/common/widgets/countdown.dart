@@ -56,7 +56,9 @@ class _CountdownState extends State<Countdown> {
             if (_timeLeft > 0)
               const Icon(Icons.hourglass_empty, color: Colors.white),
             Text(
-              _timeLeft > 0 ? _timeLeft.secondsToTimeString() : 'ended',
+              _timeLeft > 0
+                  ? _timeLeft.secondsToTimeString()
+                  : 'Challenge ended',
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

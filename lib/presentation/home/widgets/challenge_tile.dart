@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/int_extension.dart';
@@ -8,13 +9,13 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:flutter/material.dart';
 
-class ActiveChallengeTile extends StatefulWidget {
+class ChallengeTile extends StatefulWidget {
   final ChallengeEntity challenge;
   final ExerciseEntity exercise;
   final GroupEntity group;
   final Function()? onTap;
 
-  const ActiveChallengeTile(
+  const ChallengeTile(
       {super.key,
       required this.challenge,
       required this.exercise,
@@ -22,12 +23,12 @@ class ActiveChallengeTile extends StatefulWidget {
       this.onTap});
 
   @override
-  State<ActiveChallengeTile> createState() => _ActiveChallengeTileState();
+  State<ChallengeTile> createState() => _ChallengeTileState();
 }
 
-class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
+class _ChallengeTileState extends State<ChallengeTile> {
   late int _secondsLeft;
-  late Timer _timer;
+  Timer? _timer;
 
   void _startCountdown(DateTime challengeEndTime) {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -43,14 +44,16 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
 
   @override
   void initState() {
-    _secondsLeft = widget.challenge.endsAt.difference(DateTime.now()).inSeconds;
-    _startCountdown(widget.challenge.endsAt);
+    final remainingSeconds =
+        widget.challenge.endsAt.difference(DateTime.now()).inSeconds;
+    _secondsLeft = remainingSeconds > 0 ? remainingSeconds : 0;
+    if (remainingSeconds > 0) _startCountdown(widget.challenge.endsAt);
     super.initState();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -65,6 +68,7 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
     return InkWell(
       onTap: widget.onTap,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
             clipBehavior: Clip.hardEdge,
@@ -114,7 +118,7 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
                                   Text(
                                     _secondsLeft > 0
                                         ? _secondsLeft.secondsToTimeString()
-                                        : "ended",
+                                        : "Ended",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
@@ -173,7 +177,10 @@ class _ActiveChallengeTileState extends State<ActiveChallengeTile> {
               ),
             ),
           ),
-          GroupTileSmall(group: widget.group),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: GroupTileSmall(group: widget.group),
+          ),
         ],
       ),
     );

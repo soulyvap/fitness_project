@@ -4,6 +4,7 @@ import 'package:fitness_project/data/db/models/challenge.dart';
 import 'package:fitness_project/data/db/models/exercise.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/group.dart';
 import 'package:fitness_project/data/db/models/score.dart';
@@ -53,7 +54,6 @@ class DBRepositoryImpl extends DBRepository {
         return const Left('Users not found');
       }
       final List<Map<String, dynamic>> users = data;
-      debugPrint('data: $users');
       final userEntities =
           users.map((e) => UserModel.fromMap(e).toEntity()).toList();
       return Right(userEntities);
@@ -80,7 +80,6 @@ class DBRepositoryImpl extends DBRepository {
 
       final groupEntities =
           groups.map((e) => GroupModel.fromMap(e).toEntity()).toList();
-      debugPrint('HELLO');
       return Right(groupEntities);
     });
   }
@@ -234,5 +233,49 @@ class DBRepositoryImpl extends DBRepository {
         return Right(submissionEntity);
       },
     );
+  }
+
+  @override
+  Future<Either> getScoresByChallengeAndUser(
+      GetScoresByChallengeAndUserReq getScoresByChallengeAndUserReq) async {
+    final scores = await sl<FirestoreFirebaseService>()
+        .getScoresByChallengeAndUser(getScoresByChallengeAndUserReq);
+
+    return scores.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Scores not found');
+      }
+      final List<Map<String, dynamic>> scores = data;
+      final scoreEntities =
+          scores.map((e) => ScoreModel.fromMap(e).toEntity()).toList();
+      return Right(scoreEntities);
+    });
+  }
+
+  @override
+  Future<Either> getSubmissionsByChallenge(String challengeId) {
+    // TODO: implement getSubmissionsByChallenge
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> getSubmissionsByGroups(List<String> groupIds) async {
+    final submissions =
+        await sl<FirestoreFirebaseService>().getSubmissionsByGroups(groupIds);
+    return submissions.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Submissions not found');
+      }
+      final List<Map<String, dynamic>> submissions = data;
+      final submissionEntities = submissions
+          .map((e) => SubmissionModel.fromMap(e).toEntity())
+          .toList();
+      submissionEntities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return Right(submissionEntities);
+    });
   }
 }

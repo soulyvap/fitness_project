@@ -17,17 +17,22 @@ class ScoreSummary extends StatelessWidget {
       height: 300,
       child: Column(
         children: [
-          const Text("RESULTS 🤩",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const Divider(),
-          ...scores.map((e) =>
-              ScoreSummaryRow(title: e.type.description, points: e.points)),
+          const Text("Points Earned",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
+          ...scores.map((e) => ScoreSummaryRow(
+                title: e.type.description,
+                points: e.points,
+                leading: e.type.icon,
+              )),
           const Spacer(),
           const Divider(
             color: Colors.black,
             thickness: 1,
           ),
-          ScoreSummaryRow(title: "Total", points: total),
+          ScoreSummaryRow(title: "TOTAL", points: total),
         ],
       ),
     );

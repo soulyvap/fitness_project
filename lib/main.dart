@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:fitness_project/common/bloc/user_bloc.dart';
+import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/core/theme/app_theme.dart';
 import 'package:fitness_project/presentation/auth/pages/Login.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
@@ -22,8 +23,14 @@ void main() async {
     GoogleProvider(clientId: dotenv.env['GOOGLE_CLIENT_ID'] as String),
   ]);
   await initializeDependencies();
-  runApp(BlocProvider<UserBloc>(
-      create: (context) => UserBloc(), child: const MyApp()));
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<UserCubit>(
+      create: (context) => UserCubit(),
+    ),
+    BlocProvider<PreviousPageCubit>(
+      create: (context) => PreviousPageCubit(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,6 +39,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      context.read<UserCubit>().loadUser();
+    }
     return MaterialApp(
       title: 'Fitness Project',
       theme: appTheme(),

@@ -1,4 +1,6 @@
+import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
+import 'package:fitness_project/domain/usecases/db/get_scores_by_challenge_and_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_scores_by_submission.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/foundation.dart';
@@ -21,14 +23,14 @@ class ScoreSummaryError extends ScoreSummaryState {
 }
 
 class ScoreSummaryCubit extends Cubit<ScoreSummaryState> {
-  final String submissionId;
+  final String challengeId;
+  final String userId;
   final bool loadOnInit;
-  final bool includeChallengeCreation;
-  ScoreSummaryCubit(
-      {required this.submissionId,
-      this.loadOnInit = false,
-      this.includeChallengeCreation = false})
-      : super(ScoreSummaryInitial()) {
+  ScoreSummaryCubit({
+    required this.challengeId,
+    required this.userId,
+    this.loadOnInit = false,
+  }) : super(ScoreSummaryInitial()) {
     if (loadOnInit) {
       loadScores();
     }
@@ -37,23 +39,13 @@ class ScoreSummaryCubit extends Cubit<ScoreSummaryState> {
   void loadScores() async {
     emit(ScoreSummaryLoading());
     try {
-      final scores =
-          await sl<GetScoresBySubmissionUseCase>().call(params: submissionId);
+      final scores = await sl<GetScoresByChallengeAndUserUseCase>().call(
+          params: GetScoresByChallengeAndUserReq(
+              challengeId: challengeId, userId: userId));
       scores.fold(
         (l) => emit(ScoreSummaryError(l.toString())),
         (r) {
           var returnScores = r as List<ScoreEntity>;
-          if (includeChallengeCreation) {
-            final challengeCreationScore = ScoreEntity(
-                scoreId: '',
-                challengeId: '',
-                points: ScoreType.challengeCreation.value,
-                userId: '',
-                submissionId: '',
-                type: ScoreType.challengeCreation,
-                groupId: '');
-            returnScores = [challengeCreationScore, ...returnScores];
-          }
           emit(ScoreSummaryLoaded(returnScores));
         },
       );

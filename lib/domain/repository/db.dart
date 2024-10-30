@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/db/models/add_group_member_req.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
@@ -17,9 +18,13 @@ abstract class DBRepository {
   Future<Either> getGroupById(String groupId);
   Future<Either> getGroupsByUser(GetGroupsByUserReq getGroupsByUserReq);
   Future<Either> getScoresBySubmission(String submissionId);
+  Future<Either> getScoresByChallengeAndUser(
+      GetScoresByChallengeAndUserReq getScoresByChallengeAndUserReq);
   Future<Either> getSubmissionById(String submissionId);
   Future<Either> getSubmissionByChallengeAndUser(
       GetSubmissionByChallengeAndUserReq getSubmissionByChallengeAndUserReq);
+  Future<Either> getSubmissionsByChallenge(String challengeId);
+  Future<Either> getSubmissionsByGroups(List<String> groupIds);
   Future<Either> getUser(String? userId);
   Future<Either> getUsersByDisplayName(String query);
   Future<Either> updateChallenge(UpdateChallengeReq updateChallengeReq);

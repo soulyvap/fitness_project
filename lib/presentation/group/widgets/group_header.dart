@@ -9,15 +9,29 @@ class GroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
+        Card(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            image: group.imageUrl != null
-                ? DecorationImage(
-                    image: NetworkImage(group.imageUrl!),
-                    fit: BoxFit.cover,
+          ),
+          child: Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: group.imageUrl != null
+                  ? DecorationImage(
+                      image: NetworkImage(group.imageUrl!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child: group.imageUrl == null
+                ? const Center(
+                    child: Icon(
+                      Icons.group,
+                      size: 40,
+                      color: Colors.grey,
+                    ),
                   )
                 : null,
           ),

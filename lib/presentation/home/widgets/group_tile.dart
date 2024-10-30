@@ -19,10 +19,10 @@ class GroupTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Container(
-            alignment: Alignment.bottomLeft,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color:
+                  group.imageUrl == null ? Colors.black.withOpacity(0.2) : null,
               image: group.imageUrl != null
                   ? DecorationImage(
                       image: NetworkImage(group.imageUrl!),
@@ -30,21 +30,36 @@ class GroupTile extends StatelessWidget {
                     )
                   : null,
             ),
-            child: Text(
-              group.name,
-              maxLines: 2,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      offset: Offset(1, 1),
-                      blurRadius: 2,
-                    )
-                  ]),
-              overflow: TextOverflow.ellipsis,
+            child: Stack(
+              children: [
+                if (group.imageUrl == null)
+                  const Center(
+                    child: Icon(
+                      Icons.group,
+                      size: 40,
+                      color: Colors.grey,
+                    ),
+                  ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    group.name,
+                    maxLines: 2,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                          )
+                        ]),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

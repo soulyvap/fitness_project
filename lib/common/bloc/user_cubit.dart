@@ -3,11 +3,9 @@ import 'package:fitness_project/domain/usecases/db/get_user.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class UserEvent {}
-
-class LoadUser extends UserEvent {}
-
 abstract class UserState {}
+
+class UserInitial extends UserState {}
 
 class UserLoading extends UserState {}
 
@@ -23,16 +21,19 @@ class UserError extends UserState {
   UserError(this.errorMessage);
 }
 
-class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserLoading()) {
-    on<LoadUser>(_onUserLoaded);
-    add(LoadUser());
+class UserCubit extends Cubit<UserState> {
+  final String? userId;
+  final bool loadOnInit;
+  UserCubit({this.userId, this.loadOnInit = false}) : super(UserInitial()) {
+    if (loadOnInit) {
+      loadUser();
+    }
   }
 
-  Future<void> _onUserLoaded(LoadUser event, Emitter<UserState> emit) async {
+  Future<void> loadUser() async {
     emit(UserLoading());
     try {
-      final user = await sl<GetUserUseCase>().call(params: null);
+      final user = await sl<GetUserUseCase>().call(params: userId);
       user.fold((error) {
         emit(UserNotFound());
       }, (data) {
@@ -41,5 +42,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e) {
       emit(UserError(e.toString()));
     }
+  }
+
+  void clear() {
+    emit(UserInitial());
   }
 }

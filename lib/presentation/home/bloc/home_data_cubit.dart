@@ -2,11 +2,13 @@ import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
+import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/get_all_exercises.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart';
 import 'package:fitness_project/domain/usecases/db/get_groups_by_user.dart';
+import 'package:fitness_project/domain/usecases/db/get_submissions_by_groups.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,10 +19,13 @@ class HomeDataLoading extends HomeDataState {}
 
 class HomeDataLoaded extends HomeDataState {
   final List<GroupEntity> myGroups;
-  final List<ChallengeEntity> myChallenges;
+  final List<ChallengeEntity> activeChallenges;
+  final List<ChallengeEntity> previousChallenges;
   final List<ExerciseEntity> allExercises;
+  final List<SubmissionEntity> activeSubmissions;
 
-  HomeDataLoaded(this.myGroups, this.myChallenges, this.allExercises);
+  HomeDataLoaded(this.myGroups, this.activeChallenges, this.previousChallenges,
+      this.allExercises, this.activeSubmissions);
 }
 
 class HomeDataError extends HomeDataState {
@@ -32,14 +37,18 @@ class HomeDataError extends HomeDataState {
 class HomeDataCubit extends Cubit<HomeDataState> {
   final UserEntity currentUser;
   HomeDataCubit(this.currentUser) : super(HomeDataLoading()) {
-    _loadData();
+    loadData();
   }
 
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     try {
       final mygroups = await _fetchMyGroups();
       if (mygroups == null) {
         emit(HomeDataError('Failed to load groups'));
+        return;
+      }
+      if (mygroups.isEmpty) {
+        emit(HomeDataLoaded([], [], [], [], []));
         return;
       }
       final groupsWhereIamMember = mygroups
@@ -56,7 +65,24 @@ class HomeDataCubit extends Cubit<HomeDataState> {
         emit(HomeDataError('Failed to load exercises'));
         return;
       }
-      emit(HomeDataLoaded(mygroups, myChallenges, allExercises));
+
+      final activeSubmissions = await _fetchSubmissions(
+          groupsWhereIamMember.map((e) => e.groupId).toList());
+
+      if (activeSubmissions == null) {
+        emit(HomeDataError('Failed to load submissions'));
+        return;
+      }
+
+      final activeChallenges = myChallenges
+          .where((element) => element.endsAt.isAfter(DateTime.now()))
+          .toList();
+      final previousChallenges = myChallenges
+          .where((element) => element.endsAt.isBefore(DateTime.now()))
+          .toList();
+
+      emit(HomeDataLoaded(mygroups, activeChallenges, previousChallenges,
+          allExercises, activeSubmissions));
     } catch (e) {
       emit(HomeDataError(e.toString()));
     }
@@ -67,7 +93,7 @@ class HomeDataCubit extends Cubit<HomeDataState> {
         .call(params: GetGroupsByUserReq(userId: currentUser.userId));
     List<GroupEntity>? myGroups;
     groups.fold((error) {
-      emit(HomeDataError('Failed to load groups'));
+      emit(HomeDataError('Failed to load groups $error'));
       myGroups = null;
     }, (data) {
       myGroups = data;
@@ -77,15 +103,15 @@ class HomeDataCubit extends Cubit<HomeDataState> {
 
   Future<List<ChallengeEntity>?> _fetchMyChallenges(
       List<String> groupIds) async {
-    final challenges = await sl<GetChallengesByGroupsUseCase>()
-        .call(params: GetChallengesByGroupsReq(groupIds: groupIds));
+    final challenges = await sl<GetChallengesByGroupsUseCase>().call(
+        params:
+            GetChallengesByGroupsReq(groupIds: groupIds, onlyActive: false));
     List<ChallengeEntity>? myChallenges;
     challenges.fold((error) {
-      emit(HomeDataError('Failed to load challenges'));
+      emit(HomeDataError('Failed to load challenges $error'));
       myChallenges = null;
     }, (data) {
       myChallenges = data;
-      debugPrint('Challenges: ${myChallenges!.first.challengeId}');
     });
     return myChallenges;
   }
@@ -94,11 +120,28 @@ class HomeDataCubit extends Cubit<HomeDataState> {
     final exercises = await sl<GetAllExercisesUseCase>().call();
     List<ExerciseEntity>? allExercises;
     exercises.fold((error) {
-      emit(HomeDataError('Failed to load exercises'));
+      emit(HomeDataError('Failed to load exercises $error'));
       allExercises = null;
     }, (data) {
       allExercises = data;
     });
     return allExercises;
+  }
+
+  Future<List<SubmissionEntity>?> _fetchSubmissions(
+      List<String> groupIds) async {
+    final submissions =
+        await sl<GetSubmissionsByGroupsUseCase>().call(params: groupIds);
+
+    List<SubmissionEntity>? activeSubmissions;
+
+    submissions.fold((error) {
+      emit(HomeDataError('Failed to load submissions: $error'));
+      activeSubmissions = null;
+    }, (data) {
+      activeSubmissions = data;
+    });
+
+    return activeSubmissions;
   }
 }

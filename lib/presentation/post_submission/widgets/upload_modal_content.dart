@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
+import 'package:fitness_project/presentation/home/pages/home.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/presentation/post_submission/bloc/submission_upload_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +48,13 @@ class _UploadModalContentState extends State<UploadModalContent> {
 
   @override
   Widget build(BuildContext context) {
+    final userState = context.read<UserCubit>().state;
+    final currentUser = userState is UserLoaded ? userState.user : null;
+    if (currentUser == null) {
+      return const Center(
+        child: Text("User not found"),
+      );
+    }
     return BlocProvider<SubmissionUploadCubit>(
         create: (context) => SubmissionUploadCubit(
               challengeId: widget.challengeId,
@@ -56,7 +66,7 @@ class _UploadModalContentState extends State<UploadModalContent> {
             if (state is SubmissionDone) {
               Future.delayed(const Duration(seconds: 2), () {
                 if (context.mounted) {
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChallengeDetails(
@@ -64,6 +74,9 @@ class _UploadModalContentState extends State<UploadModalContent> {
                         showPoints: true,
                       ),
                     ),
+                    (route) {
+                      return route is Navigation;
+                    },
                   );
                 }
               });

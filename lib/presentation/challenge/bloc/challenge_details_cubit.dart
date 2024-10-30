@@ -1,12 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/submission.dart';
-import 'package:fitness_project/data/source/firestore_firebase_service.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/domain/entities/db/score.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';

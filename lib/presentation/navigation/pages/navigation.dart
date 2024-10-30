@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/common/bloc/user_bloc.dart';
+import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/create_account/pages/create_account.dart';
 import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
@@ -10,13 +11,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../home/pages/home.dart';
 
-class Navigation extends StatelessWidget {
+class Navigation extends StatefulWidget {
   final int? initialIndex;
   const Navigation({super.key, this.initialIndex});
 
   @override
+  State<Navigation> createState() => _NavigationState();
+}
+
+class _NavigationState extends State<Navigation> {
+  @override
+  void initState() {
+    context.read<UserCubit>().loadUser();
+    context.read<PreviousPageCubit>().setPreviousPage(widget);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(builder: (context, userState) {
+    return BlocBuilder<UserCubit, UserState>(builder: (context, userState) {
       final authUser = FirebaseAuth.instance.currentUser;
       if (authUser == null) {
         return const LoginPage();
@@ -31,7 +44,7 @@ class Navigation extends StatelessWidget {
             userId: authUser.uid, userEmail: authUser.email ?? "no email");
       } else if (userState is UserLoaded) {
         return BlocProvider(
-            create: (context) => NavIndexCubit(initialIndex),
+            create: (context) => NavIndexCubit(widget.initialIndex ?? 0),
             child: BlocBuilder<NavIndexCubit, int>(
               builder: (context, state) {
                 return Scaffold(

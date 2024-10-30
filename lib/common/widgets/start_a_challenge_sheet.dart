@@ -3,9 +3,9 @@ import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
 import 'package:fitness_project/presentation/navigation/bloc/new_challenge_form_cubit.dart';
 import 'package:fitness_project/presentation/navigation/bloc/start_a_challenge_cubit.dart';
-import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/presentation/navigation/widgets/custom_dropdown.dart';
 import 'package:fitness_project/presentation/navigation/widgets/exercise_list_tile.dart';
 import 'package:fitness_project/presentation/navigation/widgets/group_list_tile.dart';
@@ -107,7 +107,10 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) {
-              return const Navigation();
+              return ChallengeDetails(
+                challengeId: data,
+                showPoints: true,
+              );
             }),
           );
         }

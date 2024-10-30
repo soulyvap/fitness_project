@@ -16,8 +16,12 @@ class YourGroupsList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Your groups",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text("Your groups (${groups.length})",
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -25,6 +29,7 @@ class YourGroupsList extends StatelessWidget {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               itemCount: groups.length + 1,
               itemBuilder: (context, index) {
                 return Padding(
@@ -44,7 +49,7 @@ class YourGroupsList extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    GroupPage(group: groups[index]),
+                                    GroupPage(groupId: groups[index].groupId),
                               ),
                             );
                           }),

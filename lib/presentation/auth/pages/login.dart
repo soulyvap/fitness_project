@@ -10,8 +10,10 @@ class LoginPage extends StatelessWidget {
     return SignInScreen(
       actions: [
         AuthStateChangeAction<SignedIn>((context, state) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const Navigation()));
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Navigation()),
+              (route) => route is Navigation);
         }),
       ],
     );

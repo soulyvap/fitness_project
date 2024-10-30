@@ -78,7 +78,7 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
   void _handlePop() {
     _controller.dispose();
     widget.videoFile.delete();
-    Navigator.pushReplacement(
+    Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
             builder: (context) => Camera(
@@ -86,7 +86,8 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
                   exercise: widget.exercise,
                   group: widget.group,
                   author: widget.author,
-                )));
+                )),
+        (route) => route is Camera);
   }
 
   @override

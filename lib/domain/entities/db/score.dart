@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class ScoreEntity {
   final String scoreId;
   final String challengeId;
@@ -19,22 +21,50 @@ class ScoreEntity {
 }
 
 enum ScoreType {
-  challengeCreation(value: 15, description: 'Challenge creation'),
-  challengeParticipation(value: 10, description: 'Challenge participation'),
-  challengeEarlyParticipation1(value: 10, description: '1st place bonus'),
-  challengeEarlyParticipation2(value: 8, description: '2nd place bonus'),
-  challengeEarlyParticipation3(value: 6, description: '3rd place bonus'),
-  challengeEarlyParticipation4(value: 4, description: '4th place bonus'),
-  challengeEarlyParticipation5(value: 2, description: '5th place bonus'),
-  challengeParticipationStreak(value: 5, description: 'Streak bonus'),
+  challengeCreation(
+      value: 15,
+      description: 'Challenge creation',
+      icon: Icon(Icons.add_circle, color: Colors.green)),
+  challengeParticipation(
+      value: 10,
+      description: 'Challenge completion',
+      icon: Icon(Icons.check_circle, color: Colors.green)),
+  challengeEarlyParticipation1(
+      value: 10,
+      description: '1st place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.yellow)),
+  challengeEarlyParticipation2(
+      value: 8,
+      description: '2nd place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.grey)),
+  challengeEarlyParticipation3(
+      value: 6,
+      description: '3rd place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.brown)),
+  challengeEarlyParticipation4(
+      value: 4,
+      description: '4th place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.blue)),
+  challengeEarlyParticipation5(
+      value: 2,
+      description: '5th place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.red)),
+  challengeParticipationStreak(
+      value: 5,
+      description: 'Streak bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.green)),
   challengeParticipationAll(
-      value: 20, description: 'Participation in all challenges'),
+      value: 20,
+      description: 'Participation in all challenges',
+      icon: Icon(Icons.checklist, color: Colors.green)),
   ;
 
-  const ScoreType({required this.value, required this.description});
+  const ScoreType(
+      {required this.value, required this.description, required this.icon});
 
   final int value;
   final String description;
+  final Widget icon;
 
   String get name {
     return toString().split('.').last;

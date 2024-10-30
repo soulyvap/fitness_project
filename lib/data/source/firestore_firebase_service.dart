@@ -9,6 +9,7 @@ import 'package:fitness_project/data/db/models/add_score_req.dart';
 import 'package:fitness_project/data/db/models/challenge.dart';
 import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/db/models/update_challenge_req.dart';
 import 'package:fitness_project/data/db/models/update_group_req.dart';
@@ -26,6 +27,8 @@ abstract class FirestoreFirebaseService {
   Future<Either> getGroupById(String groupId);
   Future<Either> getGroupsByUser(GetGroupsByUserReq getGroupsByUserReq);
   Future<Either> getScoresBySubmission(String submissionId);
+  Future<Either> getScoresByChallengeAndUser(
+      GetScoresByChallengeAndUserReq getScoresByChallengeAndUserReq);
   Future<Either> getSubmissionByChallengeAndUser(
       GetSubmissionByChallengeAndUserReq getSubmissionByChallengeAndUserReq);
   Future<Either> getSubmissionById(String submissionId);
@@ -36,6 +39,8 @@ abstract class FirestoreFirebaseService {
   Future<Either> updateGroupMember(UpdateGroupMemberReq updateGroupMemberReq);
   Future<Either> updateSubmission(UpdateSubmissionReq updateSubmissionReq);
   Future<Either> updateUser(UpdateUserReq updateUserReq);
+  Future<Either> getSubmissionsByChallenge(String challengeId);
+  Future<Either> getSubmissionsByGroups(List<String> groupIds);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -479,5 +484,47 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
     }
     final previousChallenge = ChallengeModel.fromMap(previousChallenges.first);
     return previousChallenge.completedBy.contains(_currentUserId);
+  }
+
+  @override
+  Future<Either> getScoresByChallengeAndUser(
+      GetScoresByChallengeAndUserReq getScoresByChallengeAndUserReq) async {
+    try {
+      final scores = await _firestore
+          .collection('scores')
+          .where('challengeId',
+              isEqualTo: getScoresByChallengeAndUserReq.challengeId)
+          .where('userId', isEqualTo: getScoresByChallengeAndUserReq.userId)
+          .get()
+          .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(scores);
+    } catch (e) {
+      return Left("Failed to get scores: $e");
+    }
+  }
+
+  @override
+  Future<Either> getSubmissionsByChallenge(String challengeId) {
+    // TODO: implement getSubmissionsByChallenge
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> getSubmissionsByGroups(List<String> groupIds) async {
+    var toBeFetched = groupIds.toChunks(25);
+    List<Map<String, dynamic>> challenges = [];
+    try {
+      for (var chunk in toBeFetched) {
+        final chunkChallenges = await _firestore
+            .collection('submissions')
+            .where('groupId', whereIn: chunk)
+            .get()
+            .then((value) => value.docs.map((d) => d.data()).toList());
+        challenges.addAll(chunkChallenges);
+      }
+      return Right(challenges);
+    } catch (e) {
+      return Left('Failed to get challenges by groups: ${e.toString()}');
+    }
   }
 }

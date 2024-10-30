@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/common/bloc/user_bloc.dart';
+import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/data/db/models/update_user_req.dart';
 import 'package:fitness_project/data/storage/models/upload_file_req.dart';
 import 'package:fitness_project/domain/usecases/db/update_user.dart';
@@ -76,10 +76,13 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
         ),
       );
     }, (data) {
-      context.read<UserBloc>().add(LoadUser());
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      context.read<UserCubit>().loadUser();
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) {
         return const Navigation();
-      }));
+      }), (route) {
+        return route is Navigation;
+      });
     });
   }
 
