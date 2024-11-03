@@ -162,7 +162,6 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
                                   ElevatedButton.icon(
                                       icon: const Icon(Icons.upload),
                                       onPressed: () {
-                                        _controller.dispose();
                                         showModalBottomSheet(
                                             enableDrag: false,
                                             isDismissible: false,

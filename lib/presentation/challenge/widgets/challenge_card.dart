@@ -5,6 +5,7 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/view_submissions/pages/my_post.dart';
@@ -43,6 +44,7 @@ class ChallengeCard extends StatelessWidget {
         completedBy.where((e) => e != author.userId);
     final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
     final isCompleted = completedBy.contains(currentUserUid);
+    final hasEnded = challenge.endsAt.isBefore(DateTime.now());
     return Card(
       child: Column(
         children: [
@@ -153,19 +155,43 @@ class ChallengeCard extends StatelessWidget {
                         }
                       },
                       child: const Text("Watch my post"))
-                  : ElevatedButton(
-                      onPressed: () async {
-                        await requestCameraPermission();
-                        if (context.mounted) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Camera(
-                                  challenge: challenge,
-                                  exercise: exercise,
-                                  group: group,
-                                  author: author)));
-                        }
-                      },
-                      child: const Text("Post an attempt")),
+                  : hasEnded
+                      ? const SizedBox(
+                          height: 24,
+                        )
+                      : ElevatedButton(
+                          onPressed: () async {
+                            final challengeHasEnded =
+                                challenge.endsAt.isBefore(DateTime.now());
+                            if (challengeHasEnded) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "This challenge has ended. You can no longer post attempts."),
+                                ),
+                              );
+                              Future.delayed(const Duration(seconds: 1), () {
+                                if (context.mounted) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => ChallengePage(
+                                            challengeId:
+                                                challenge.challengeId)),
+                                  );
+                                }
+                              });
+                            }
+                            await requestCameraPermission();
+                            if (context.mounted) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Camera(
+                                      challenge: challenge,
+                                      exercise: exercise,
+                                      group: group,
+                                      author: author)));
+                            }
+                          },
+                          child: const Text("Post an attempt")),
             ]),
           ),
         ],

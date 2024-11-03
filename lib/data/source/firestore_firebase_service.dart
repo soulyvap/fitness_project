@@ -13,6 +13,7 @@ import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/models/db/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_comment_req.dart';
 import 'package:fitness_project/data/models/db/update_group_req.dart';
 import 'package:fitness_project/data/models/db/update_like_req.dart';
 import 'package:fitness_project/data/models/db/update_submission_req.dart';
@@ -45,6 +46,8 @@ abstract class FirestoreFirebaseService {
   Future<Either> getSubmissionsByGroups(List<String> groupIds);
   Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
   Future<Either> updateLike(UpdateLikeReq updateLikeReq);
+  Future<Either> updateComment(UpdateCommentReq updateCommentReq);
+  Future<Either> getCommentsBySubmission(String submissionId);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -580,6 +583,65 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return const Right('Like updated');
     } catch (e) {
       return Left('Failed to update like: ${e.toString()}');
+    }
+  }
+
+  Future<void> incrementCommentCount(String submissionId) async {
+    try {
+      await _firestore
+          .collection('submissions')
+          .doc(submissionId)
+          .update({'commentCount': FieldValue.increment(1)});
+    } catch (e) {
+      log('Failed to increment comment count: $e');
+    }
+  }
+
+  @override
+  Future<Either> updateComment(UpdateCommentReq updateCommentReq) async {
+    bool isAdd = updateCommentReq.commentId == null;
+
+    final dataMap = updateCommentReq.toMap();
+
+    if (dataMap.keys.length == 1) {
+      return const Left("Invalid data");
+    }
+
+    final commentId = updateCommentReq.commentId ??
+        _firestore.collection('comments').doc().id;
+
+    dataMap['commentId'] = commentId;
+
+    if (isAdd) {
+      dataMap['createdAt'] = Timestamp.now();
+      await incrementCommentCount(updateCommentReq.submissionId);
+    }
+
+    try {
+      await _firestore
+          .collection("submissions")
+          .doc(updateCommentReq.submissionId)
+          .collection('comments')
+          .doc(commentId)
+          .set(dataMap, SetOptions(merge: true));
+      return Right(commentId);
+    } catch (e) {
+      return Left('Failed to update comment: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> getCommentsBySubmission(String submissionId) async {
+    try {
+      final comments = await _firestore
+          .collection('submissions')
+          .doc(submissionId)
+          .collection('comments')
+          .get()
+          .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(comments);
+    } catch (e) {
+      return Left('Failed to get comments by submission: ${e.toString()}');
     }
   }
 }

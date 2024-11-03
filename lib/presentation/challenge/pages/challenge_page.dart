@@ -29,7 +29,13 @@ class _ChallengePageState extends State<ChallengePage> {
         context: context,
         showDragHandle: true,
         builder: (context) {
-          return ScoreSummary(scores: scores);
+          return ScoreSummary(
+            scores: scores,
+            actionButton: ElevatedButton.icon(
+                icon: const Icon(Icons.leaderboard),
+                onPressed: () {},
+                label: const Text("See Leaderboard")),
+          );
         });
   }
 

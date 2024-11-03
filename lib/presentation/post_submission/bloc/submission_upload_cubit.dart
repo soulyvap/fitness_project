@@ -73,9 +73,7 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
     required this.challengeId,
     required this.videoFile,
     required this.groupId,
-  }) : super(Initial()) {
-    uploadSubmission();
-  }
+  }) : super(Initial());
 
   Future<void> uploadSubmission() async {
     emit(CompressingVideo());

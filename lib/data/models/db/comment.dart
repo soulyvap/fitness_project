@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_project/domain/usecases/db/comment.dart';
 
 class CommentModel {
   final String commentId;
@@ -33,5 +34,17 @@ class CommentModel {
       'comment': comment,
       'createdAt': createdAt,
     };
+  }
+}
+
+extension CommentModelX on CommentModel {
+  CommentEntity toEntity() {
+    return CommentEntity(
+      commentId: commentId,
+      submissionId: submissionId,
+      userId: userId,
+      comment: comment,
+      createdAt: createdAt.toDate(),
+    );
   }
 }

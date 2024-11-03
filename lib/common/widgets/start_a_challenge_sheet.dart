@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_project/common/widgets/number_picker_field.dart';
 import 'package:fitness_project/data/models/db/update_challenge_req.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
@@ -171,7 +172,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             width: 8,
                           ),
                           Text(
-                            "Do not make the challenge too long to complete\n(no longer than 2 minutes)",
+                            "Do not make the challenge too long to record\n(max 2-minute videos)",
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -353,34 +354,24 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             width: 8,
                           ),
                           Expanded(
-                            flex: 2,
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                  labelText: "Challenge expires in",
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  prefixIcon: Icon(Icons.timer),
-                                  suffixText: "minutes"),
-                              onChanged: (value) {
-                                cubitContext
-                                    .read<NewChallengeFormCubit>()
-                                    .onValuesChanged(
-                                      minutesToComplete: int.tryParse(value),
-                                    );
-                                resetError();
-                              },
-                              inputFormatters: [
-                                FilteringTextInputFormatter
-                                    .digitsOnly, // Allows only digits
-                                FilteringTextInputFormatter.allow(RegExp(
-                                    r'^[1-9][0-9]*')), // No leading zero, only positive integers
-                              ],
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
+                              flex: 2,
+                              child: NumberPickerField(
+                                leading: const Icon(Icons.timer),
+                                label: "Challenge expires in",
+                                unit: "minutes",
+                                value: newChallengeFormState.minutesToComplete,
+                                onChanged: (value) {
+                                  cubitContext
+                                      .read<NewChallengeFormCubit>()
+                                      .onValuesChanged(
+                                        minutesToComplete: value,
+                                      );
+                                  resetError();
+                                },
+                                min: 30,
+                                max: 60,
+                                step: 5,
+                              )),
                         ],
                       ),
                       const SizedBox(

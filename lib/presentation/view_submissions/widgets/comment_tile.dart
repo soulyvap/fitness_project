@@ -1,6 +1,7 @@
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
 import 'package:fitness_project/domain/usecases/db/comment.dart';
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 
 class CommentTile extends StatelessWidget {
   final CommentEntity comment;
@@ -24,11 +25,13 @@ class CommentTile extends StatelessWidget {
               Text("${comment.userId} • ${comment.createdAt.toTimeAgo()}",
                   style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.bold)),
-              Text(
+              ReadMoreText(
                 comment.comment,
+                trimLines: 3,
+                colorClickableText: Theme.of(context).colorScheme.primary,
+                trimMode: TrimMode.Line,
                 style: const TextStyle(fontSize: 12),
-                overflow: TextOverflow.visible,
-              ),
+              )
             ],
           ),
         ),

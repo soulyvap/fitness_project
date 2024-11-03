@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ScoreSummary extends StatelessWidget {
   final List<ScoreEntity> scores;
-  const ScoreSummary({super.key, required this.scores});
+  final Widget? actionButton;
+  const ScoreSummary({super.key, required this.scores, this.actionButton});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +18,18 @@ class ScoreSummary extends StatelessWidget {
       height: 300,
       child: Column(
         children: [
-          const Text("Points Earned",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              )),
+          Row(
+            children: [
+              const Text("Points Earned",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const Spacer(),
+              if (actionButton != null) actionButton!,
+            ],
+          ),
+          const SizedBox(height: 16),
           ...scores.map((e) => ScoreSummaryRow(
                 title: e.type.description,
                 points: e.points,

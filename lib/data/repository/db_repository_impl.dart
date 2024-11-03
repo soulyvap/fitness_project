@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/models/db/add_group_member_req.dart';
 import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
 import 'package:fitness_project/data/models/db/challenge.dart';
+import 'package:fitness_project/data/models/db/comment.dart';
 import 'package:fitness_project/data/models/db/exercise.dart';
 import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
@@ -11,6 +12,7 @@ import 'package:fitness_project/data/models/db/group.dart';
 import 'package:fitness_project/data/models/db/score.dart';
 import 'package:fitness_project/data/models/db/submission.dart';
 import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_comment_req.dart';
 import 'package:fitness_project/data/models/db/update_group_req.dart';
 import 'package:fitness_project/data/models/db/update_like_req.dart';
 import 'package:fitness_project/data/models/db/update_submission_req.dart';
@@ -302,5 +304,27 @@ class DBRepositoryImpl extends DBRepository {
   @override
   Future<Either> updateLike(UpdateLikeReq updateLikeReq) async {
     return sl<FirestoreFirebaseService>().updateLike(updateLikeReq);
+  }
+
+  @override
+  Future<Either> updateComment(UpdateCommentReq updateCommentReq) async {
+    return await sl<FirestoreFirebaseService>().updateComment(updateCommentReq);
+  }
+
+  @override
+  Future<Either> getCommentsBySubmission(String submissionId) async {
+    final comments = await sl<FirestoreFirebaseService>()
+        .getCommentsBySubmission(submissionId);
+    return comments.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Comments not found');
+      }
+      final List<Map<String, dynamic>> comments = data;
+      final commentEntities =
+          comments.map((e) => CommentModel.fromMap(e).toEntity()).toList();
+      return Right(commentEntities);
+    });
   }
 }

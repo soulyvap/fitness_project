@@ -7,23 +7,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SideButtonState {
   final List<String> seenBy;
   final List<String> likedBy;
-  final int comments;
+  final int commentCount;
 
   SideButtonState({
     required this.seenBy,
     required this.likedBy,
-    required this.comments,
+    required this.commentCount,
   });
 
   SideButtonState copyWith({
     List<String>? seenBy,
     List<String>? likedBy,
-    int? comments,
+    int? commentCount,
   }) {
     return SideButtonState(
       seenBy: seenBy ?? this.seenBy,
       likedBy: likedBy ?? this.likedBy,
-      comments: comments ?? this.comments,
+      commentCount: commentCount ?? this.commentCount,
     );
   }
 }
@@ -52,5 +52,9 @@ class SideButtonsCubit extends Cubit<SideButtonState> {
             submissionId: submissionId,
             userId: currentUserId!,
             isLiked: !isCurrentlyLiked));
+  }
+
+  void updateCommentCount(int newCommentCount) {
+    emit(state.copyWith(commentCount: newCommentCount));
   }
 }

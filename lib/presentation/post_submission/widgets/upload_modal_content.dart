@@ -26,6 +26,7 @@ class UploadModalContent extends StatefulWidget {
 class _UploadModalContentState extends State<UploadModalContent> {
   late Subscription _compressionProgressSubscription;
   double _compressionProgress = 0.0;
+  bool confirmed = false;
 
   @override
   void initState() {
@@ -86,27 +87,61 @@ class _UploadModalContentState extends State<UploadModalContent> {
                 height: 300,
                 padding: const EdgeInsets.all(16),
                 child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 80,
-                        width: 80,
-                        child: uploadState is! SubmissionDone
-                            ? const CircularProgressIndicator()
-                            : const Icon(
-                                Icons.check_circle,
-                                color: Colors.green,
-                                size: 80,
-                              ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(uploadState.message,
-                          style: const TextStyle(fontSize: 16)),
-                      if (uploadState is CompressingVideo)
-                        Text("${_compressionProgress.toStringAsFixed(0)}%")
-                    ],
-                  ),
+                  child: !confirmed
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text("Confirm upload?",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      confirmed = true;
+                                    });
+                                    context
+                                        .read<SubmissionUploadCubit>()
+                                        .uploadSubmission();
+                                  },
+                                  child: const Text("Confirm"),
+                                ),
+                                const SizedBox(width: 8),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: uploadState is! SubmissionDone
+                                  ? const CircularProgressIndicator()
+                                  : const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 80,
+                                    ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(uploadState.message,
+                                style: const TextStyle(fontSize: 16)),
+                            if (uploadState is CompressingVideo)
+                              Text(
+                                  "${_compressionProgress.toStringAsFixed(0)}%")
+                          ],
+                        ),
                 ),
               );
             },

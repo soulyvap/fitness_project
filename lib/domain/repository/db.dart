@@ -6,6 +6,7 @@ import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
 import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/models/db/get_submission_by_challenge_and_user_req.dart';
 import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_comment_req.dart';
 import 'package:fitness_project/data/models/db/update_group_req.dart';
 import 'package:fitness_project/data/models/db/update_like_req.dart';
 import 'package:fitness_project/data/models/db/update_submission_req.dart';
@@ -36,4 +37,6 @@ abstract class DBRepository {
   Future<Either> updateUser(UpdateUserReq updateUserReq);
   Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
   Future<Either> updateLike(UpdateLikeReq updateLikeReq);
+  Future<Either> updateComment(UpdateCommentReq updateCommentReq);
+  Future<Either> getCommentsBySubmission(String submissionId);
 }
