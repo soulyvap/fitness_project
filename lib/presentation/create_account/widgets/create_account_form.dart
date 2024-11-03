@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
-import 'package:fitness_project/data/db/models/update_user_req.dart';
-import 'package:fitness_project/data/storage/models/upload_file_req.dart';
+import 'package:fitness_project/data/models/db/update_user_req.dart';
+import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 import 'package:fitness_project/domain/usecases/db/update_user.dart';
 import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';

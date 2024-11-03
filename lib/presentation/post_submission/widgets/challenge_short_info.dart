@@ -1,4 +1,4 @@
-import 'package:fitness_project/common/widgets/challenged_by.dart';
+import 'package:fitness_project/common/widgets/user_tile_small.dart';
 import 'package:fitness_project/common/widgets/group_tile_small.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
@@ -43,7 +43,10 @@ class ChallengeShortInfo extends StatelessWidget {
             const SizedBox(
               height: 4,
             ),
-            ChallengedBy(user: author, textColor: Colors.white),
+            UserTileSmall(
+                user: author,
+                textColor: Colors.white,
+                leadingText: "Challenged by "),
           ],
         ),
       ),

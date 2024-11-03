@@ -3,7 +3,7 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/presentation/home/widgets/submission_tile.dart';
-import 'package:fitness_project/presentation/submissions/pages/video_scroller.dart';
+import 'package:fitness_project/presentation/view_submissions/pages/video_scroller.dart';
 import 'package:flutter/material.dart';
 
 class SubmissionList extends StatelessWidget {
@@ -45,7 +45,7 @@ class SubmissionList extends StatelessWidget {
             height: 16,
           ),
           SizedBox(
-            height: 190,
+            height: 200,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               scrollDirection: Axis.horizontal,

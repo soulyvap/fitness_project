@@ -22,7 +22,7 @@ class GroupTile extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color:
-                  group.imageUrl == null ? Colors.black.withOpacity(0.2) : null,
+                  group.imageUrl == null ? null : Colors.black.withOpacity(0.2),
               image: group.imageUrl != null
                   ? DecorationImage(
                       image: NetworkImage(group.imageUrl!),

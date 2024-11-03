@@ -4,18 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/string_list_extension.dart';
-import 'package:fitness_project/data/db/models/add_group_member_req.dart';
-import 'package:fitness_project/data/db/models/add_score_req.dart';
-import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
-import 'package:fitness_project/data/db/models/challenge.dart';
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
-import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
-import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/update_challenge_req.dart';
-import 'package:fitness_project/data/db/models/update_group_req.dart';
-import 'package:fitness_project/data/db/models/update_submission_req.dart';
-import 'package:fitness_project/data/db/models/update_user_req.dart';
+import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/add_score_req.dart';
+import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
+import 'package:fitness_project/data/models/db/challenge.dart';
+import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
+import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/get_submission_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_group_req.dart';
+import 'package:fitness_project/data/models/db/update_like_req.dart';
+import 'package:fitness_project/data/models/db/update_submission_req.dart';
+import 'package:fitness_project/data/models/db/update_user_req.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
 
 abstract class FirestoreFirebaseService {
@@ -43,6 +44,7 @@ abstract class FirestoreFirebaseService {
   Future<Either> getSubmissionsByChallenge(String challengeId);
   Future<Either> getSubmissionsByGroups(List<String> groupIds);
   Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
+  Future<Either> updateLike(UpdateLikeReq updateLikeReq);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -554,6 +556,30 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return const Right('Seenby added');
     } catch (e) {
       return Left('Failed to add submission seen: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> updateLike(UpdateLikeReq updateLikeReq) async {
+    try {
+      if (updateLikeReq.isLiked) {
+        await _firestore
+            .collection('submissions')
+            .doc(updateLikeReq.submissionId)
+            .update({
+          'likedBy': FieldValue.arrayUnion([updateLikeReq.userId])
+        });
+      } else {
+        await _firestore
+            .collection('submissions')
+            .doc(updateLikeReq.submissionId)
+            .update({
+          'likedBy': FieldValue.arrayRemove([updateLikeReq.userId])
+        });
+      }
+      return const Right('Like updated');
+    } catch (e) {
+      return Left('Failed to update like: ${e.toString()}');
     }
   }
 }

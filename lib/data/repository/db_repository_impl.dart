@@ -1,20 +1,21 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_project/data/db/models/add_group_member_req.dart';
-import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
-import 'package:fitness_project/data/db/models/challenge.dart';
-import 'package:fitness_project/data/db/models/exercise.dart';
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
-import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
-import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/group.dart';
-import 'package:fitness_project/data/db/models/score.dart';
-import 'package:fitness_project/data/db/models/submission.dart';
-import 'package:fitness_project/data/db/models/update_challenge_req.dart';
-import 'package:fitness_project/data/db/models/update_group_req.dart';
-import 'package:fitness_project/data/db/models/update_submission_req.dart';
-import 'package:fitness_project/data/db/models/update_user_req.dart';
-import 'package:fitness_project/data/db/models/user.dart';
+import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
+import 'package:fitness_project/data/models/db/challenge.dart';
+import 'package:fitness_project/data/models/db/exercise.dart';
+import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
+import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/get_submission_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/group.dart';
+import 'package:fitness_project/data/models/db/score.dart';
+import 'package:fitness_project/data/models/db/submission.dart';
+import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_group_req.dart';
+import 'package:fitness_project/data/models/db/update_like_req.dart';
+import 'package:fitness_project/data/models/db/update_submission_req.dart';
+import 'package:fitness_project/data/models/db/update_user_req.dart';
+import 'package:fitness_project/data/models/db/user.dart';
 import 'package:fitness_project/data/source/firestore_firebase_service.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/service_locator.dart';
@@ -296,5 +297,10 @@ class DBRepositoryImpl extends DBRepository {
   Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq) {
     return sl<FirestoreFirebaseService>()
         .addSubmissionSeen(addSubmissionSeenReq);
+  }
+
+  @override
+  Future<Either> updateLike(UpdateLikeReq updateLikeReq) async {
+    return sl<FirestoreFirebaseService>().updateLike(updateLikeReq);
   }
 }

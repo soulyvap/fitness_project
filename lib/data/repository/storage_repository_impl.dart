@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/source/storage_firebase_service.dart';
-import 'package:fitness_project/data/storage/models/upload_file_req.dart';
+import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/service_locator.dart';
 

@@ -1,4 +1,4 @@
-import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
 import 'package:fitness_project/domain/usecases/db/get_scores_by_challenge_and_user.dart';
 import 'package:fitness_project/service_locator.dart';

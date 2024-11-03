@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fitness_project/data/storage/models/upload_file_req.dart';
+import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 
 abstract class StorageFirebaseService {
   Future<Either> uploadFile(UploadFileReq uploadFileReq);

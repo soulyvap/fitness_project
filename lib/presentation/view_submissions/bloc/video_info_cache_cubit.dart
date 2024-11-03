@@ -1,4 +1,4 @@
-import 'package:fitness_project/presentation/submissions/bloc/video_info_cubit.dart';
+import 'package:fitness_project/presentation/view_submissions/bloc/video_info_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoInfoCacheCubit extends Cubit<Map<int, VideoInfoData>> {

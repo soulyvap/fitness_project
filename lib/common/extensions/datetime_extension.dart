@@ -13,12 +13,17 @@ extension DateTimeExtensions on DateTime {
   String toTimeAgo() {
     final now = DateTime.now();
     final difference = now.difference(this);
+
+    String agoText(int value, String unit) {
+      return '$value $unit${value == 1 ? "" : "s"} ago';
+    }
+
     if (difference.inDays > 0) {
-      return '${difference.inDays} days ago';
+      return agoText(difference.inDays, 'day');
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} hours ago';
+      return agoText(difference.inHours, 'hour');
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} minutes ago';
+      return agoText(difference.inMinutes, 'minute');
     } else {
       return 'Just now';
     }

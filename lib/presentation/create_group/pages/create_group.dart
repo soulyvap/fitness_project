@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
-import 'package:fitness_project/data/db/models/add_group_member_req.dart';
-import 'package:fitness_project/data/db/models/update_group_req.dart';
-import 'package:fitness_project/data/storage/models/upload_file_req.dart';
+import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/update_group_req.dart';
+import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 import 'package:fitness_project/domain/usecases/db/add_group_member.dart';
 import 'package:fitness_project/domain/usecases/db/update_group.dart';
 import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
@@ -15,7 +15,6 @@ import 'package:fitness_project/presentation/create_group/pages/members_form.dar
 import 'package:fitness_project/presentation/create_group/pages/settings_form.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_autocomplete.dart';
 import 'package:fitness_project/presentation/group/pages/group.dart';
-import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -187,16 +186,20 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                       if (authUser != null) {
                         final groupId = await onSubmit(stateCreateGroupForm,
                             statePicSelection, authUser.userId);
-                        await Future.delayed(const Duration(seconds: 1));
                         if (context.mounted && groupId != null) {
-                          Navigator.pushAndRemoveUntil(context,
-                              MaterialPageRoute(
+                          // Navigator.pushAndRemoveUntil(context,
+                          //     MaterialPageRoute(
+                          //   builder: (context) {
+                          //     return GroupPage(groupId: groupId);
+                          //   },
+                          // ), (route) {
+                          //   return route.isFirst;
+                          // });
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) {
                               return GroupPage(groupId: groupId);
                             },
-                          ), (route) {
-                            return route is Navigation;
-                          });
+                          ));
                         }
                       }
                     },

@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
+import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/core/theme/app_theme.dart';
 import 'package:fitness_project/presentation/auth/pages/Login.dart';
+import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +28,14 @@ void main() async {
     BlocProvider<UserCubit>(
       create: (context) => UserCubit(),
     ),
-    BlocProvider<PreviousPageCubit>(
-      create: (context) => PreviousPageCubit(),
+    BlocProvider<HomeDataCubit>(
+      create: (context) => HomeDataCubit(),
     ),
+    BlocProvider(create: (context) => NeedRefreshCubit()),
   ], child: const MyApp()));
 }
+
+final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -45,6 +49,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fitness Project',
       theme: appTheme(),
+      navigatorObservers: [routeObserver],
       home: FirebaseAuth.instance.currentUser == null
           ? const LoginPage()
           : const Navigation(),

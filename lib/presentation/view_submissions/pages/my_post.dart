@@ -1,5 +1,5 @@
 import 'package:fitness_project/domain/entities/db/submission.dart';
-import 'package:fitness_project/presentation/submissions/widgets/vertical_video_player.dart';
+import 'package:fitness_project/presentation/view_submissions/widgets/vertical_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 

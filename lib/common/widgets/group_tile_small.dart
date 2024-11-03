@@ -20,27 +20,38 @@ class GroupTileSmall extends StatelessWidget {
           child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.grey,
+          Card(
+            margin: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
-              image: group.imageUrl == null
-                  ? null
-                  : DecorationImage(
-                      image: NetworkImage(group.imageUrl!),
-                      fit: BoxFit.cover,
-                    ),
             ),
-            child: group.imageUrl == null ? const Icon(Icons.group) : null,
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                image: group.imageUrl == null
+                    ? null
+                    : DecorationImage(
+                        image: NetworkImage(group.imageUrl!),
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              child: group.imageUrl == null
+                  ? const Icon(
+                      Icons.group,
+                      size: 16,
+                      color: Colors.grey,
+                    )
+                  : null,
+            ),
           ),
           const SizedBox(width: 6),
           Text(
             group.name,
             maxLines: 1,
             style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 10, color: textColor),
+                fontWeight: FontWeight.bold, fontSize: 12, color: textColor),
             overflow: TextOverflow.ellipsis,
           ),
         ],

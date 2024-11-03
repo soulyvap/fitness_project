@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/core/usecase/usecase.dart';
-import 'package:fitness_project/data/db/models/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/add_group_member_req.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/service_locator.dart';
 

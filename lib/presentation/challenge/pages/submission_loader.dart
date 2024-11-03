@@ -1,5 +1,5 @@
 import 'package:fitness_project/presentation/challenge/bloc/submission_loader_cubit.dart';
-import 'package:fitness_project/presentation/submissions/pages/video_scroller.dart';
+import 'package:fitness_project/presentation/view_submissions/pages/video_scroller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

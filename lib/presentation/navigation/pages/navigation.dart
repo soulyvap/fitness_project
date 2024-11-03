@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
+import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
+import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
 import 'package:fitness_project/presentation/create_account/pages/create_account.dart';
 import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
+import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/navigation/widgets/bottom_bar.dart';
 import 'package:fitness_project/presentation/navigation/bloc/nav_index_cubit.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +21,43 @@ class Navigation extends StatefulWidget {
   State<Navigation> createState() => _NavigationState();
 }
 
-class _NavigationState extends State<Navigation> {
+class _NavigationState extends State<Navigation> with RouteAware {
   @override
   void initState() {
     context.read<UserCubit>().loadUser();
-    context.read<PreviousPageCubit>().setPreviousPage(widget);
-    context.read<PreviousPageCubit>().setFallbackPage(widget);
+    refreshHomePage();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    final needsRefresh = context.read<NeedRefreshCubit>().state;
+    if (needsRefresh) {
+      refreshHomePage();
+      context.read<NeedRefreshCubit>().setValue(false);
+    }
+    super.didPopNext();
+  }
+
+  void refreshHomePage() {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      return;
+    }
+    debugPrint("Refreshing home page");
+    context.read<HomeDataCubit>().loadData(userId);
   }
 
   @override

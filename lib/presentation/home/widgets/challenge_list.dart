@@ -1,7 +1,7 @@
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/home/widgets/challenge_tile.dart';
 import 'package:fitness_project/presentation/home/widgets/add_challenge_tile.dart';
 import 'package:fitness_project/common/widgets/start_a_challenge_sheet.dart';
@@ -43,7 +43,7 @@ class ChallengeList extends StatelessWidget {
             height: 16,
           ),
           SizedBox(
-            height: 150,
+            height: 160,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               scrollDirection: Axis.horizontal,
@@ -65,7 +65,7 @@ class ChallengeList extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChallengeDetails(
+                              builder: (context) => ChallengePage(
                                 challengeId: challenge.challengeId,
                               ),
                             ),

@@ -1,4 +1,4 @@
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
+import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/data/db/models/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_challenge_req.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/navigation/bloc/new_challenge_form_cubit.dart';
 import 'package:fitness_project/presentation/navigation/bloc/start_a_challenge_cubit.dart';
 import 'package:fitness_project/presentation/navigation/widgets/custom_dropdown.dart';
@@ -107,7 +107,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) {
-              return ChallengeDetails(
+              return ChallengePage(
                 challengeId: data,
                 showPoints: true,
               );
@@ -263,6 +263,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             color: Colors.white,
                             padding: const EdgeInsets.all(16),
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 const SizedBox(
                                   height: 16,

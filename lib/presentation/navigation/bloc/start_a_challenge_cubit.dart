@@ -1,4 +1,4 @@
-import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/get_all_exercises.dart';

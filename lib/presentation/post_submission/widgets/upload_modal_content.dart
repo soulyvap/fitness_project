@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:fitness_project/common/bloc/user_cubit.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
-import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/post_submission/bloc/submission_upload_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,13 +67,13 @@ class _UploadModalContentState extends State<UploadModalContent> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChallengeDetails(
+                      builder: (context) => ChallengePage(
                         challengeId: widget.challengeId,
                         showPoints: true,
                       ),
                     ),
                     (route) {
-                      return route is Navigation;
+                      return route.isFirst;
                     },
                   );
                 }

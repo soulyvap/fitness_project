@@ -1,17 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
-import 'package:fitness_project/common/bloc/previous_page_cubit.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
-import 'package:fitness_project/presentation/submissions/pages/my_post.dart';
+import 'package:fitness_project/presentation/view_submissions/pages/my_post.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChallengeCard extends StatelessWidget {
@@ -138,8 +135,6 @@ class ChallengeCard extends StatelessWidget {
               if (completedBy.isNotEmpty)
                 OutlinedButton(
                     onPressed: () {
-                      context.read<PreviousPageCubit>().setPreviousPage(
-                          ChallengeDetails(challengeId: challenge.challengeId));
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SubmissionLoader(
                             challengeId: challenge.challengeId),
@@ -151,9 +146,6 @@ class ChallengeCard extends StatelessWidget {
                   ? ElevatedButton(
                       onPressed: () {
                         if (submission != null) {
-                          context.read<PreviousPageCubit>().setPreviousPage(
-                              ChallengeDetails(
-                                  challengeId: challenge.challengeId));
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
                                 MyPost(submission: submission!),

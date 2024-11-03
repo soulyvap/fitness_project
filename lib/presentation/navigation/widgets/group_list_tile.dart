@@ -11,18 +11,30 @@ class GroupListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
+      leading: Card(
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          color: Colors.grey,
-          image: group.imageUrl == null
-              ? null
-              : DecorationImage(
-                  image: NetworkImage(group.imageUrl!),
-                  fit: BoxFit.cover,
-                ),
+        ),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            image: group.imageUrl == null
+                ? null
+                : DecorationImage(
+                    image: NetworkImage(group.imageUrl!),
+                    fit: BoxFit.cover,
+                  ),
+          ),
+          child: group.imageUrl == null
+              ? const Icon(
+                  Icons.group,
+                  size: 24,
+                  color: Colors.grey,
+                )
+              : null,
         ),
       ),
       title: Text(group.name),

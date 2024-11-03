@@ -29,92 +29,89 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeDataCubit>(
-      create: (context) => HomeDataCubit(widget.currentUser),
-      child: Builder(builder: (context) {
-        final homeDataState = context.watch<HomeDataCubit>().state;
-        if (homeDataState is HomeDataLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (homeDataState is HomeDataError) {
-          return Center(
-            child: Text(homeDataState.errorMessage),
-          );
-        } else if (homeDataState is HomeDataLoaded) {
-          final groups = homeDataState.myGroups;
-          final exercises = homeDataState.allExercises;
-          final activeChallenges = homeDataState.activeChallenges;
-          final previousChallenges = homeDataState.previousChallenges;
-          final allChallenges = [...activeChallenges, ...previousChallenges];
-          final submissions = homeDataState.activeSubmissions;
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Welcome back ${widget.currentUser.displayName}"),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ChallengeList(
-                        title: "Active challenges (${activeChallenges.length})",
-                        groups: groups,
-                        challenges: activeChallenges,
-                        exercises: exercises),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    SubmissionList(
-                        submissions: submissions,
-                        groups: groups,
-                        challenges: allChallenges,
-                        exercises: exercises,
-                        title: "Recent submissions"),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    ChallengeList(
-                        title: "Previous challenges",
-                        groups: groups,
-                        challenges: previousChallenges,
-                        exercises: exercises),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    YourGroupsList(groups: groups),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          var result = await sl<LogoutUseCase>().call();
-                          result.fold(
-                              (error) =>
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(error.toString()),
-                                    ),
-                                  ), (data) {
-                            context.read<UserCubit>().clear();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginPage(),
-                              ),
-                            );
-                          });
-                        },
-                        child: const Text("Logout")),
-                  ],
-                ),
+    return Builder(builder: (context) {
+      final homeDataState = context.watch<HomeDataCubit>().state;
+      if (homeDataState is HomeDataLoading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (homeDataState is HomeDataError) {
+        return Center(
+          child: Text(homeDataState.errorMessage),
+        );
+      } else if (homeDataState is HomeDataLoaded) {
+        final groups = homeDataState.myGroups;
+        final exercises = homeDataState.allExercises;
+        final activeChallenges = homeDataState.activeChallenges;
+        final previousChallenges = homeDataState.previousChallenges;
+        final allChallenges = [...activeChallenges, ...previousChallenges];
+        final submissions = homeDataState.activeSubmissions;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("Welcome back ${widget.currentUser.displayName}"),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ChallengeList(
+                      title: "Active challenges (${activeChallenges.length})",
+                      groups: groups,
+                      challenges: activeChallenges,
+                      exercises: exercises),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SubmissionList(
+                      submissions: submissions,
+                      groups: groups,
+                      challenges: allChallenges,
+                      exercises: exercises,
+                      title: "Recent submissions"),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  ChallengeList(
+                      title: "Previous challenges",
+                      groups: groups,
+                      challenges: previousChallenges,
+                      exercises: exercises),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  YourGroupsList(groups: groups),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        var result = await sl<LogoutUseCase>().call();
+                        result.fold(
+                            (error) =>
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(error.toString()),
+                                  ),
+                                ), (data) {
+                          context.read<UserCubit>().clear();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        });
+                      },
+                      child: const Text("Logout")),
+                ],
               ),
             ),
-          );
-        } else {
-          return const SizedBox();
-        }
-      }),
-    );
+          ),
+        );
+      } else {
+        return const SizedBox();
+      }
+    });
   }
 }

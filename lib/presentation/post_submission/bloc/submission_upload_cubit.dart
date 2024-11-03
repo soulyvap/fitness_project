@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_project/data/db/models/update_submission_req.dart';
-import 'package:fitness_project/data/storage/models/upload_file_req.dart';
-import 'package:fitness_project/domain/entities/db/challenge.dart';
+import 'package:fitness_project/data/models/db/update_submission_req.dart';
+import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
-import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/update_submission.dart';
 import 'package:fitness_project/domain/usecases/storage/upload_file.dart';
 import 'package:fitness_project/service_locator.dart';
@@ -204,41 +202,5 @@ class SubmissionUploadCubit extends Cubit<SubmissionUploadState> {
       returnValue = true;
     });
     return returnValue;
-  }
-
-  Future<void> _calculateResult() async {
-    if (currentUserId == null) {
-      emit(Error(message: "User not found"));
-      return;
-    }
-    final challenge =
-        await sl<GetChallengeByIdUseCase>().call(params: challengeId);
-
-    challenge.fold(
-      (error) {
-        emit(Error(message: error));
-      },
-      (data) {
-        if (data == null) {
-          emit(Error(message: "Challenge not found"));
-          return;
-        }
-        final challengeEntity = data as ChallengeEntity;
-        final isAuthor = challengeEntity.userId == currentUserId;
-        if (!isAuthor) {
-          _calculatePlacement(challengeEntity);
-        }
-      },
-    );
-  }
-
-  Future<int?> _calculatePlacement(ChallengeEntity challenge) async {
-    if (currentUserId == null) {
-      emit(Error(message: "User not found"));
-      return null;
-    }
-    final placement = challenge.completedBy.indexOf(currentUserId!) + 1;
-    emit(PlacementCalculated(placement: placement));
-    return null;
   }
 }

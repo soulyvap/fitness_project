@@ -1,14 +1,15 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_project/data/db/models/add_group_member_req.dart';
-import 'package:fitness_project/data/db/models/add_submission_seen_req.dart';
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
-import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
-import 'package:fitness_project/data/db/models/get_scores_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/get_submission_by_challenge_and_user_req.dart';
-import 'package:fitness_project/data/db/models/update_challenge_req.dart';
-import 'package:fitness_project/data/db/models/update_group_req.dart';
-import 'package:fitness_project/data/db/models/update_submission_req.dart';
-import 'package:fitness_project/data/db/models/update_user_req.dart';
+import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
+import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
+import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/models/db/get_scores_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/get_submission_by_challenge_and_user_req.dart';
+import 'package:fitness_project/data/models/db/update_challenge_req.dart';
+import 'package:fitness_project/data/models/db/update_group_req.dart';
+import 'package:fitness_project/data/models/db/update_like_req.dart';
+import 'package:fitness_project/data/models/db/update_submission_req.dart';
+import 'package:fitness_project/data/models/db/update_user_req.dart';
 
 abstract class DBRepository {
   Future<Either> getAllExercises();
@@ -34,4 +35,5 @@ abstract class DBRepository {
   Future<Either> updateSubmission(UpdateSubmissionReq updateSubmissionReq);
   Future<Either> updateUser(UpdateUserReq updateUserReq);
   Future<Either> addSubmissionSeen(AddSubmissionSeenReq addSubmissionSeenReq);
+  Future<Either> updateLike(UpdateLikeReq updateLikeReq);
 }

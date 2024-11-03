@@ -8,7 +8,7 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_details.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/capture_button.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/challenge_short_info.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +132,7 @@ class _VideoModeUiState extends State<VideoModeUi> {
                 onPressed: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ChallengeDetails(
+                        builder: (context) => ChallengePage(
                             challengeId: widget.challenge.challengeId))),
               ),
               Countdown(

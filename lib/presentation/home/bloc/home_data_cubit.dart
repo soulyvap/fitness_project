@@ -1,9 +1,8 @@
-import 'package:fitness_project/data/db/models/get_challenges_by_groups_req.dart';
-import 'package:fitness_project/data/db/models/get_groups_by_user_req.dart';
+import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
+import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
-import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/get_all_exercises.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart';
@@ -34,14 +33,11 @@ class HomeDataError extends HomeDataState {
 }
 
 class HomeDataCubit extends Cubit<HomeDataState> {
-  final UserEntity currentUser;
-  HomeDataCubit(this.currentUser) : super(HomeDataLoading()) {
-    loadData();
-  }
+  HomeDataCubit() : super(HomeDataLoading());
 
-  Future<void> loadData() async {
+  Future<void> loadData(String currentUserId) async {
     try {
-      final mygroups = await _fetchMyGroups();
+      final mygroups = await _fetchMyGroups(currentUserId);
       if (mygroups == null) {
         emit(HomeDataError('Failed to load groups'));
         return;
@@ -51,7 +47,7 @@ class HomeDataCubit extends Cubit<HomeDataState> {
         return;
       }
       final groupsWhereIamMember = mygroups
-          .where((element) => element.members.contains(currentUser.userId))
+          .where((element) => element.members.contains(currentUserId))
           .toList();
       final myChallenges = await _fetchMyChallenges(
           groupsWhereIamMember.map((e) => e.groupId).toList());
@@ -87,9 +83,9 @@ class HomeDataCubit extends Cubit<HomeDataState> {
     }
   }
 
-  Future<List<GroupEntity>?> _fetchMyGroups() async {
+  Future<List<GroupEntity>?> _fetchMyGroups(String currentUserId) async {
     final groups = await sl<GetGroupsByUserUseCase>()
-        .call(params: GetGroupsByUserReq(userId: currentUser.userId));
+        .call(params: GetGroupsByUserReq(userId: currentUserId));
     List<GroupEntity>? myGroups;
     groups.fold((error) {
       emit(HomeDataError('Failed to load groups $error'));

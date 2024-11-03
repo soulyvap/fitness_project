@@ -20,6 +20,7 @@ class CustomDropDown extends StatelessWidget {
             showModalBottomSheet(
                 isDismissible: false,
                 enableDrag: false,
+                isScrollControlled: true,
                 context: context,
                 builder: modalBuilder);
           },
