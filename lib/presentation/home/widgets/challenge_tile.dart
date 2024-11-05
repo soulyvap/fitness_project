@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 class ChallengeTile extends StatefulWidget {
   final ChallengeEntity challenge;
   final ExerciseEntity exercise;
-  final GroupEntity group;
+  final GroupEntity? group;
   final Function()? onTap;
 
   const ChallengeTile(
@@ -179,10 +179,11 @@ class _ChallengeTileState extends State<ChallengeTile> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: GroupTileSmall(group: widget.group),
-          ),
+          if (widget.group != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: GroupTileSmall(group: widget.group!),
+            ),
         ],
       ),
     );

@@ -12,16 +12,18 @@ class SubmissionTile extends StatelessWidget {
   final SubmissionEntity submission;
   final ChallengeEntity challenge;
   final ExerciseEntity exercise;
-  final GroupEntity group;
+  final GroupEntity? group;
   final Function()? onTap;
+  final double width;
 
   const SubmissionTile(
       {super.key,
       required this.submission,
       required this.challenge,
       required this.exercise,
-      required this.group,
-      this.onTap});
+      this.group,
+      this.onTap,
+      this.width = 100});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class SubmissionTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: SizedBox(
-                  width: 100,
+                  width: width,
                   child: AspectRatio(
                     aspectRatio: 10 / 16,
                     child: Container(
@@ -144,10 +146,11 @@ class SubmissionTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: GroupTileSmall(group: group),
-              ),
+              if (group != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: GroupTileSmall(group: group!),
+                ),
             ],
           ),
         );

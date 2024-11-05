@@ -76,8 +76,23 @@ class HomeDataCubit extends Cubit<HomeDataState> {
           .where((element) => element.endsAt.isBefore(DateTime.now()))
           .toList();
 
-      emit(HomeDataLoaded(mygroups, activeChallenges, previousChallenges,
-          allExercises, activeSubmissions));
+      myChallenges.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      final groupIdsWithoutChallenge =
+          myChallenges.map((e) => e.groupId).toSet().toList();
+      final groupsWithChallenge = groupIdsWithoutChallenge
+          .map((e) => mygroups.firstWhere((element) => element.groupId == e))
+          .toList();
+      final groupsWithoutAChallenge = mygroups
+          .where(
+              (element) => !groupIdsWithoutChallenge.contains(element.groupId))
+          .toList();
+
+      emit(HomeDataLoaded(
+          [...groupsWithChallenge, ...groupsWithoutAChallenge],
+          activeChallenges,
+          previousChallenges,
+          allExercises,
+          activeSubmissions));
     } catch (e) {
       emit(HomeDataError(e.toString()));
     }

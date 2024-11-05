@@ -12,6 +12,7 @@ class GroupListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Card(
+        color: Colors.grey,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -30,9 +31,9 @@ class GroupListTile extends StatelessWidget {
           ),
           child: group.imageUrl == null
               ? const Icon(
-                  Icons.group,
+                  Icons.fitness_center,
                   size: 24,
-                  color: Colors.grey,
+                  color: Colors.white,
                 )
               : null,
         ),

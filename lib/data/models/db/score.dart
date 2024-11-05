@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
 
 class ScoreModel {
@@ -8,6 +9,7 @@ class ScoreModel {
   final String userId;
   final int points;
   final String type;
+  final Timestamp createdAt;
 
   ScoreModel({
     required this.scoreId,
@@ -17,6 +19,7 @@ class ScoreModel {
     required this.type,
     required this.groupId,
     this.submissionId,
+    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +31,7 @@ class ScoreModel {
       'userId': userId,
       'points': points,
       'type': type,
+      'createdAt': createdAt,
     };
     return dataMap;
   }
@@ -41,6 +45,7 @@ class ScoreModel {
       userId: map['userId'],
       points: map['points'],
       type: map['type'],
+      createdAt: map['createdAt'],
     );
   }
 }
@@ -55,6 +60,7 @@ extension ScoreXModel on ScoreModel {
       userId: userId,
       points: points,
       type: ScoreType.fromName(type),
+      createdAt: createdAt.toDate(),
     );
   }
 }

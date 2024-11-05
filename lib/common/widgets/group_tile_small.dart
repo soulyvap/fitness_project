@@ -21,6 +21,7 @@ class GroupTileSmall extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Card(
+            color: Colors.grey,
             margin: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
@@ -39,9 +40,9 @@ class GroupTileSmall extends StatelessWidget {
               ),
               child: group.imageUrl == null
                   ? const Icon(
-                      Icons.group,
+                      Icons.fitness_center,
                       size: 16,
-                      color: Colors.grey,
+                      color: Colors.white,
                     )
                   : null,
             ),

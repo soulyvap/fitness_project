@@ -9,20 +9,32 @@ import 'package:flutter/material.dart';
 
 class ChallengeList extends StatelessWidget {
   final List<ChallengeEntity> challenges;
-  final List<GroupEntity> groups;
+  final List<GroupEntity>? groups;
   final List<ExerciseEntity> exercises;
   final String title;
+  final bool lastFirst;
+  final bool hideGroup;
+  final GroupEntity? group;
+  final Function()? onTapAddChallengeExtra;
 
   const ChallengeList({
     super.key,
-    required this.groups,
+    this.groups,
     required this.challenges,
     required this.exercises,
     required this.title,
+    this.hideGroup = false,
+    this.lastFirst = false,
+    this.group,
+    this.onTapAddChallengeExtra,
   });
 
   List<ChallengeEntity> orderedChallenges(List<ChallengeEntity> challenges) {
-    challenges.sort((a, b) => a.endsAt.compareTo(b.endsAt));
+    if (lastFirst) {
+      challenges.sort((a, b) => b.endsAt.compareTo(a.endsAt));
+    } else {
+      challenges.sort((a, b) => a.endsAt.compareTo(b.endsAt));
+    }
     return challenges;
   }
 
@@ -53,7 +65,7 @@ class ChallengeList extends StatelessWidget {
                   final challenge = orderedChallenges(challenges)[index];
                   final exercise = exercises.firstWhere(
                       (element) => element.exerciseId == challenge.exerciseId);
-                  final group = groups.firstWhere(
+                  final group = groups?.firstWhere(
                       (element) => element.groupId == challenge.groupId);
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -76,12 +88,17 @@ class ChallengeList extends StatelessWidget {
                   return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: AddChallengeTile(onTap: () {
+                        if (onTapAddChallengeExtra != null) {
+                          onTapAddChallengeExtra!();
+                        }
                         showModalBottomSheet(
                             isScrollControlled: true,
                             showDragHandle: true,
                             backgroundColor: Colors.white,
                             context: context,
-                            builder: (context) => const StartAChallengeSheet());
+                            builder: (context) => StartAChallengeSheet(
+                                  group: group,
+                                ));
                       }));
                 }
               },

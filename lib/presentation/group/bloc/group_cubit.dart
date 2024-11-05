@@ -21,11 +21,26 @@ class GroupLoaded extends GroupState {
   final List<String> memberIds;
   final List<ChallengeEntity> activeChallenges;
   final List<ChallengeEntity> previousChallenges;
-  final List<SubmissionEntity> submissions;
   final List<ExerciseEntity> allExercises;
 
-  GroupLoaded(this.group, this.memberIds, this.submissions,
-      this.activeChallenges, this.previousChallenges, this.allExercises);
+  GroupLoaded(this.group, this.memberIds, this.activeChallenges,
+      this.previousChallenges, this.allExercises);
+
+  GroupLoaded copyWith({
+    GroupEntity? group,
+    List<String>? memberIds,
+    List<ChallengeEntity>? activeChallenges,
+    List<ChallengeEntity>? previousChallenges,
+    List<ExerciseEntity>? allExercises,
+  }) {
+    return GroupLoaded(
+      group ?? this.group,
+      memberIds ?? this.memberIds,
+      activeChallenges ?? this.activeChallenges,
+      previousChallenges ?? this.previousChallenges,
+      allExercises ?? this.allExercises,
+    );
+  }
 }
 
 class GroupError extends GroupState {
@@ -63,13 +78,6 @@ class GroupCubit extends Cubit<GroupState> {
       return;
     }
 
-    final submissions = await _fetchSubmissions([groupId]);
-
-    if (submissions == null) {
-      emit(GroupError('Failed to load submissions'));
-      return;
-    }
-
     final activeChallenges = myChallenges
         .where((element) => element.endsAt.isAfter(DateTime.now()))
         .toList();
@@ -78,8 +86,8 @@ class GroupCubit extends Cubit<GroupState> {
         .where((element) => element.endsAt.isBefore(DateTime.now()))
         .toList();
 
-    emit(GroupLoaded(group, group.members, submissions, activeChallenges,
-        previousChallenges, allExercises));
+    emit(GroupLoaded(group, group.members, activeChallenges, previousChallenges,
+        allExercises));
   }
 
   Future<GroupEntity?> _fetchGroup() async {
@@ -121,22 +129,5 @@ class GroupCubit extends Cubit<GroupState> {
       allExercises = data;
     });
     return allExercises;
-  }
-
-  Future<List<SubmissionEntity>?> _fetchSubmissions(
-      List<String> groupIds) async {
-    final submissions =
-        await sl<GetSubmissionsByGroupsUseCase>().call(params: groupIds);
-
-    List<SubmissionEntity>? activeSubmissions;
-
-    submissions.fold((error) {
-      emit(GroupError('Failed to load submissions: $error'));
-      activeSubmissions = null;
-    }, (data) {
-      activeSubmissions = data;
-    });
-
-    return activeSubmissions;
   }
 }

@@ -11,7 +11,9 @@ import 'package:fitness_project/domain/usecases/db/add_submission_seen.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_comments_by_submission.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
+import 'package:fitness_project/domain/usecases/db/get_previous_ended_challenge.dart';
 import 'package:fitness_project/domain/usecases/db/get_scores_by_challenge_and_user.dart';
+import 'package:fitness_project/domain/usecases/db/get_scores_by_group.dart';
 import 'package:fitness_project/domain/usecases/db/get_scores_by_submission.dart';
 import 'package:fitness_project/domain/usecases/db/get_submission_by_challenge_and_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_submission_by_id.dart';
@@ -25,6 +27,7 @@ import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart
 import 'package:fitness_project/domain/usecases/db/get_exercise_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_groups_by_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_users_by_display_name.dart';
+import 'package:fitness_project/domain/usecases/db/get_users_by_ids.dart';
 import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
 import 'package:fitness_project/domain/usecases/db/update_comment.dart';
 import 'package:fitness_project/domain/usecases/db/update_group.dart';
@@ -84,6 +87,9 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<UpdateCommentUseCase>(UpdateCommentUseCase());
   sl.registerSingleton<GetCommentsBySubmissionUseCase>(
       GetCommentsBySubmissionUseCase());
-
+  sl.registerSingleton<GetUsersByIdsUseCase>(GetUsersByIdsUseCase());
+  sl.registerSingleton<GetScoresByGroupUseCase>(GetScoresByGroupUseCase());
+  sl.registerSingleton<GetPreviousEndedChallengeUseCase>(
+      GetPreviousEndedChallengeUseCase());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

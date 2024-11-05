@@ -327,4 +327,51 @@ class DBRepositoryImpl extends DBRepository {
       return Right(commentEntities);
     });
   }
+
+  @override
+  Future<Either> getUsersByIds(List<String> userIds) async {
+    final users = await sl<FirestoreFirebaseService>().getUsersByIds(userIds);
+    return users.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Users not found');
+      }
+      final List<Map<String, dynamic>> users = data;
+      final userEntities =
+          users.map((e) => UserModel.fromMap(e).toEntity()).toList();
+      return Right(userEntities);
+    });
+  }
+
+  @override
+  Future<Either> getScoresByGroup(String groupId) async {
+    final scores =
+        await sl<FirestoreFirebaseService>().getScoresByGroup(groupId);
+    return scores.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Scores not found');
+      }
+      final List<Map<String, dynamic>> scores = data;
+      final scoreEntities =
+          scores.map((e) => ScoreModel.fromMap(e).toEntity()).toList();
+      return Right(scoreEntities);
+    });
+  }
+
+  @override
+  Future<Either> getPreviousEndedChallenge(String groupId) async {
+    final challenge =
+        await sl<FirestoreFirebaseService>().getPreviousEndedChallenge(groupId);
+    return challenge.fold((error) {
+      return Left(error);
+    }, (data) {
+      if (data == null) {
+        return const Left('Challenge not found');
+      }
+      return Right(ChallengeModel.fromMap(data).toEntity());
+    });
+  }
 }

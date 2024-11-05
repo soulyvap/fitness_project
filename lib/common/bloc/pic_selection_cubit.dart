@@ -9,4 +9,8 @@ class PicSelectionCubit extends Cubit<XFile?> {
     final XFile? image = await picker.pickImage(source: source);
     emit(image);
   }
+
+  void clear() {
+    emit(null);
+  }
 }

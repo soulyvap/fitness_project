@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class GroupHeader extends StatelessWidget {
     return Row(
       children: [
         Card(
+          color: Colors.grey,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -28,9 +30,9 @@ class GroupHeader extends StatelessWidget {
             child: group.imageUrl == null
                 ? const Center(
                     child: Icon(
-                      Icons.group,
+                      Icons.fitness_center,
                       size: 40,
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                   )
                 : null,
@@ -65,7 +67,12 @@ class GroupHeader extends StatelessWidget {
                   OutlinedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.people),
-                      label: Text("${group.members.length} members")),
+                      label: Text(
+                          "${group.members.length} member${group.members.length > 1 ? "s" : ""}")),
+                  if (FirebaseAuth.instance.currentUser?.uid != null &&
+                      !group.members
+                          .contains(FirebaseAuth.instance.currentUser?.uid))
+                    ElevatedButton(onPressed: () {}, child: const Text("Join")),
                 ],
               )
             ],

@@ -1,15 +1,18 @@
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
 import 'package:fitness_project/common/widgets/group_tile_small.dart';
 import 'package:fitness_project/common/widgets/user_tile_small.dart';
+import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/presentation/view_submissions/bloc/video_info_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 class VideoPlayerFooter extends StatelessWidget {
   final VideoInfoState state;
+  final Function() pauseVideo;
   const VideoPlayerFooter({
     super.key,
     required this.state,
+    required this.pauseVideo,
   });
 
   @override
@@ -28,7 +31,15 @@ class VideoPlayerFooter extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GroupTileSmall(group: group, textColor: Colors.white),
+              GroupTileSmall(
+                group: group,
+                textColor: Colors.white,
+                onTap: () {
+                  pauseVideo();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => GroupPage(groupId: group.groupId)));
+                },
+              ),
               const SizedBox(
                 height: 4,
               ),

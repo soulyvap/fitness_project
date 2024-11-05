@@ -1,4 +1,5 @@
 import 'package:fitness_project/domain/entities/db/submission.dart';
+import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/view_submissions/bloc/video_info_cache_cubit.dart';
 import 'package:fitness_project/presentation/view_submissions/widgets/vertical_video_player.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class VideoScroller extends StatefulWidget {
   State<VideoScroller> createState() => _VideoScrollerState();
 }
 
-class _VideoScrollerState extends State<VideoScroller> {
+class _VideoScrollerState extends State<VideoScroller> with RouteAware {
   late PageController _pageController;
   late int _currentIndex;
   late List<VideoPlayerController> videoControllers;
@@ -22,6 +23,7 @@ class _VideoScrollerState extends State<VideoScroller> {
   @override
   void initState() {
     super.initState();
+
     final initialIndex = widget.startIndex ?? 0;
     _pageController = PageController(
       initialPage: initialIndex,
@@ -61,7 +63,28 @@ class _VideoScrollerState extends State<VideoScroller> {
     for (var controller in videoControllers) {
       controller.dispose();
     }
+    routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    final currentController = videoControllers[_currentIndex];
+    currentController.play();
+  }
+
+  @override
+  void didPushNext() {
+    super.didPushNext();
+    final currentController = videoControllers[_currentIndex];
+    currentController.pause();
   }
 
   void onPageChanged(int index) {

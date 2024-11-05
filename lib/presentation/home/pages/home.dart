@@ -50,61 +50,67 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             title: Text("Welcome back ${widget.currentUser.displayName}"),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ChallengeList(
-                      title: "Active challenges (${activeChallenges.length})",
-                      groups: groups,
-                      challenges: activeChallenges,
-                      exercises: exercises),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  SubmissionList(
-                      submissions: submissions,
-                      groups: groups,
-                      challenges: allChallenges,
-                      exercises: exercises,
-                      title: "Recent submissions"),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  ChallengeList(
-                      title: "Previous challenges",
-                      groups: groups,
-                      challenges: previousChallenges,
-                      exercises: exercises),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  YourGroupsList(groups: groups),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        var result = await sl<LogoutUseCase>().call();
-                        result.fold(
-                            (error) =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(error.toString()),
-                                  ),
-                                ), (data) {
-                          context.read<UserCubit>().clear();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
-                        });
-                      },
-                      child: const Text("Logout")),
-                ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              context.read<HomeDataCubit>().loadData(widget.currentUser.userId);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ChallengeList(
+                        title: "Active challenges (${activeChallenges.length})",
+                        groups: groups,
+                        challenges: activeChallenges,
+                        exercises: exercises),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    SubmissionList(
+                        submissions: submissions,
+                        groups: groups,
+                        challenges: allChallenges,
+                        exercises: exercises,
+                        title: "Recent submissions"),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ChallengeList(
+                        title: "Previous challenges",
+                        groups: groups,
+                        challenges: previousChallenges,
+                        exercises: exercises,
+                        lastFirst: true),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    YourGroupsList(groups: groups),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          var result = await sl<LogoutUseCase>().call();
+                          result.fold(
+                              (error) =>
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(error.toString()),
+                                    ),
+                                  ), (data) {
+                            context.read<UserCubit>().clear();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          });
+                        },
+                        child: const Text("Logout")),
+                  ],
+                ),
               ),
             ),
           ),

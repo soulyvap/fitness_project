@@ -5,11 +5,14 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/main.dart';
+import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
 import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/view_submissions/pages/my_post.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChallengeCard extends StatelessWidget {
@@ -50,6 +53,11 @@ class ChallengeCard extends StatelessWidget {
         children: [
           ListTile(
             dense: true,
+            trailing: IconButton(
+                onPressed: () {
+                  context.read<ChallengeDetailsCubit>().loadData();
+                },
+                icon: const Icon(Icons.refresh)),
             leading: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey,

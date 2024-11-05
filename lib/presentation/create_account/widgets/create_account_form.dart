@@ -98,6 +98,9 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
               pickFrom: (source) {
                 context.read<PicSelectionCubit>().pickFrom(source);
               },
+              removeFile: () {
+                context.read<PicSelectionCubit>().clear();
+              },
             ),
             const SizedBox(
               height: 16,

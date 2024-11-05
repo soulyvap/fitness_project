@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 class CustomDropDown extends StatelessWidget {
   final Widget placeholder;
   final Widget? selected;
+  final bool? disabled;
   final Widget Function(BuildContext) modalBuilder;
 
   const CustomDropDown(
       {super.key,
       required this.placeholder,
       this.selected,
-      required this.modalBuilder});
+      required this.modalBuilder,
+      this.disabled});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class CustomDropDown extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () {
+            if (disabled == true) return;
             showModalBottomSheet(
                 isDismissible: false,
                 enableDrag: false,

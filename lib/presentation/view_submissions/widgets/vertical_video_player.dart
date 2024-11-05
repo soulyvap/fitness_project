@@ -106,7 +106,11 @@ class _VerticalVideoPlayerState extends State<VerticalVideoPlayer> {
                               VideoPlayerHeader(videoInfoState: videoInfoState),
                               const Spacer(),
                               VideoPlayerSideButtons(state: videoInfoState),
-                              VideoPlayerFooter(state: videoInfoState)
+                              VideoPlayerFooter(
+                                  state: videoInfoState,
+                                  pauseVideo: () {
+                                    _controller.pause();
+                                  }),
                             ],
                           ),
                         ),

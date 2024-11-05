@@ -63,6 +63,9 @@ class _DetailsFormState extends State<DetailsForm> {
                     ),
                   ],
                 ),
+                removeFile: () {
+                  context.read<PicSelectionCubit>().clear();
+                },
               ),
             ),
             const SizedBox(height: 16),

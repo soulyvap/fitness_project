@@ -37,10 +37,10 @@ class ChallengeDetailsCubit extends Cubit<ChallengeDetailsState> {
   final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
   ChallengeDetailsCubit({required this.challengeId})
       : super(ChallengeDetailsLoading()) {
-    _loadData();
+    loadData();
   }
 
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     try {
       final challenge = await _fetchChallenge(challengeId);
 

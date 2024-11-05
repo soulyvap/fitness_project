@@ -39,4 +39,7 @@ abstract class DBRepository {
   Future<Either> updateLike(UpdateLikeReq updateLikeReq);
   Future<Either> updateComment(UpdateCommentReq updateCommentReq);
   Future<Either> getCommentsBySubmission(String submissionId);
+  Future<Either> getUsersByIds(List<String> userIds);
+  Future<Either> getScoresByGroup(String groupId);
+  Future<Either> getPreviousEndedChallenge(String groupId);
 }

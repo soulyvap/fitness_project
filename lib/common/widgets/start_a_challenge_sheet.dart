@@ -16,7 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StartAChallengeSheet extends StatefulWidget {
-  const StartAChallengeSheet({super.key});
+  final GroupEntity? group;
+  const StartAChallengeSheet({super.key, this.group});
 
   @override
   State<StartAChallengeSheet> createState() => _StartAChallengeSheetState();
@@ -138,7 +139,8 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
             create: (context) => StartAChallengeCubit(currentUserId),
           ),
           BlocProvider<NewChallengeFormCubit>(
-              create: (context) => NewChallengeFormCubit())
+              create: (context) =>
+                  NewChallengeFormCubit(groupId: widget.group?.groupId)),
         ],
         child: SizedBox(
           width: MediaQuery.of(context).size.width,

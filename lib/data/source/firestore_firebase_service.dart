@@ -48,6 +48,9 @@ abstract class FirestoreFirebaseService {
   Future<Either> updateLike(UpdateLikeReq updateLikeReq);
   Future<Either> updateComment(UpdateCommentReq updateCommentReq);
   Future<Either> getCommentsBySubmission(String submissionId);
+  Future<Either> getUsersByIds(List<String> userIds);
+  Future<Either> getScoresByGroup(String groupId);
+  Future<Either> getPreviousEndedChallenge(String groupId);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -62,6 +65,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       final dataMap = addScoreReq.toMap();
       final scoreId = _firestore.collection('scores').doc().id;
       dataMap['scoreId'] = scoreId;
+      dataMap['createdAt'] = Timestamp.now();
       batch.set(_firestore.collection('scores').doc(scoreId), dataMap);
     }
 
@@ -642,6 +646,60 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return Right(comments);
     } catch (e) {
       return Left('Failed to get comments by submission: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> getUsersByIds(List<String> userIds) async {
+    var toBeFetched = userIds.toChunks(25);
+    List<Map<String, dynamic>> users = [];
+    try {
+      for (var chunk in toBeFetched) {
+        final chunkUsers = await _firestore
+            .collection('users')
+            .where('userId', whereIn: chunk)
+            .get()
+            .then((value) => value.docs.map((d) => d.data()).toList());
+        users.addAll(chunkUsers);
+      }
+      return Right(users);
+    } catch (e) {
+      return Left('Failed to get challenges by groups: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> getScoresByGroup(String groupId) async {
+    try {
+      final scores = await _firestore
+          .collection('scores')
+          .where('groupId', isEqualTo: groupId)
+          .get()
+          .then((value) => value.docs.map((d) => d.data()).toList());
+      return Right(scores);
+    } catch (e) {
+      return Left('Failed to get scores by group: $e');
+    }
+  }
+
+  @override
+  Future<Either> getPreviousEndedChallenge(String groupId) async {
+    try {
+      return await _firestore
+          .collection('challenges')
+          .where('groupId', isEqualTo: groupId)
+          .where('endsAt', isLessThan: Timestamp.now())
+          .orderBy('endsAt', descending: true)
+          .limit(1)
+          .get()
+          .then((value) {
+        if (value.size == 0) {
+          return const Right(null);
+        }
+        return Right(value.docs.first.data());
+      });
+    } catch (e) {
+      return Left('Failed to get previous ended challenge: $e');
     }
   }
 }

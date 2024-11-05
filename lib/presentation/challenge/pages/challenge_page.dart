@@ -7,6 +7,7 @@ import 'package:fitness_project/domain/entities/db/score.dart';
 import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
 import 'package:fitness_project/common/widgets/countdown.dart';
 import 'package:fitness_project/presentation/challenge/widgets/challenge_card.dart';
+import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,16 +25,22 @@ class ChallengePage extends StatefulWidget {
 }
 
 class _ChallengePageState extends State<ChallengePage> {
-  void _showPoints(BuildContext context, List<ScoreEntity> scores) {
+  void _showPoints(
+      BuildContext context, List<ScoreEntity> scores, String groupId) {
     showModalBottomSheet(
         context: context,
-        showDragHandle: true,
         builder: (context) {
           return ScoreSummary(
             scores: scores,
             actionButton: ElevatedButton.icon(
                 icon: const Icon(Icons.leaderboard),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => GroupPage(
+                            groupId: groupId,
+                            initialTabIndex: 2,
+                          )));
+                },
                 label: const Text("See Leaderboard")),
           );
         });
@@ -134,7 +141,8 @@ class _ChallengePageState extends State<ChallengePage> {
                                     debugPrint(scoreState.errorMessage);
                                   }
                                   if (scoreState is ScoreSummaryLoaded) {
-                                    _showPoints(context, scoreState.scores);
+                                    _showPoints(context, scoreState.scores,
+                                        group.groupId);
                                   }
                                 },
                                 builder: (context, scoreState) {
@@ -148,7 +156,9 @@ class _ChallengePageState extends State<ChallengePage> {
                                           if (scoreState
                                               is ScoreSummaryLoaded) {
                                             _showPoints(
-                                                context, scoreState.scores);
+                                                context,
+                                                scoreState.scores,
+                                                group.groupId);
                                           } else {
                                             context
                                                 .read<ScoreSummaryCubit>()

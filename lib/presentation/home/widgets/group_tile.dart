@@ -14,6 +14,7 @@ class GroupTile extends StatelessWidget {
         height: 100,
         width: 100,
         child: Card(
+          color: Colors.grey,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -35,9 +36,9 @@ class GroupTile extends StatelessWidget {
                 if (group.imageUrl == null)
                   const Center(
                     child: Icon(
-                      Icons.group,
+                      Icons.fitness_center,
                       size: 40,
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                   ),
                 Container(
@@ -48,7 +49,8 @@ class GroupTile extends StatelessWidget {
                     style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: 11,
+                        height: 1,
                         shadows: [
                           Shadow(
                             color: Colors.black,

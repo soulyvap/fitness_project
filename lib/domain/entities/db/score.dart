@@ -8,6 +8,7 @@ class ScoreEntity {
   final String userId;
   final int points;
   final ScoreType type;
+  final DateTime createdAt;
 
   ScoreEntity({
     required this.scoreId,
@@ -17,6 +18,7 @@ class ScoreEntity {
     required this.type,
     required this.groupId,
     this.submissionId,
+    required this.createdAt,
   });
 }
 

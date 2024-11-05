@@ -17,7 +17,9 @@ class NewChallengeFormState {
 }
 
 class NewChallengeFormCubit extends Cubit<NewChallengeFormState> {
-  NewChallengeFormCubit() : super(NewChallengeFormState());
+  final String? groupId;
+  NewChallengeFormCubit({this.groupId})
+      : super(NewChallengeFormState(groupId: groupId));
 
   void onValuesChanged({
     String? groupId,

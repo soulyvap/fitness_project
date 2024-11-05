@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/presentation/view_submissions/bloc/side_buttons_cubit.dart';
 import 'package:fitness_project/presentation/view_submissions/bloc/video_info_cubit.dart';
-import 'package:fitness_project/presentation/view_submissions/widgets/comment_modal_content.dart';
+import 'package:fitness_project/presentation/view_submissions/widgets/comment_button.dart';
+import 'package:fitness_project/presentation/view_submissions/widgets/like_button.dart';
+import 'package:fitness_project/presentation/view_submissions/widgets/seen_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,113 +46,43 @@ class VideoPlayerSideButtons extends StatelessWidget {
             final likedBy = sideButtonsState.likedBy;
             final seenBy = sideButtonsState.seenBy;
             final commentCount = sideButtonsState.commentCount;
-            final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-            final isLiked =
-                currentUserId != null && likedBy.contains(currentUserId);
+
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  InkWell(
+                  LikeButton(
                     onTap: () {
                       sideButtonsContext.read<SideButtonsCubit>().onLike();
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.thumb_up,
-                            size: 32,
-                            color: isLiked
-                                ? Theme.of(sideButtonsContext)
-                                    .colorScheme
-                                    .primary
-                                : Colors.white,
-                            shadows: const [
-                              Shadow(
-                                color: Colors.white,
-                                offset: Offset(1, 1),
-                                blurRadius: 2,
-                              )
-                            ],
-                          ),
-                          Text("${likedBy.length}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: sideButtonsContext,
-                          builder: (context) => CommentModalContent(
-                                submissionId: (state as VideoInfoLoaded)
-                                    .data
-                                    .submission
-                                    .submissionId,
-                                onLoadComments: (comments) => sideButtonsContext
-                                    .read<SideButtonsCubit>()
-                                    .updateCommentCount(comments.length),
-                              ));
+                    submissionId:
+                        (state as VideoInfoLoaded).data.submission.submissionId,
+                    currentLikes: likedBy,
+                    onLikesLoaded: (likes) {
+                      sideButtonsContext
+                          .read<SideButtonsCubit>()
+                          .updateLikes(likes);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.comment,
-                              size: 32,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.white,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 2,
-                                )
-                              ]),
-                          Text("$commentCount",
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
                   ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.visibility,
-                              size: 32,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.white,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 2,
-                                )
-                              ]),
-                          Text("${seenBy.length}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ],
-                      ),
-                    ),
+                  CommentButton(
+                      submissionId: (state as VideoInfoLoaded)
+                          .data
+                          .submission
+                          .submissionId,
+                      updateCommentCount: (count) => sideButtonsContext
+                          .read<SideButtonsCubit>()
+                          .updateCommentCount(count),
+                      commentCount: commentCount),
+                  SeenButton(
+                    currentSeen: seenBy,
+                    submissionId:
+                        (state as VideoInfoLoaded).data.submission.submissionId,
+                    onSeenLoaded: (seenBy) {
+                      sideButtonsContext
+                          .read<SideButtonsCubit>()
+                          .updateSeenBy(seenBy);
+                    },
                   ),
                 ],
               ),

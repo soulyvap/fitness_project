@@ -57,4 +57,12 @@ class SideButtonsCubit extends Cubit<SideButtonState> {
   void updateCommentCount(int newCommentCount) {
     emit(state.copyWith(commentCount: newCommentCount));
   }
+
+  void updateLikes(List<String> newLikes) {
+    emit(state.copyWith(likedBy: newLikes));
+  }
+
+  void updateSeenBy(List<String> newSeenBy) {
+    emit(state.copyWith(seenBy: newSeenBy));
+  }
 }
