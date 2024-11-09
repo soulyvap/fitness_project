@@ -29,8 +29,10 @@ class LeaderboardTab extends StatelessWidget {
             child: RefreshIndicator(
               onRefresh: () async {
                 context.read<LeaderboardCubit>().loadData();
+                Future.delayed(const Duration(seconds: 1));
               },
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const Divider(),
                 itemCount: leaderboard.length,
                 itemBuilder: (context, index) {
                   final item = leaderboard[index];

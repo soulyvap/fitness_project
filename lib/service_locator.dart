@@ -8,6 +8,7 @@ import 'package:fitness_project/domain/repository/auth.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/domain/usecases/db/add_submission_seen.dart';
+import 'package:fitness_project/domain/usecases/db/edit_group_user_array.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_comments_by_submission.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
@@ -30,6 +31,7 @@ import 'package:fitness_project/domain/usecases/db/get_users_by_display_name.dar
 import 'package:fitness_project/domain/usecases/db/get_users_by_ids.dart';
 import 'package:fitness_project/domain/usecases/db/update_challenge.dart';
 import 'package:fitness_project/domain/usecases/db/update_comment.dart';
+import 'package:fitness_project/domain/usecases/db/update_fcm_token.dart';
 import 'package:fitness_project/domain/usecases/db/update_group.dart';
 import 'package:fitness_project/domain/usecases/db/update_like.dart';
 import 'package:fitness_project/domain/usecases/db/update_submission.dart';
@@ -91,5 +93,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetScoresByGroupUseCase>(GetScoresByGroupUseCase());
   sl.registerSingleton<GetPreviousEndedChallengeUseCase>(
       GetPreviousEndedChallengeUseCase());
+  sl.registerSingleton<EditGroupUserArrayUseCase>(EditGroupUserArrayUseCase());
+  sl.registerSingleton<UpdateFcmToken>(UpdateFcmToken());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

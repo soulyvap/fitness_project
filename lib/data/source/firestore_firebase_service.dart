@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/string_list_extension.dart';
 import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/data/models/db/add_score_req.dart';
 import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
 import 'package:fitness_project/data/models/db/challenge.dart';
@@ -51,6 +52,9 @@ abstract class FirestoreFirebaseService {
   Future<Either> getUsersByIds(List<String> userIds);
   Future<Either> getScoresByGroup(String groupId);
   Future<Either> getPreviousEndedChallenge(String groupId);
+  Future<Either> editGroupUserArray(
+      EditGroupUserArrayReq editGroupUserArrayReq);
+  Future<Either> updateFcmToken(String token);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -371,6 +375,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
 
   @override
   Future<Either> updateGroup(UpdateGroupReq updateGroupReq) async {
+    final isAdd = updateGroupReq.groupId == null;
     final dataMap = updateGroupReq.toMap();
     if (dataMap.keys.length == 1) {
       return const Left("Invalid data");
@@ -378,6 +383,11 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
     final groupId =
         updateGroupReq.groupId ?? _firestore.collection('groups').doc().id;
     dataMap['groupId'] = groupId;
+
+    if (isAdd) {
+      dataMap['createdAt'] = Timestamp.now();
+      dataMap['admins'] = updateGroupReq.allowedUsers;
+    }
     try {
       _firestore
           .collection('groups')
@@ -700,6 +710,53 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       });
     } catch (e) {
       return Left('Failed to get previous ended challenge: $e');
+    }
+  }
+
+  @override
+  Future<Either> editGroupUserArray(
+      EditGroupUserArrayReq editGroupUserArrayReq) async {
+    try {
+      FieldValue fieldvalue =
+          FieldValue.arrayUnion([editGroupUserArrayReq.userId]);
+      switch (editGroupUserArrayReq.groupArrayAction) {
+        case GroupArrayAction.add:
+          fieldvalue = FieldValue.arrayUnion([editGroupUserArrayReq.userId]);
+          break;
+        case GroupArrayAction.remove:
+          fieldvalue = FieldValue.arrayRemove([editGroupUserArrayReq.userId]);
+          break;
+        default:
+          return const Left('Invalid group array action');
+      }
+      return await _firestore
+          .collection('groups')
+          .doc(editGroupUserArrayReq.groupId)
+          .update({editGroupUserArrayReq.groupUserArray.name: fieldvalue}).then(
+              (value) => const Right('User added to group'));
+    } catch (e) {
+      return Left('Failed to add user to group: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> updateFcmToken(String token) async {
+    if (_currentUserId == null) {
+      return const Left('User not found');
+    }
+    final dataMap = {
+      'userId': _currentUserId,
+      'token': token,
+      'createdAt': Timestamp.now()
+    };
+    try {
+      return await _firestore
+          .collection('fcmTokens')
+          .doc(_currentUserId)
+          .set(dataMap, SetOptions(merge: true))
+          .then((value) => const Right('Fcm token updated'));
+    } catch (e) {
+      return Left('Failed to update fcm token: ${e.toString()}');
     }
   }
 }

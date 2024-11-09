@@ -9,6 +9,7 @@ import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart
 import 'package:fitness_project/domain/usecases/db/get_groups_by_user.dart';
 import 'package:fitness_project/domain/usecases/db/get_submissions_by_groups.dart';
 import 'package:fitness_project/service_locator.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class HomeDataState {}
@@ -37,6 +38,7 @@ class HomeDataCubit extends Cubit<HomeDataState> {
 
   Future<void> loadData(String currentUserId) async {
     try {
+      debugPrint('Loading home data');
       final mygroups = await _fetchMyGroups(currentUserId);
       if (mygroups == null) {
         emit(HomeDataError('Failed to load groups'));

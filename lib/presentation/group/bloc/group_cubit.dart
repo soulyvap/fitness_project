@@ -2,11 +2,9 @@ import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
-import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/usecases/db/get_all_exercises.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenges_by_groups.dart';
 import 'package:fitness_project/domain/usecases/db/get_group_by_id.dart';
-import 'package:fitness_project/domain/usecases/db/get_submissions_by_groups.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -129,5 +127,18 @@ class GroupCubit extends Cubit<GroupState> {
       allExercises = data;
     });
     return allExercises;
+  }
+
+  void addAllowedUser(String userId) {
+    final currentState = state;
+    if (currentState is GroupLoaded) {
+      if (currentState.group.allowedUsers.contains(userId)) {
+        return;
+      }
+      final currentGroup = currentState.group;
+      final newAllowedUsers = [...currentGroup.allowedUsers, userId];
+      final newGroup = currentGroup.copyWith(allowedUsers: newAllowedUsers);
+      emit(currentState.copyWith(group: newGroup));
+    }
   }
 }

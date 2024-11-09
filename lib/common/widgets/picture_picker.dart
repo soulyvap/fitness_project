@@ -25,77 +25,108 @@ class PicturePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: SizedBox(
-        width: double.infinity,
-        child: AspectRatio(
-          aspectRatio: 1 / 1,
-          child: DottedBorder(
-            dashPattern: const [6, 6],
-            color: image == null ? Colors.black : Colors.transparent,
-            borderType: BorderType.RRect,
-            radius: borderRadius ?? const Radius.circular(1000),
-            child: InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: 100,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: Card(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      pickFrom(ImageSource.gallery);
-                                    },
-                                    child: const Center(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.image,
-                                              size: 48, color: Colors.white),
-                                          Text("Open gallery",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12)),
-                                        ],
-                                      ),
+      child: AspectRatio(
+        aspectRatio: 1 / 1,
+        child: DottedBorder(
+          dashPattern: const [6, 6],
+          color: image == null ? Colors.black : Colors.transparent,
+          borderType: BorderType.RRect,
+          radius: borderRadius ?? const Radius.circular(1000),
+          child: InkWell(
+            borderRadius:
+                BorderRadius.all(borderRadius ?? const Radius.circular(1000)),
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Card(
+                                color: Theme.of(context).colorScheme.secondary,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    pickFrom(ImageSource.gallery);
+                                  },
+                                  child: const Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.image,
+                                            size: 48, color: Colors.white),
+                                        Text("Open gallery",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12)),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
                             ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SizedBox(
+                            width: 100,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Card(
+                                color: Theme.of(context).colorScheme.secondary,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    pickFrom(ImageSource.camera);
+                                  },
+                                  child: const Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.camera_alt,
+                                            size: 48, color: Colors.white),
+                                        Text("Open camera",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (image != null)
                             const SizedBox(
                               width: 8,
                             ),
+                          if (image != null)
                             SizedBox(
                               width: 100,
                               child: AspectRatio(
                                 aspectRatio: 1,
                                 child: Card(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Colors.red,
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.pop(context);
-                                      pickFrom(ImageSource.camera);
+                                      removeFile();
                                     },
                                     child: const Center(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.camera_alt,
+                                          Icon(Icons.delete,
                                               size: 48, color: Colors.white),
-                                          Text("Open camera",
+                                          Text("Remove",
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 12)),
@@ -106,58 +137,23 @@ class PicturePicker extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            if (image != null)
-                              const SizedBox(
-                                width: 8,
-                              ),
-                            if (image != null)
-                              SizedBox(
-                                width: 100,
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Card(
-                                    color: Colors.red,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        removeFile();
-                                      },
-                                      child: const Center(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.delete,
-                                                size: 48, color: Colors.white),
-                                            Text("Remove",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    });
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                        borderRadius ?? const Radius.circular(1000)),
-                    shape: shape ?? BoxShape.circle,
-                    image: image != null
-                        ? DecorationImage(
-                            image: FileImage(File(image!.path)),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: image == null ? Center(child: placeholder) : null),
-            ),
+                        ],
+                      ),
+                    );
+                  });
+            },
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                      borderRadius ?? const Radius.circular(1000)),
+                  image: image != null
+                      ? DecorationImage(
+                          image: FileImage(File(image!.path)),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: image == null ? Center(child: placeholder) : null),
           ),
         ),
       ),

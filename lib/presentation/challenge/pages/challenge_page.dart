@@ -14,9 +14,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChallengePage extends StatefulWidget {
   final String challengeId;
   final bool? showPoints;
+  final Widget? previousPage;
   const ChallengePage({
     super.key,
     required this.challengeId,
+    this.previousPage,
     this.showPoints,
   });
 
@@ -57,7 +59,14 @@ class _ChallengePageState extends State<ChallengePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Challenge details'),
-        leading: const BackButton(),
+        leading: BackButton(
+          onPressed: () {
+            widget.previousPage != null
+                ? Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => widget.previousPage!))
+                : Navigator.of(context).pop();
+          },
+        ),
       ),
       body: BlocProvider<ChallengeDetailsCubit>(
         create: (context) =>
@@ -87,6 +96,7 @@ class _ChallengePageState extends State<ChallengePage> {
                           .indexOf(FirebaseAuth.instance.currentUser!.uid) +
                       1
                   : null;
+              final isDone = challenge.endsAt.isBefore(DateTime.now());
               return Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(children: [
@@ -101,6 +111,7 @@ class _ChallengePageState extends State<ChallengePage> {
                                   .inSeconds),
                           if (!isAuthor &&
                               !isCompleted &&
+                              !isDone &&
                               potentialPlacement <= 5)
                             Text(
                                 "Be the ${potentialPlacement.toOrdinal()} to complete!\nGet ${ScoreType.earlyParticipation(potentialPlacement)?.value} extra points!",
@@ -120,7 +131,7 @@ class _ChallengePageState extends State<ChallengePage> {
                                         Theme.of(context).colorScheme.primary)),
                           if (isCompleted)
                             Text(
-                                "You have completed this challenge!${!isAuthor ? '\nYou placed ${actualPlacement?.toOrdinal()})!' : ''}",
+                                "You have completed this challenge!${!isAuthor ? '\nYou placed ${actualPlacement?.toOrdinal()}!' : ''}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 14,

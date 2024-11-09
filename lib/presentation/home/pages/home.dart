@@ -53,35 +53,40 @@ class _HomePageState extends State<HomePage> {
           body: RefreshIndicator(
             onRefresh: () async {
               context.read<HomeDataCubit>().loadData(widget.currentUser.userId);
+              Future.delayed(const Duration(seconds: 1));
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    ChallengeList(
-                        title: "Active challenges (${activeChallenges.length})",
-                        groups: groups,
-                        challenges: activeChallenges,
-                        exercises: exercises),
+                    if (activeChallenges.isNotEmpty || groups.isNotEmpty)
+                      ChallengeList(
+                          title:
+                              "Active challenges (${activeChallenges.length})",
+                          groups: groups,
+                          challenges: activeChallenges,
+                          exercises: exercises),
                     const SizedBox(
                       height: 16,
                     ),
-                    SubmissionList(
-                        submissions: submissions,
-                        groups: groups,
-                        challenges: allChallenges,
-                        exercises: exercises,
-                        title: "Recent submissions"),
+                    if (submissions.isNotEmpty)
+                      SubmissionList(
+                          submissions: submissions,
+                          groups: groups,
+                          challenges: allChallenges,
+                          exercises: exercises,
+                          title: "Recent submissions"),
                     const SizedBox(
                       height: 16,
                     ),
-                    ChallengeList(
-                        title: "Previous challenges",
-                        groups: groups,
-                        challenges: previousChallenges,
-                        exercises: exercises,
-                        lastFirst: true),
+                    if (previousChallenges.isNotEmpty)
+                      ChallengeList(
+                          title: "Previous challenges",
+                          groups: groups,
+                          challenges: previousChallenges,
+                          exercises: exercises,
+                          lastFirst: true),
                     const SizedBox(
                       height: 16,
                     ),

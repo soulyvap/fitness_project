@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/models/db/add_group_member_req.dart';
+import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
 import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
@@ -42,4 +43,7 @@ abstract class DBRepository {
   Future<Either> getUsersByIds(List<String> userIds);
   Future<Either> getScoresByGroup(String groupId);
   Future<Either> getPreviousEndedChallenge(String groupId);
+  Future<Either> editGroupUserArray(
+      EditGroupUserArrayReq editGroupUserArrayReq);
+  Future<Either> updateFcmToken(String token);
 }

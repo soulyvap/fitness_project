@@ -1,13 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
+import 'package:fitness_project/domain/usecases/db/edit_group_user_array.dart';
+import 'package:fitness_project/presentation/group/bloc/group_cubit.dart';
+import 'package:fitness_project/presentation/group/bloc/members_cubit.dart';
+import 'package:fitness_project/presentation/group/widgets/members_modal_content.dart';
+import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupHeader extends StatelessWidget {
   final GroupEntity group;
-  const GroupHeader({super.key, required this.group});
+  final Function() onOpenModal;
+  const GroupHeader(
+      {super.key, required this.group, required this.onOpenModal});
 
   @override
   Widget build(BuildContext context) {
+    final isMember = FirebaseAuth.instance.currentUser?.uid != null &&
+        group.members.contains(FirebaseAuth.instance.currentUser!.uid);
     return Row(
       children: [
         Card(
@@ -64,15 +75,52 @@ class GroupHeader extends StatelessWidget {
               const Spacer(),
               Row(
                 children: [
-                  OutlinedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.people),
-                      label: Text(
-                          "${group.members.length} member${group.members.length > 1 ? "s" : ""}")),
-                  if (FirebaseAuth.instance.currentUser?.uid != null &&
-                      !group.members
-                          .contains(FirebaseAuth.instance.currentUser?.uid))
-                    ElevatedButton(onPressed: () {}, child: const Text("Join")),
+                  Builder(builder: (groupContext) {
+                    return OutlinedButton.icon(
+                        onPressed: () {
+                          onOpenModal();
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return BlocProvider.value(
+                                    value: groupContext.watch<MembersCubit>(),
+                                    child: MembersModalContent(
+                                      group: group,
+                                      addAllowedUser: (userId) {
+                                        groupContext
+                                            .read<GroupCubit>()
+                                            .addAllowedUser(userId);
+                                      },
+                                    ));
+                              });
+                        },
+                        icon: const Icon(Icons.people),
+                        label: Text(
+                            "${group.members.length} member${group.members.length > 1 ? "s" : ""}"));
+                  }),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  if (!isMember)
+                    ElevatedButton(
+                        onPressed: () async {
+                          final userId = FirebaseAuth.instance.currentUser?.uid;
+                          if (userId == null) return;
+                          await sl<EditGroupUserArrayUseCase>().call(
+                              params: EditGroupUserArrayReq(
+                                  groupId: group.groupId,
+                                  userId: userId,
+                                  groupUserArray: GroupUserArray.members,
+                                  groupArrayAction: GroupArrayAction.add));
+                          if (context.mounted) {
+                            context.read<GroupCubit>().loadData();
+                          }
+                        },
+                        child: const Text("Join")),
+                  if (isMember)
+                    ElevatedButton(
+                        onPressed: () {}, child: const Text("Leave")),
                 ],
               )
             ],

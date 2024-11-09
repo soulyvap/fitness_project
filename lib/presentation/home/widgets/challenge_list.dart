@@ -15,7 +15,8 @@ class ChallengeList extends StatelessWidget {
   final bool lastFirst;
   final bool hideGroup;
   final GroupEntity? group;
-  final Function()? onTapAddChallengeExtra;
+  final Function()? onOpenModal;
+  final Function()? onStartNewChallenge;
 
   const ChallengeList({
     super.key,
@@ -26,7 +27,8 @@ class ChallengeList extends StatelessWidget {
     this.hideGroup = false,
     this.lastFirst = false,
     this.group,
-    this.onTapAddChallengeExtra,
+    this.onOpenModal,
+    this.onStartNewChallenge,
   });
 
   List<ChallengeEntity> orderedChallenges(List<ChallengeEntity> challenges) {
@@ -88,8 +90,8 @@ class ChallengeList extends StatelessWidget {
                   return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: AddChallengeTile(onTap: () {
-                        if (onTapAddChallengeExtra != null) {
-                          onTapAddChallengeExtra!();
+                        if (onOpenModal != null) {
+                          onOpenModal!();
                         }
                         showModalBottomSheet(
                             isScrollControlled: true,
@@ -98,6 +100,9 @@ class ChallengeList extends StatelessWidget {
                             context: context,
                             builder: (context) => StartAChallengeSheet(
                                   group: group,
+                                  onStartChallenge: () {
+                                    onStartNewChallenge?.call();
+                                  },
                                 ));
                       }));
                 }

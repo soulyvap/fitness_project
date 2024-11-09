@@ -13,7 +13,7 @@ import 'package:fitness_project/presentation/create_group/bloc/create_group_form
 import 'package:fitness_project/presentation/create_group/pages/details_form.dart';
 import 'package:fitness_project/presentation/create_group/pages/members_form.dart';
 import 'package:fitness_project/presentation/create_group/pages/settings_form.dart';
-import 'package:fitness_project/presentation/create_group/widgets/user_autocomplete.dart';
+import 'package:fitness_project/common/widgets/user_autocomplete.dart';
 import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';

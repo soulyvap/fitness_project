@@ -41,8 +41,10 @@ class LeaderboardTile extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 18),
                 child: Text(item.totalScore.toString(),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary)),
               ),
             ],
           ),
@@ -112,7 +114,7 @@ class RankingIndicator extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          if ([1, 2, 3].contains(position))
+          if (position < 4)
             Container(
               width: 32,
               height: 32,
@@ -133,7 +135,7 @@ class RankingIndicator extends StatelessWidget {
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: position < 4 ? Colors.orange : Colors.grey,
+                color: position < 4 ? colors()[position - 1].$2 : Colors.grey,
                 shadows: const []),
           ),
         ],

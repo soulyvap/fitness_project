@@ -1,13 +1,21 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
+import 'package:fitness_project/core/classes/notification_service.dart';
+import 'package:fitness_project/core/classes/permission_request_service.dart';
 import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/create_account/pages/create_account.dart';
 import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/navigation/widgets/bottom_bar.dart';
 import 'package:fitness_project/presentation/navigation/bloc/nav_index_cubit.dart';
+import 'package:fitness_project/presentation/permissions/pages/permissions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,10 +30,23 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> with RouteAware {
+  late StreamSubscription<RemoteMessage> _notifSub;
+
   @override
   void initState() {
-    context.read<UserCubit>().loadUser();
-    refreshHomePage();
+    checkPermissions().then((value) {
+      _notifSub = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        final isChallengeMessage = message.data['type'] == 'challenge';
+        if (isChallengeMessage) {
+          refreshHomePage();
+        }
+      });
+      if (context.mounted) {
+        context.read<UserCubit>().loadUser();
+        refreshHomePage();
+      }
+    });
+
     super.initState();
   }
 
@@ -38,6 +59,7 @@ class _NavigationState extends State<Navigation> with RouteAware {
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    _notifSub.cancel();
     super.dispose();
   }
 
@@ -58,6 +80,19 @@ class _NavigationState extends State<Navigation> with RouteAware {
     }
     debugPrint("Refreshing home page");
     context.read<HomeDataCubit>().loadData(userId);
+  }
+
+  Future<void> checkPermissions() async {
+    final notificationPermission =
+        await PermissionRequestService().hasNotificationPermission();
+    final cameraPermission =
+        await PermissionRequestService().hasCameraPermission();
+    if (notificationPermission == false || cameraPermission == false) {
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const PermissionsPage()));
+      }
+    }
   }
 
   @override

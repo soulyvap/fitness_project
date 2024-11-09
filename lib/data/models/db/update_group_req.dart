@@ -12,6 +12,7 @@ class UpdateGroupReq {
   final bool? isPrivate;
   final List<String>? allowedUsers;
   final List<String>? members;
+  final List<String>? admins;
 
   UpdateGroupReq(
       {this.groupId,
@@ -24,7 +25,8 @@ class UpdateGroupReq {
       // this.minutesPerChallenge,
       this.isPrivate,
       this.allowedUsers,
-      this.members});
+      this.members,
+      this.admins});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = {
@@ -38,7 +40,8 @@ class UpdateGroupReq {
       // 'minutesPerChallenge': minutesPerChallenge,
       'isPrivate': isPrivate,
       'allowedUsers': allowedUsers,
-      'members': members
+      'members': members,
+      'admins': admins
     };
 
     // Remove entries where the value is null

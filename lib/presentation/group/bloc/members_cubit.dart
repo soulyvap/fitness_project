@@ -42,22 +42,46 @@ class MembersCubit extends Cubit<MembersState> {
     emit(MembersLoaded(members: allowedUsers));
   }
 
-  Future<List<UserEntity>?> _fetchAllowedUsers() async {
+  void addMember(UserEntity user) {
+    final currentState = state;
+    if (currentState is MembersLoaded) {
+      if (currentState.members.map((m) => m.userId).contains(user.userId)) {
+        return;
+      }
+      final newMembers = [...currentState.members, user];
+      newMembers.sort((a, b) => a.displayName.compareTo(b.displayName));
+      emit(MembersLoaded(members: newMembers));
+    }
+  }
+
+  Future<GroupEntity?> _fetchGroup() async {
     final group = await sl<GetGroupByIdUseCase>().call(params: groupId);
+    GroupEntity? myGroup;
+    group.fold((error) {
+      emit(MembersError(message: 'Failed to load group $error'));
+      myGroup = null;
+    }, (data) {
+      myGroup = data;
+    });
+
+    return myGroup;
+  }
+
+  Future<List<UserEntity>?> _fetchAllowedUsers() async {
+    final group = await _fetchGroup();
     List<UserEntity>? allowedUsers;
 
-    group.fold((l) {
+    if (group == null) {
+      return null;
+    }
+
+    final allowedUsersFetch =
+        await sl<GetUsersByIdsUseCase>().call(params: group.allowedUsers);
+
+    allowedUsersFetch.fold((l) {
       emit(MembersError(message: l.message));
-    }, (r) async {
-      final groupEntity = r as GroupEntity;
-      final allowedUserIds = groupEntity.allowedUsers;
-      final allowedUsersFetch =
-          await sl<GetUsersByIdsUseCase>().call(params: allowedUserIds);
-      allowedUsersFetch.fold((l) {
-        emit(MembersError(message: l.message));
-      }, (r) {
-        allowedUsers = r as List<UserEntity>;
-      });
+    }, (r) {
+      allowedUsers = r as List<UserEntity>;
     });
     return allowedUsers;
   }

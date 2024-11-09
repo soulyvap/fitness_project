@@ -17,7 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StartAChallengeSheet extends StatefulWidget {
   final GroupEntity? group;
-  const StartAChallengeSheet({super.key, this.group});
+  final Function()? onStartChallenge;
+  const StartAChallengeSheet({super.key, this.group, this.onStartChallenge});
 
   @override
   State<StartAChallengeSheet> createState() => _StartAChallengeSheetState();
@@ -105,6 +106,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
         );
       }, (data) {
         Future.delayed(const Duration(seconds: 1));
+        widget.onStartChallenge?.call();
         if (context.mounted) {
           Navigator.pushReplacement(
             context,
@@ -371,7 +373,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                                   resetError();
                                 },
                                 min: 30,
-                                max: 60,
+                                max: 120,
                                 step: 5,
                               )),
                         ],

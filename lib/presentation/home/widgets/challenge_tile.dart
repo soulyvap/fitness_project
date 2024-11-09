@@ -89,8 +89,9 @@ class _ChallengeTileState extends State<ChallengeTile> {
                             image: NetworkImage(widget.exercise.imageUrl!),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
-                                Colors.black
-                                    .withOpacity(isCompleted ? 0.7 : 0.3),
+                                isCompleted
+                                    ? Colors.green.withOpacity(0.5)
+                                    : Colors.black.withOpacity(0.3),
                                 BlendMode.darken)),
                   ),
                   child: Column(
@@ -101,7 +102,7 @@ class _ChallengeTileState extends State<ChallengeTile> {
                         children: [
                           if (isCompleted)
                             const Icon(Icons.check_circle,
-                                color: Colors.greenAccent, size: 20),
+                                color: Colors.white, size: 20),
                           if (isCompleted || hasEnded) const Spacer(),
                           Card(
                             shape: RoundedRectangleBorder(

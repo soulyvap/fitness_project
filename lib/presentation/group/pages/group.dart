@@ -26,7 +26,8 @@ class _GroupPageState extends State<GroupPage>
   late final TabController _tabController;
   String groupName = "";
   GroupEntity? group;
-  bool modalIsOpen = false;
+  bool preventReloadOnPop = false;
+  Function()? reload;
 
   @override
   void initState() {
@@ -50,15 +51,15 @@ class _GroupPageState extends State<GroupPage>
 
   @override
   void didPopNext() {
-    if (modalIsOpen) {
+    if (preventReloadOnPop) {
       setState(() {
-        modalIsOpen = false;
+        preventReloadOnPop = false;
       });
       return;
     }
     final needsRefresh = context.read<NeedRefreshCubit>().state;
     if (needsRefresh) {
-      context.read<GroupCubit>().loadData();
+      reload?.call();
     }
     super.didPopNext();
   }
@@ -100,7 +101,7 @@ class _GroupPageState extends State<GroupPage>
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              modalIsOpen = true;
+              preventReloadOnPop = true;
             });
             showModalBottomSheet(
                 isScrollControlled: true,
@@ -109,6 +110,9 @@ class _GroupPageState extends State<GroupPage>
                 context: context,
                 builder: (context) => StartAChallengeSheet(
                       group: group,
+                      onStartChallenge: () {
+                        reload?.call();
+                      },
                     ));
           },
           child: const Icon(Icons.fitness_center),
@@ -126,6 +130,9 @@ class _GroupPageState extends State<GroupPage>
                 group = groupState.group;
               });
             }
+            reload ??= () {
+              context.read<GroupCubit>().loadData();
+            };
           }
         }, builder: (context, groupState) {
           if (groupState is GroupError) {
@@ -141,11 +148,9 @@ class _GroupPageState extends State<GroupPage>
               controller: _tabController,
               children: [
                 GroupInfoTab(
-                    group: group,
-                    onTapAddChallengeExtra: () {
-                      setState(() {
-                        modalIsOpen = true;
-                      });
+                    groupData: groupState,
+                    setPreventReload: (needReload) {
+                      preventReloadOnPop = needReload;
                     }),
                 SubmissionsTab(
                   group: group,

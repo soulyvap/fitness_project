@@ -15,6 +15,7 @@ class GroupModel {
   final bool isPrivate;
   final List<String> allowedUsers;
   final List<String> members;
+  final List<String> admins;
 
   GroupModel(
       {required this.groupId,
@@ -27,7 +28,8 @@ class GroupModel {
       // required this.minutesPerChallenge,
       required this.isPrivate,
       required this.allowedUsers,
-      required this.members});
+      required this.members,
+      required this.admins});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -41,7 +43,8 @@ class GroupModel {
       // 'minutesPerChallenge': minutesPerChallenge,
       'isPrivate': isPrivate,
       'allowedUsers': allowedUsers,
-      'members': members
+      'members': members,
+      'admins': admins
     };
   }
 
@@ -60,7 +63,9 @@ class GroupModel {
             .map((e) => e as String)
             .toList(),
         members:
-            (map['members'] as List<dynamic>).map((e) => e as String).toList());
+            (map['members'] as List<dynamic>).map((e) => e as String).toList(),
+        admins:
+            (map['admins'] as List<dynamic>).map((e) => e as String).toList());
   }
 
   String toJson() => json.encode(toMap());
@@ -82,6 +87,7 @@ extension GroupXModel on GroupModel {
         // minutesPerChallenge: minutesPerChallenge,
         isPrivate: isPrivate,
         allowedUsers: allowedUsers,
-        members: members);
+        members: members,
+        admins: admins);
   }
 }

@@ -3,6 +3,7 @@ import 'package:fitness_project/data/models/db/add_group_member_req.dart';
 import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
 import 'package:fitness_project/data/models/db/challenge.dart';
 import 'package:fitness_project/data/models/db/comment.dart';
+import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/data/models/db/exercise.dart';
 import 'package:fitness_project/data/models/db/get_challenges_by_groups_req.dart';
 import 'package:fitness_project/data/models/db/get_groups_by_user_req.dart';
@@ -373,5 +374,17 @@ class DBRepositoryImpl extends DBRepository {
       }
       return Right(ChallengeModel.fromMap(data).toEntity());
     });
+  }
+
+  @override
+  Future<Either> editGroupUserArray(
+      EditGroupUserArrayReq editGroupUserArrayReq) async {
+    return await sl<FirestoreFirebaseService>()
+        .editGroupUserArray(editGroupUserArrayReq);
+  }
+
+  @override
+  Future<Either> updateFcmToken(String token) async {
+    return await sl<FirestoreFirebaseService>().updateFcmToken(token);
   }
 }

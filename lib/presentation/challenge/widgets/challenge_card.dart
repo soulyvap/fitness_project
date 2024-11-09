@@ -5,10 +5,10 @@ import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
-import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
 import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
+import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/view_submissions/pages/my_post.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,13 @@ class ChallengeCard extends StatelessWidget {
                   : null,
             ),
             title: Text(author.displayName),
-            subtitle: Text(group.name),
+            subtitle: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => GroupPage(groupId: challenge.groupId),
+                  ));
+                },
+                child: Text(group.name)),
           ),
           AspectRatio(
             aspectRatio: 1.3,

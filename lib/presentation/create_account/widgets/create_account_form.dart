@@ -81,7 +81,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           MaterialPageRoute(builder: (context) {
         return const Navigation();
       }), (route) {
-        return route is Navigation;
+        return route.isFirst;
       });
     });
   }
@@ -93,17 +93,33 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            PicturePicker(
-              image: state,
-              pickFrom: (source) {
-                context.read<PicSelectionCubit>().pickFrom(source);
-              },
-              removeFile: () {
-                context.read<PicSelectionCubit>().clear();
-              },
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: PicturePicker(
+                image: state,
+                pickFrom: (source) {
+                  context.read<PicSelectionCubit>().pickFrom(source);
+                },
+                removeFile: () {
+                  context.read<PicSelectionCubit>().clear();
+                },
+                placeholder: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add_a_photo,
+                      size: 48,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text("Add profile picture")
+                  ],
+                ),
+              ),
             ),
             const SizedBox(
-              height: 16,
+              height: 32,
             ),
             TextField(
               controller: displayNameCon,
