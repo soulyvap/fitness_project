@@ -3,7 +3,6 @@ import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/usecases/db/edit_group_user_array.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_list_tile.dart';
-import 'package:fitness_project/presentation/group/bloc/group_cubit.dart';
 import 'package:fitness_project/presentation/group/bloc/members_cubit.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';

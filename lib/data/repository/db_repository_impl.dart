@@ -387,4 +387,10 @@ class DBRepositoryImpl extends DBRepository {
   Future<Either> updateFcmToken(String token) async {
     return await sl<FirestoreFirebaseService>().updateFcmToken(token);
   }
+
+  @override
+  Future<Either> deleteSubmission(String submissionId) async {
+    await sl<FirestoreFirebaseService>().deleteSubmission(submissionId);
+    return const Right('Submission deleted');
+  }
 }

@@ -46,4 +46,5 @@ abstract class DBRepository {
   Future<Either> editGroupUserArray(
       EditGroupUserArrayReq editGroupUserArrayReq);
   Future<Either> updateFcmToken(String token);
+  Future<Either> deleteSubmission(String submissionId);
 }

@@ -72,6 +72,7 @@ class ChallengeList extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChallengeTile(
+                        key: ValueKey(challenge.challengeId),
                         challenge: challenge,
                         exercise: exercise,
                         group: group,

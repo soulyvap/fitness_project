@@ -55,6 +55,7 @@ abstract class FirestoreFirebaseService {
   Future<Either> editGroupUserArray(
       EditGroupUserArrayReq editGroupUserArrayReq);
   Future<Either> updateFcmToken(String token);
+  Future<Either> deleteSubmission(String submissionId);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
@@ -757,6 +758,16 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
           .then((value) => const Right('Fcm token updated'));
     } catch (e) {
       return Left('Failed to update fcm token: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> deleteSubmission(String submissionId) async {
+    try {
+      await _firestore.collection('submissions').doc(submissionId).delete();
+      return const Right('Submission deleted');
+    } catch (e) {
+      return Left('Failed to delete submission: ${e.toString()}');
     }
   }
 }

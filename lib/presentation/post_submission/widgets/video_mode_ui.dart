@@ -32,7 +32,7 @@ class VideoModeUi extends StatefulWidget {
       required this.cameraState,
       required this.isRecording,
       this.maxSeconds = 120,
-      this.recordingDelay = 1});
+      this.recordingDelay = 5});
 
   @override
   State<VideoModeUi> createState() => _VideoModeUiState();

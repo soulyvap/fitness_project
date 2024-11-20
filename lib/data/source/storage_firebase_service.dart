@@ -4,6 +4,7 @@ import 'package:fitness_project/data/models/storage/upload_file_req.dart';
 
 abstract class StorageFirebaseService {
   Future<Either> uploadFile(UploadFileReq uploadFileReq);
+  Future<Either> delete(String path);
 }
 
 class StorageFirebaseServiceImpl implements StorageFirebaseService {
@@ -16,6 +17,17 @@ class StorageFirebaseServiceImpl implements StorageFirebaseService {
       await ref.putFile(uploadFileReq.file);
       final url = await ref.getDownloadURL();
       return Right(url);
+    } catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either> delete(String path) async {
+    final ref = storageRef.child(path);
+    try {
+      await ref.delete();
+      return const Right("file deleted");
     } catch (e) {
       return Left(e);
     }

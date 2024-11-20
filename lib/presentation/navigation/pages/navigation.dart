@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
-import 'package:fitness_project/core/classes/notification_service.dart';
 import 'package:fitness_project/core/classes/permission_request_service.dart';
 import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/auth/pages/login.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/create_account/pages/create_account.dart';
 import 'package:fitness_project/presentation/create_group/pages/create_group.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';

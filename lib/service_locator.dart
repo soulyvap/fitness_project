@@ -8,6 +8,7 @@ import 'package:fitness_project/domain/repository/auth.dart';
 import 'package:fitness_project/domain/repository/db.dart';
 import 'package:fitness_project/domain/repository/storage.dart';
 import 'package:fitness_project/domain/usecases/db/add_submission_seen.dart';
+import 'package:fitness_project/domain/usecases/db/delete_submission.dart';
 import 'package:fitness_project/domain/usecases/db/edit_group_user_array.dart';
 import 'package:fitness_project/domain/usecases/db/get_challenge_by_id.dart';
 import 'package:fitness_project/domain/usecases/db/get_comments_by_submission.dart';
@@ -95,5 +96,6 @@ Future<void> initializeDependencies() async {
       GetPreviousEndedChallengeUseCase());
   sl.registerSingleton<EditGroupUserArrayUseCase>(EditGroupUserArrayUseCase());
   sl.registerSingleton<UpdateFcmToken>(UpdateFcmToken());
+  sl.registerSingleton<DeleteSubmissionUseCase>(DeleteSubmissionUseCase());
   sl.registerSingleton<UploadFileUseCase>(UploadFileUseCase());
 }

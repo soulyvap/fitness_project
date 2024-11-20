@@ -14,4 +14,14 @@ class StorageRepositoryImpl extends StorageRepository {
       return Right(data);
     });
   }
+
+  @override
+  Future<Either> delete(String path) async {
+    var delete = await sl<StorageFirebaseService>().delete(path);
+    return delete.fold((error) {
+      return Left(error);
+    }, (data) {
+      return Right(data);
+    });
+  }
 }
