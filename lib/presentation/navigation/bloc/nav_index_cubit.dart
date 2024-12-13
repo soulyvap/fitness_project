@@ -5,7 +5,7 @@ class NavIndexCubit extends Cubit<int> {
   NavIndexCubit(this.initialIndex) : super(initialIndex ?? 0);
 
   void setIndex(int index) {
-    if (index == 2) return;
+    if (index == 3) return;
     emit(index);
   }
 }

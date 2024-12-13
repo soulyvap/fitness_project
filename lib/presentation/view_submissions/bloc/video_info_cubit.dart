@@ -25,6 +25,24 @@ class VideoInfoData {
     required this.exercise,
     required this.doer,
   });
+
+  VideoInfoData copyWith({
+    SubmissionEntity? submission,
+    ChallengeEntity? challenge,
+    GroupEntity? group,
+    ExerciseEntity? exercise,
+    UserEntity? challenger,
+    UserEntity? doer,
+  }) {
+    return VideoInfoData(
+      submission: submission ?? this.submission,
+      challenge: challenge ?? this.challenge,
+      group: group ?? this.group,
+      exercise: exercise ?? this.exercise,
+      challenger: challenger ?? this.challenger,
+      doer: doer ?? this.doer,
+    );
+  }
 }
 
 abstract class VideoInfoState {}

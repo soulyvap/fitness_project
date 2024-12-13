@@ -11,6 +11,9 @@ class UpdateSubmissionReq {
   final List<String>? likedBy;
   final int? commentCount;
   final List<String>? seenBy;
+  final Timestamp? cancelledAt;
+  final String? cancellationReason;
+  final String? cancelledBy;
 
   UpdateSubmissionReq({
     this.submissionId,
@@ -23,6 +26,9 @@ class UpdateSubmissionReq {
     this.likedBy,
     this.commentCount,
     this.seenBy,
+    this.cancelledAt,
+    this.cancellationReason,
+    this.cancelledBy,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +43,9 @@ class UpdateSubmissionReq {
       'likedBy': likedBy,
       'commentCount': commentCount,
       'seenBy': seenBy,
+      'cancelledAt': cancelledAt,
+      'cancellationReason': cancellationReason,
+      'cancelledBy': cancelledBy,
     };
 
     dataMap.removeWhere((key, value) => value == null);

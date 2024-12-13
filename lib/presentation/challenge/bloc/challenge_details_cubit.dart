@@ -66,15 +66,11 @@ class ChallengeDetailsCubit extends Cubit<ChallengeDetailsState> {
         emit(ChallengeDetailsError('Failed to load exercise'));
         return;
       }
-      final isCompleted = challenge.completedBy.contains(currentUserId);
 
-      if (isCompleted) {
-        final submission = await _fetchSubmission();
-        emit(ChallengeDetailsLoaded(
-            challenge, group, author, exercise, submission));
-        return;
-      }
-      emit(ChallengeDetailsLoaded(challenge, group, author, exercise, null));
+      final submission = await _fetchSubmission();
+
+      emit(ChallengeDetailsLoaded(
+          challenge, group, author, exercise, submission));
     } catch (e) {
       emit(ChallengeDetailsError(e.toString()));
     }
@@ -153,11 +149,9 @@ class ChallengeDetailsCubit extends Cubit<ChallengeDetailsState> {
     SubmissionEntity? submissionEntity;
 
     submission.fold((error) {
-      emit(ChallengeDetailsError(error));
       submissionEntity = null;
     }, (data) {
       if (data == null) {
-        emit(ChallengeDetailsError('Submission not found'));
         submissionEntity = null;
       }
       submissionEntity = data;

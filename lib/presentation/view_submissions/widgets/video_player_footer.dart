@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 class VideoPlayerFooter extends StatelessWidget {
-  final VideoInfoState state;
+  final VideoInfoData? videoInfoData;
   final Function() pauseVideo;
   const VideoPlayerFooter({
     super.key,
-    required this.state,
+    required this.videoInfoData,
     required this.pauseVideo,
   });
 
@@ -22,12 +22,12 @@ class VideoPlayerFooter extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       child: Builder(builder: (context) {
-        if (state is VideoInfoLoaded) {
-          final loaded = state as VideoInfoLoaded;
-          final submission = loaded.data.submission;
-          final challenge = loaded.data.challenge;
-          final challenger = loaded.data.challenger;
-          final group = loaded.data.group;
+        if (videoInfoData != null) {
+          final data = videoInfoData!;
+          final submission = data.submission;
+          final challenge = data.challenge;
+          final challenger = data.challenger;
+          final group = data.group;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

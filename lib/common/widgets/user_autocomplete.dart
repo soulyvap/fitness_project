@@ -32,10 +32,51 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
           final state = context.watch<UserAutocompleteCubit>().state;
           return Column(
             children: [
+              Expanded(
+                child: state is! UserAutocompleteLoaded
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search, size: 64, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text("Find users to invite"),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        itemCount: state.users.length,
+                        itemBuilder: (context, index) {
+                          final user = state.users[index];
+                          return UserListTile(
+                            user: user,
+                            onTap: () {
+                              if (!widget.usersAdded
+                                  .map((u) => u.userId)
+                                  .contains(user.userId)) {
+                                widget.onSelectUser(user);
+                              }
+                            },
+                            trailing: widget.usersAdded
+                                    .map((u) => u.userId)
+                                    .contains(user.userId)
+                                ? const Icon(Icons.check_circle,
+                                    color: Colors.green)
+                                : null,
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider(
+                            height: 0.2,
+                            color: Colors.black.withOpacity(0.1),
+                          );
+                        },
+                      ),
+              ),
               TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  label: const Text('Search for users to invite'),
+                  label: const Text('Search by username'),
                   fillColor: Colors.grey[200],
                   filled: true,
                   border: const OutlineInputBorder(
@@ -61,38 +102,8 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
                   }
                 },
               ),
-              const SizedBox(
-                height: 16,
-              ),
               SizedBox(
-                child: state is! UserAutocompleteLoaded
-                    ? null
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: state.users.length,
-                        itemBuilder: (context, index) {
-                          final user = state.users[index];
-                          return UserListTile(
-                            user: user,
-                            onTap: () {
-                              if (!widget.usersAdded
-                                  .map((u) => u.userId)
-                                  .contains(user.userId)) {
-                                widget.onSelectUser(user);
-                              }
-                            },
-                            trailing: widget.usersAdded
-                                    .map((u) => u.userId)
-                                    .contains(user.userId)
-                                ? const Icon(Icons.check_circle,
-                                    color: Colors.green)
-                                : null,
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider();
-                        },
-                      ),
+                height: MediaQuery.of(context).viewInsets.bottom,
               ),
             ],
           );

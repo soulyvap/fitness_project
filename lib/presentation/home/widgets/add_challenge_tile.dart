@@ -3,31 +3,51 @@ import 'package:flutter/material.dart';
 
 class AddChallengeTile extends StatelessWidget {
   final Function onTap;
-  const AddChallengeTile({super.key, required this.onTap});
+  final bool hasChallenges;
+  const AddChallengeTile(
+      {super.key, required this.onTap, this.hasChallenges = true});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTap(),
-      child: Column(
+    return SizedBox(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: hasChallenges
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 128,
+            width: 64,
             height: 128,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: DottedBorder(
-                borderType: BorderType.RRect,
-                dashPattern: const [6, 6],
-                radius: const Radius.circular(20),
-                child: const Center(
-                  child: Icon(Icons.add, size: 40, color: Colors.grey),
+            child: InkWell(
+              onTap: () => onTap(),
+              child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  color: Colors.black.withOpacity(0.5),
+                  dashPattern: const [6, 6],
+                  radius: const Radius.circular(20),
+                  child: const Center(
+                    child: Icon(Icons.add, size: 32, color: Colors.grey),
+                  ),
                 ),
               ),
             ),
           ),
+          if (!hasChallenges)
+            const SizedBox(
+              width: 300,
+              child: ListTile(
+                dense: true,
+                leading: Icon(Icons.arrow_back),
+                title: Text("You have no challenges yet"),
+                subtitle: Text("Press the + button to start one!"),
+              ),
+            ),
         ],
       ),
     );

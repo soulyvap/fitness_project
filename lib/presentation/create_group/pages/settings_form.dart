@@ -91,34 +91,34 @@ class _SettingsFormState extends State<SettingsForm> {
                     }
                   });
                 }),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: simultaneousChallengesCon,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.numbers),
-                  labelText: 'Maximum challenges at the same time',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  helperMaxLines: 2,
-                  helperText:
-                      'How many challenges can be active at the same time. Enter 0 for unlimited.'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a number';
-                }
-                return null;
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Allows only digits
-                FilteringTextInputFormatter.allow(RegExp(
-                    r'^[1-9][0-9]*')), // No leading zero, only positive integers
-              ],
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
+            // const SizedBox(height: 16),
+            // TextFormField(
+            //   controller: simultaneousChallengesCon,
+            //   autovalidateMode: AutovalidateMode.onUserInteraction,
+            //   decoration: const InputDecoration(
+            //       prefixIcon: Icon(Icons.numbers),
+            //       labelText: 'Maximum challenges at the same time',
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.all(Radius.circular(8)),
+            //       ),
+            //       helperMaxLines: 2,
+            //       helperText:
+            //           'How many challenges can be active at the same time. Enter 0 for unlimited.'),
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Please enter a number';
+            //     }
+            //     return null;
+            //   },
+            //   inputFormatters: [
+            //     FilteringTextInputFormatter.digitsOnly, // Allows only digits
+            //     FilteringTextInputFormatter.allow(RegExp(
+            //         r'^[1-9][0-9]*')), // No leading zero, only positive integers
+            //   ],
+            //   textInputAction: TextInputAction.next,
+            //   keyboardType: TextInputType.number,
+            // ),
+            // const SizedBox(height: 16),
             // TextFormField(
             //   controller: minutesPerChallengeCon,
             //   decoration: const InputDecoration(

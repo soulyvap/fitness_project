@@ -35,6 +35,8 @@ class _MyPostState extends State<MyPost> {
   @override
   Widget build(BuildContext context) {
     return VerticalVideoPlayer(
-        controller: _controller, submission: widget.submission);
+      controller: _controller,
+      submission: widget.submission,
+    );
   }
 }

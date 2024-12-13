@@ -56,11 +56,12 @@ abstract class FirestoreFirebaseService {
       EditGroupUserArrayReq editGroupUserArrayReq);
   Future<Either> updateFcmToken(String token);
   Future<Either> deleteSubmission(String submissionId);
+  Future<Either> getChallengeListener(String challengeId);
 }
 
 class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final _currentUserId = FirebaseAuth.instance.currentUser?.uid;
+  String? _currentUserId() => FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Future<Either> addScores(List<AddScoreReq> addScoreReqs) async {
@@ -210,6 +211,8 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
           .where('challengeId',
               isEqualTo: getSubmissionByChallengeAndUserReq.challengeId)
           .where('userId', isEqualTo: getSubmissionByChallengeAndUserReq.userId)
+          .orderBy('createdAt', descending: true)
+          .limit(1)
           .get()
           .then((value) => value.docs.map((d) => d.data()).toList());
       if (submission.isEmpty) {
@@ -238,7 +241,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
   @override
   Future<Either> getUser(String? userId) async {
     try {
-      var userIdUsed = userId ?? _currentUserId;
+      var userIdUsed = userId ?? _currentUserId();
       var userData = await _firestore
           .collection('users')
           .doc(userIdUsed)
@@ -266,7 +269,8 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
   }
 
   Future<void> onAddSubmission(String submissionId, String challengeId) async {
-    if (_currentUserId == null) {
+    final currentUserId = _currentUserId();
+    if (currentUserId == null) {
       throw Exception('User not found');
     }
     List<ScoreType> scoreTypes = [
@@ -292,9 +296,9 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
           .map((e) => e.toString())
           .toList();
       final groupId = challenge["groupId"] as String;
-      final isAuthor = author == _currentUserId;
+      final isAuthor = author == _currentUserId();
       if (!isAuthor) {
-        final placement = completedBy.indexOf(_currentUserId) + 1;
+        final placement = completedBy.indexOf(currentUserId) + 1;
         switch (placement) {
           case 1:
             scoreTypes.add(ScoreType.challengeEarlyParticipation1);
@@ -323,7 +327,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       List<AddScoreReq> scores = scoreTypes
           .map((type) => AddScoreReq(
               challengeId: challengeId,
-              userId: _currentUserId,
+              userId: currentUserId,
               points: type.value,
               type: type.name,
               groupId: groupId,
@@ -338,6 +342,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
 
   @override
   Future<Either> updateChallenge(UpdateChallengeReq updateChallengeReq) async {
+    final currentUserId = _currentUserId();
     final isAdd = updateChallengeReq.challengeId == null;
     final dataMap = updateChallengeReq.toMap();
     if (dataMap.keys.length == 1) {
@@ -351,13 +356,13 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       dataMap['createdAt'] = Timestamp.now();
       dataMap['endsAt'] = Timestamp.fromDate(
           DateTime.now().add(Duration(minutes: dataMap['minutesToComplete'])));
-      if (_currentUserId == null) {
+      if (currentUserId == null) {
         return const Left('User not found');
       }
       await addScores([
         AddScoreReq(
             challengeId: challengeId,
-            userId: _currentUserId,
+            userId: currentUserId,
             points: ScoreType.challengeCreation.value,
             type: ScoreType.challengeCreation.name,
             groupId: dataMap['groupId'])
@@ -448,7 +453,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       dataMap['commentCount'] = 0;
       final challengeId = updateSubmissionReq.challengeId;
       try {
-        final userId = _currentUserId;
+        final userId = _currentUserId();
         await _firestore.collection('challenges').doc(challengeId).update({
           'completedBy': FieldValue.arrayUnion([userId])
         });
@@ -508,7 +513,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return false;
     }
     final previousChallenge = ChallengeModel.fromMap(previousChallenges.first);
-    return previousChallenge.completedBy.contains(_currentUserId);
+    return previousChallenge.completedBy.contains(_currentUserId());
   }
 
   @override
@@ -742,18 +747,18 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
 
   @override
   Future<Either> updateFcmToken(String token) async {
-    if (_currentUserId == null) {
+    if (_currentUserId() == null) {
       return const Left('User not found');
     }
     final dataMap = {
-      'userId': _currentUserId,
+      'userId': _currentUserId(),
       'token': token,
       'createdAt': Timestamp.now()
     };
     try {
       return await _firestore
           .collection('fcmTokens')
-          .doc(_currentUserId)
+          .doc(_currentUserId())
           .set(dataMap, SetOptions(merge: true))
           .then((value) => const Right('Fcm token updated'));
     } catch (e) {
@@ -768,6 +773,16 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       return const Right('Submission deleted');
     } catch (e) {
       return Left('Failed to delete submission: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> getChallengeListener(String challengeId) async {
+    try {
+      return Right(
+          _firestore.collection('challenges').doc(challengeId).snapshots());
+    } catch (e) {
+      return Left('Failed to get challenge listener: $e');
     }
   }
 }

@@ -18,9 +18,18 @@ class YourGroupsList extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
-            child: Text("Your groups (${groups.length})",
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Row(
+              children: [
+                Icon(Icons.group,
+                    size: 32, color: Theme.of(context).colorScheme.secondary),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text("Your active groups (${groups.length})",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
           ),
           const SizedBox(
             height: 16,
@@ -34,22 +43,24 @@ class YourGroupsList extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: index == groups.length
-                      ? AddGroupTile(onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CreateGroupPage()));
-                        })
+                  child: index == 0
+                      ? AddGroupTile(
+                          hasGroups: groups.isNotEmpty,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateGroupPage()));
+                          })
                       : GroupTile(
-                          group: groups[index],
+                          group: groups[index - 1],
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    GroupPage(groupId: groups[index].groupId),
+                                builder: (context) => GroupPage(
+                                    groupId: groups[index - 1].groupId),
                               ),
                             );
                           }),

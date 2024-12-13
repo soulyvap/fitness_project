@@ -6,6 +6,7 @@ class NewChallengeFormState {
   int? reps;
   int? minutesToComplete;
   String? instructions;
+  String? customExerciseName;
 
   NewChallengeFormState({
     this.groupId,
@@ -13,6 +14,7 @@ class NewChallengeFormState {
     this.reps,
     this.minutesToComplete,
     this.instructions,
+    this.customExerciseName,
   });
 }
 
@@ -27,6 +29,7 @@ class NewChallengeFormCubit extends Cubit<NewChallengeFormState> {
     int? reps,
     int? minutesToComplete,
     String? instructions,
+    String? customExerciseName,
   }) {
     emit(NewChallengeFormState(
       groupId: groupId ?? state.groupId,
@@ -34,6 +37,7 @@ class NewChallengeFormCubit extends Cubit<NewChallengeFormState> {
       reps: reps ?? state.reps,
       minutesToComplete: minutesToComplete ?? state.minutesToComplete,
       instructions: instructions ?? state.instructions,
+      customExerciseName: customExerciseName ?? state.customExerciseName,
     ));
   }
 }

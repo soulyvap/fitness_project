@@ -10,7 +10,7 @@ class GroupModel {
   final String? imageUrl;
   final Timestamp startTime;
   final Timestamp endTime;
-  final int maxSimultaneousChallenges;
+  // final int maxSimultaneousChallenges;
   // final int minutesPerChallenge;
   final bool isPrivate;
   final List<String> allowedUsers;
@@ -24,7 +24,7 @@ class GroupModel {
       this.imageUrl,
       required this.startTime,
       required this.endTime,
-      required this.maxSimultaneousChallenges,
+      // required this.maxSimultaneousChallenges,
       // required this.minutesPerChallenge,
       required this.isPrivate,
       required this.allowedUsers,
@@ -39,7 +39,7 @@ class GroupModel {
       'imageUrl': imageUrl,
       'startTime': startTime,
       'endTime': endTime,
-      'maxSimultaneousChallenges': maxSimultaneousChallenges,
+      // 'maxSimultaneousChallenges': maxSimultaneousChallenges,
       // 'minutesPerChallenge': minutesPerChallenge,
       'isPrivate': isPrivate,
       'allowedUsers': allowedUsers,
@@ -56,7 +56,7 @@ class GroupModel {
         imageUrl: map['imageUrl'] as String?,
         startTime: map['startTime'] as Timestamp,
         endTime: map['endTime'] as Timestamp,
-        maxSimultaneousChallenges: map['maxSimultaneousChallenges'] as int,
+        // maxSimultaneousChallenges: map['maxSimultaneousChallenges'] as int,
         // minutesPerChallenge: map['minutesPerChallenge'] as int,
         isPrivate: map['isPrivate'] as bool,
         allowedUsers: (map['allowedUsers'] as List<dynamic>)
@@ -83,7 +83,7 @@ extension GroupXModel on GroupModel {
         imageUrl: imageUrl,
         startTime: startTime.toDate(),
         endTime: endTime.toDate(),
-        maxSimultaneousChallenges: maxSimultaneousChallenges,
+        // maxSimultaneousChallenges: maxSimultaneousChallenges,
         // minutesPerChallenge: minutesPerChallenge,
         isPrivate: isPrivate,
         allowedUsers: allowedUsers,

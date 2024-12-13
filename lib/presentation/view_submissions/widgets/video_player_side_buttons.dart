@@ -8,8 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoPlayerSideButtons extends StatelessWidget {
-  final VideoInfoState state;
-  const VideoPlayerSideButtons({super.key, required this.state});
+  final VideoInfoData? videoInfoData;
+  final bool isMuted;
+  final Function(bool) onMuteChanged;
+  const VideoPlayerSideButtons(
+      {super.key,
+      required this.videoInfoData,
+      this.isMuted = false,
+      required this.onMuteChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +26,19 @@ class VideoPlayerSideButtons extends StatelessWidget {
           child: Text("User not found"),
         );
       }
-      if (state is! VideoInfoLoaded) {
+      if (videoInfoData == null) {
         return const SizedBox();
       } else {
+        final data = videoInfoData!;
         return BlocProvider<SideButtonsCubit>(
           create: (context) => SideButtonsCubit(
-              submissionId:
-                  (state as VideoInfoLoaded).data.submission.submissionId,
+              submissionId: data.submission.submissionId,
               initialState: SideButtonState(
-                seenBy: (state as VideoInfoLoaded)
-                        .data
-                        .submission
-                        .seenBy
-                        .contains(currentUserId)
-                    ? (state as VideoInfoLoaded).data.submission.seenBy
-                    : (state as VideoInfoLoaded).data.submission.seenBy +
-                        [currentUserId],
-                likedBy: (state as VideoInfoLoaded).data.submission.likedBy,
-                commentCount:
-                    (state as VideoInfoLoaded).data.submission.commentCount,
+                seenBy: data.submission.seenBy.contains(currentUserId)
+                    ? data.submission.seenBy
+                    : data.submission.seenBy + [currentUserId],
+                likedBy: data.submission.likedBy,
+                commentCount: data.submission.commentCount,
               )),
           child: Builder(builder: (sideButtonsContext) {
             final sideButtonsState =
@@ -47,44 +47,66 @@ class VideoPlayerSideButtons extends StatelessWidget {
             final seenBy = sideButtonsState.seenBy;
             final commentCount = sideButtonsState.commentCount;
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LikeButton(
-                    onTap: () {
-                      sideButtonsContext.read<SideButtonsCubit>().onLike();
-                    },
-                    submissionId:
-                        (state as VideoInfoLoaded).data.submission.submissionId,
-                    currentLikes: likedBy,
-                    onLikesLoaded: (likes) {
-                      sideButtonsContext
-                          .read<SideButtonsCubit>()
-                          .updateLikes(likes);
-                    },
-                  ),
-                  CommentButton(
-                      submissionId: (state as VideoInfoLoaded)
-                          .data
-                          .submission
-                          .submissionId,
-                      updateCommentCount: (count) => sideButtonsContext
-                          .read<SideButtonsCubit>()
-                          .updateCommentCount(count),
-                      commentCount: commentCount),
-                  SeenButton(
-                    currentSeen: seenBy,
-                    submissionId:
-                        (state as VideoInfoLoaded).data.submission.submissionId,
-                    onSeenLoaded: (seenBy) {
-                      sideButtonsContext
-                          .read<SideButtonsCubit>()
-                          .updateSeenBy(seenBy);
-                    },
-                  ),
-                ],
+            return Card(
+              elevation: 0,
+              color: Colors.black.withOpacity(0.2),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LikeButton(
+                      onTap: () {
+                        sideButtonsContext.read<SideButtonsCubit>().onLike();
+                      },
+                      submissionId: data.submission.submissionId,
+                      currentLikes: likedBy,
+                      onLikesLoaded: (likes) {
+                        sideButtonsContext
+                            .read<SideButtonsCubit>()
+                            .updateLikes(likes);
+                      },
+                    ),
+                    CommentButton(
+                        submissionId: data.submission.submissionId,
+                        updateCommentCount: (count) => sideButtonsContext
+                            .read<SideButtonsCubit>()
+                            .updateCommentCount(count),
+                        commentCount: commentCount),
+                    SeenButton(
+                      currentSeen: seenBy,
+                      submissionId: data.submission.submissionId,
+                      onSeenLoaded: (seenBy) {
+                        sideButtonsContext
+                            .read<SideButtonsCubit>()
+                            .updateSeenBy(seenBy);
+                      },
+                    ),
+                    InkWell(
+                      onTap: () {
+                        onMuteChanged(!isMuted);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(isMuted ? Icons.volume_off : Icons.volume_up,
+                                size: 32,
+                                color: Colors.white,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.white,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  )
+                                ]),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             );
           }),

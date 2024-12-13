@@ -37,9 +37,21 @@ class SubmissionList extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
-            child: Text(title,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.post_add,
+                  size: 32,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
           ),
           const SizedBox(
             height: 16,

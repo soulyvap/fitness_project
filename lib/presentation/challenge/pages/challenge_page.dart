@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/score_summary_cubit.dart';
 import 'package:fitness_project/common/extensions/int_extension.dart';
+import 'package:fitness_project/common/widgets/challenge_explanation.dart';
 import 'package:fitness_project/common/widgets/score_summary.dart';
 import 'package:fitness_project/domain/entities/db/score.dart';
 import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
@@ -67,6 +68,19 @@ class _ChallengePageState extends State<ChallengePage> {
                 : Navigator.of(context).pop();
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return const ChallengeExplanation();
+                },
+              );
+            },
+            icon: const Icon(Icons.help),
+          ),
+        ],
       ),
       body: BlocProvider<ChallengeDetailsCubit>(
         create: (context) =>
@@ -97,6 +111,10 @@ class _ChallengePageState extends State<ChallengePage> {
                       1
                   : null;
               final isDone = challenge.endsAt.isBefore(DateTime.now());
+              final showPotentialPlacement = !isAuthor &&
+                  !isCompleted &&
+                  !isDone &&
+                  potentialPlacement <= 5;
               return Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(children: [
@@ -105,14 +123,14 @@ class _ChallengePageState extends State<ChallengePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Countdown(
-                              secondsLeft: challenge.endsAt
-                                  .difference(DateTime.now())
-                                  .inSeconds),
-                          if (!isAuthor &&
-                              !isCompleted &&
-                              !isDone &&
-                              potentialPlacement <= 5)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Countdown(
+                                secondsLeft: challenge.endsAt
+                                    .difference(DateTime.now())
+                                    .inSeconds),
+                          ),
+                          if (showPotentialPlacement)
                             Text(
                                 "Be the ${potentialPlacement.toOrdinal()} to complete!\nGet ${ScoreType.earlyParticipation(potentialPlacement)?.value} extra points!",
                                 textAlign: TextAlign.center,

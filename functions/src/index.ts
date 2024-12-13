@@ -11,7 +11,7 @@ import { getMessaging, Message } from "firebase-admin/messaging";
 import { initializeApp } from "firebase-admin/app";
 import { DocumentData, FieldValue, getFirestore, Timestamp } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
-import { onDocumentCreated, onDocumentDeleted } from "firebase-functions/v2/firestore";
+import { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { setGlobalOptions } from "firebase-functions/v2";
 
 const app = initializeApp();
@@ -50,7 +50,7 @@ export const onChallengeCreated = onDocumentCreated(
       return;
     }
 
-    const challengeName = await getChallengeName(challenge);
+    const challengeName = challenge.title;
 
     if (!challengeName) {
       return;
@@ -107,19 +107,6 @@ const getGroup = async (groupId: string) => {
   return groupSnapshot.data();
 };
 
-const getChallengeName = async (challenge: any) => {
-  const exerciseRef = db.collection("exercises").doc(challenge.exerciseId);
-  const exerciseSnapshot = await exerciseRef.get();
-  if (!exerciseSnapshot.exists) {
-    return;
-  }
-  const exercise = exerciseSnapshot.data();
-  if (!exercise) {
-    return;
-  }
-  return `${challenge.reps} ${exercise.name}`;
-};
-
 const getUser = async (userId: string) => {
   const userRef = db.collection("users").doc(userId);
   const userSnapshot = await userRef.get();
@@ -156,6 +143,11 @@ export const onSubmissionDeleted = onDocumentDeleted("submissions/{submissionId}
   if (!submission) {
     return;
   }
+  handleSubmissionCancellation(submission, true);
+});
+
+const handleSubmissionCancellation = async (submission: DocumentData, removeFiles: boolean) => {
+  const submissionId = submission.submissionId;
   const challengeId = submission.challengeId;
   if (!challengeId) {
     return;
@@ -166,9 +158,10 @@ export const onSubmissionDeleted = onDocumentDeleted("submissions/{submissionId}
   }
   const completedBy = challenge.completedBy;
   const userPosition = completedBy.indexOf(submission.userId) + 1;
+
   await Promise.all([
-    removeSubmissionPoints(event.params.submissionId),
-    removeSubmissionFiles(event.params.submissionId, challengeId),
+    removeSubmissionPoints(submissionId),
+    removeFiles ? removeSubmissionFiles(submissionId, challengeId) : Promise.resolve(),
     removeCompletedBy(submission)
   ]);
   if (userPosition > 5) {
@@ -178,7 +171,7 @@ export const onSubmissionDeleted = onDocumentDeleted("submissions/{submissionId}
     return;
   }
   await editEarlySubmissionScores(challengeId)
-});
+}
 
 const removeCompletedBy = async (submission: DocumentData) => {
   const challengeRef = db.collection("challenges").doc(submission.challengeId);
@@ -263,5 +256,16 @@ const removeSubmissionFiles = async (submissionId: string, challengeId: string) 
     console.error("Error removing submission files", error);
   }
 };
+
+export const onSubmissionUpdated = onDocumentUpdated("submissions/{submissionId}", async (event) => {
+  if (!event.data) {
+    return;
+  }
+  const before = event.data.before.data();
+  const after = event.data.after.data();
+  if (before.cancelledAt == null && after.cancelledAt != null) {
+    await handleSubmissionCancellation(before, false);
+  }
+});
 
 

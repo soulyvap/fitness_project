@@ -1,6 +1,7 @@
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/domain/usecases/db/get_user.dart';
 import 'package:fitness_project/service_locator.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class UserState {}
@@ -22,19 +23,14 @@ class UserError extends UserState {
 }
 
 class UserCubit extends Cubit<UserState> {
-  final String? userId;
-  final bool loadOnInit;
-  UserCubit({this.userId, this.loadOnInit = false}) : super(UserInitial()) {
-    if (loadOnInit) {
-      loadUser();
-    }
-  }
+  UserCubit() : super(UserInitial());
 
-  Future<void> loadUser() async {
+  Future<void> loadUser(String userId) async {
     emit(UserLoading());
     try {
       final user = await sl<GetUserUseCase>().call(params: userId);
       user.fold((error) {
+        debugPrint(error);
         emit(UserNotFound());
       }, (data) {
         emit(UserLoaded(data));

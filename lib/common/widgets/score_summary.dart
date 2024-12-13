@@ -31,7 +31,7 @@ class ScoreSummary extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ...scores.map((e) => ScoreSummaryRow(
-                title: e.type.description,
+                title: e.type.title,
                 points: e.points,
                 leading: e.type.icon,
               )),

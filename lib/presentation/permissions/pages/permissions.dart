@@ -1,3 +1,4 @@
+import 'package:fitness_project/core/classes/notification_service.dart';
 import 'package:fitness_project/core/classes/permission_request_service.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:flutter/material.dart';
@@ -65,10 +66,13 @@ class _PermissionsPageState extends State<PermissionsPage> {
                     }
                     PermissionRequestService()
                         .requestNotificationPermission()
-                        .then((value) {
+                        .then((value) async {
                       setState(() {
                         hasNotificationPermission = value;
                       });
+                      if (value) {
+                        await NotificationService.initNotifications();
+                      }
                     });
                   }),
             ),

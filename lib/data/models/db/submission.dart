@@ -12,6 +12,9 @@ class SubmissionModel {
   final List<String> likedBy;
   final int commentCount;
   final List<String> seenBy;
+  final Timestamp? cancelledAt;
+  final String? cancellationReason;
+  final String? cancelledBy;
 
   SubmissionModel({
     required this.submissionId,
@@ -24,6 +27,9 @@ class SubmissionModel {
     required this.likedBy,
     required this.commentCount,
     required this.seenBy,
+    this.cancelledAt,
+    this.cancellationReason,
+    this.cancelledBy,
   });
 
   factory SubmissionModel.fromMap(Map<String, dynamic> map) {
@@ -42,6 +48,9 @@ class SubmissionModel {
       seenBy: map['seenBy'] == null
           ? []
           : (map['seenBy'] as List).map((e) => e.toString()).toList(),
+      cancelledAt: map['cancelledAt'],
+      cancellationReason: map['cancellationReason'],
+      cancelledBy: map['cancelledBy'],
     );
   }
 
@@ -57,6 +66,9 @@ class SubmissionModel {
       'likedBy': likedBy,
       'commentCount': commentCount,
       'seenBy': seenBy,
+      'cancelledAt': cancelledAt,
+      'cancellationReason': cancellationReason,
+      'cancelledBy': cancelledBy,
     };
   }
 }
@@ -74,6 +86,9 @@ extension SubmissionXModel on SubmissionModel {
       likedBy: likedBy,
       commentCount: commentCount,
       seenBy: seenBy,
+      cancelledAt: cancelledAt?.toDate(),
+      cancellationReason: cancellationReason,
+      cancelledBy: cancelledBy,
     );
   }
 }

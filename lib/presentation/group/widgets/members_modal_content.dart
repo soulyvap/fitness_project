@@ -22,7 +22,6 @@ class MembersModalContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(builder: (groupContext) {
       final membersState = groupContext.watch<MembersCubit>().state;
-
       if (membersState is MembersInitial) {
         groupContext.read<MembersCubit>().loadData();
         return const Center(
@@ -47,7 +46,7 @@ class MembersModalContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FilledButton.icon(
                       icon: const Icon(Icons.qr_code, size: 16),
@@ -78,6 +77,7 @@ class MembersModalContent extends StatelessWidget {
                       onPressed: () {
                         showModalBottomSheet(
                             context: groupContext,
+                            isScrollControlled: true,
                             builder: (context) {
                               return UserAutocomplete(
                                 onSelectUser: (user) {
@@ -97,7 +97,14 @@ class MembersModalContent extends StatelessWidget {
                                   ));
                                   addAllowedUser(user.userId);
                                 },
-                                usersAdded: allowed,
+                                usersAdded: groupContext
+                                        .watch<MembersCubit>()
+                                        .state is MembersLoaded
+                                    ? (groupContext.watch<MembersCubit>().state
+                                            as MembersLoaded)
+                                        .members
+                                        .toList()
+                                    : [],
                               );
                             });
                       },

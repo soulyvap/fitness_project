@@ -9,7 +9,12 @@ import 'package:video_player/video_player.dart';
 class VideoScroller extends StatefulWidget {
   final List<SubmissionEntity> submissions;
   final int? startIndex;
-  const VideoScroller({super.key, required this.submissions, this.startIndex});
+  final bool reviewing;
+  const VideoScroller(
+      {super.key,
+      required this.submissions,
+      this.startIndex,
+      this.reviewing = false});
 
   @override
   State<VideoScroller> createState() => _VideoScrollerState();
@@ -119,6 +124,12 @@ class _VideoScrollerState extends State<VideoScroller> with RouteAware {
     }
   }
 
+  void onMuteChanged(bool isMuted) {
+    for (var controller in videoControllers) {
+      controller.setVolume(isMuted ? 0 : 1);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -152,6 +163,8 @@ class _VideoScrollerState extends State<VideoScroller> with RouteAware {
                   onLoadInfo: (data) {
                     context.read<VideoInfoCacheCubit>().add(index, data);
                   },
+                  reviewing: widget.reviewing,
+                  onMute: onMuteChanged,
                 ),
               );
             },

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
@@ -6,9 +5,9 @@ import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/core/classes/notification_service.dart';
 import 'package:fitness_project/core/theme/app_theme.dart';
-import 'package:fitness_project/presentation/auth/pages/Login.dart';
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
+import 'package:fitness_project/presentation/start/pages/start.dart';
 import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -29,10 +29,13 @@ void main() async {
   );
   FirebaseUIAuth.configureProviders([
     GoogleProvider(clientId: dotenv.env['GOOGLE_CLIENT_ID'] as String),
+    EmailAuthProvider(),
   ]);
   await initializeDependencies();
 
-  await NotificationService.initNotifications();
+  // if (FirebaseAuth.instance.currentUser != null) {
+  //   await NotificationService.initNotifications();
+  // }
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -97,7 +100,7 @@ class _MyAppState extends State<MyApp> {
       navigatorObservers: [routeObserver],
       navigatorKey: navigatorKey,
       home: FirebaseAuth.instance.currentUser == null
-          ? const LoginPage()
+          ? const StartPage()
           : const Navigation(),
     );
   }

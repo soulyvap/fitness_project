@@ -13,6 +13,7 @@ class ChallengeModel {
   final Timestamp createdAt;
   final Timestamp endsAt;
   final List<String> completedBy;
+  final String? videoUrl;
 
   ChallengeModel({
     required this.challengeId,
@@ -26,6 +27,7 @@ class ChallengeModel {
     required this.createdAt,
     required this.endsAt,
     this.completedBy = const [],
+    this.videoUrl,
   });
 
   factory ChallengeModel.fromMap(Map<String, dynamic> map) {
@@ -45,6 +47,7 @@ class ChallengeModel {
           : (map['completedBy'] as List<dynamic>)
               .map((e) => e as String)
               .toList(),
+      videoUrl: map['videoUrl'],
     );
   }
 
@@ -61,6 +64,7 @@ class ChallengeModel {
       'createdAt': createdAt,
       'endsAt': endsAt,
       'completedBy': completedBy,
+      'videoUrl': videoUrl,
     };
   }
 }
@@ -79,6 +83,7 @@ extension ChallengeModelX on ChallengeModel {
       createdAt: createdAt.toDate(),
       endsAt: endsAt.toDate(),
       completedBy: completedBy,
+      videoUrl: videoUrl,
     );
   }
 }

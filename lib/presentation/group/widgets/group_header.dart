@@ -52,78 +52,102 @@ class GroupHeader extends StatelessWidget {
         const SizedBox(
           width: 16,
         ),
-        SizedBox(
-          height: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                group.name,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              Text(
-                group.description,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black),
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  Builder(builder: (groupContext) {
-                    return OutlinedButton.icon(
-                        onPressed: () {
-                          onOpenModal();
-                          showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) {
-                                return BlocProvider.value(
-                                    value: groupContext.watch<MembersCubit>(),
-                                    child: MembersModalContent(
-                                      group: group,
-                                      addAllowedUser: (userId) {
-                                        groupContext
-                                            .read<GroupCubit>()
-                                            .addAllowedUser(userId);
-                                      },
-                                    ));
-                              });
-                        },
-                        icon: const Icon(Icons.people),
-                        label: Text(
-                            "${group.members.length} member${group.members.length > 1 ? "s" : ""}"));
-                  }),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  if (!isMember)
-                    ElevatedButton(
-                        onPressed: () async {
-                          final userId = FirebaseAuth.instance.currentUser?.uid;
-                          if (userId == null) return;
-                          await sl<EditGroupUserArrayUseCase>().call(
-                              params: EditGroupUserArrayReq(
-                                  groupId: group.groupId,
-                                  userId: userId,
-                                  groupUserArray: GroupUserArray.members,
-                                  groupArrayAction: GroupArrayAction.add));
-                          if (context.mounted) {
-                            context.read<GroupCubit>().loadData();
-                          }
-                        },
-                        child: const Text("Join")),
-                  if (isMember)
-                    ElevatedButton(
-                        onPressed: () {}, child: const Text("Leave")),
-                ],
-              )
-            ],
+        Expanded(
+          child: SizedBox(
+            height: 120,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      group.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    if (isMember)
+                      GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (isMember)
+                                          ElevatedButton(
+                                              onPressed: () {},
+                                              child: const Text("Leave")),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          child: const Icon(Icons.more_vert))
+                  ],
+                ),
+                Text(
+                  group.description,
+                  style: const TextStyle(
+                      fontSize: 12,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black),
+                ),
+                const Spacer(),
+                Builder(builder: (groupContext) {
+                  return OutlinedButton.icon(
+                      onPressed: () {
+                        onOpenModal();
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) {
+                              return BlocProvider.value(
+                                  value: groupContext.watch<MembersCubit>(),
+                                  child: MembersModalContent(
+                                    group: group,
+                                    addAllowedUser: (userId) {
+                                      groupContext
+                                          .read<GroupCubit>()
+                                          .addAllowedUser(userId);
+                                    },
+                                  ));
+                            });
+                      },
+                      icon: const Icon(Icons.people),
+                      label: Text(
+                          "${group.members.length} member${group.members.length > 1 ? "s" : ""}"));
+                }),
+                // if (!isMember)
+                //   ElevatedButton(
+                //       onPressed: () async {
+                //         final userId = FirebaseAuth.instance.currentUser?.uid;
+                //         if (userId == null) return;
+                //         await sl<EditGroupUserArrayUseCase>().call(
+                //             params: EditGroupUserArrayReq(
+                //                 groupId: group.groupId,
+                //                 userId: userId,
+                //                 groupUserArray: GroupUserArray.members,
+                //                 groupArrayAction: GroupArrayAction.add));
+                //         if (context.mounted) {
+                //           context.read<GroupCubit>().loadData();
+                //         }
+                //       },
+                //       child: const Text("Join")),
+                // if (isMember)
+                //   ElevatedButton(onPressed: () {}, child: const Text("Leave")),
+              ],
+            ),
           ),
         )
       ],

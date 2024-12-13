@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubmissionLoader extends StatelessWidget {
   final String challengeId;
-  const SubmissionLoader({super.key, required this.challengeId});
+  final bool reviewing;
+  const SubmissionLoader(
+      {super.key, required this.challengeId, this.reviewing = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,10 @@ class SubmissionLoader extends StatelessWidget {
           if (state is SubmissionLoaderLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is SubmissionLoaderLoaded) {
-            return VideoScroller(submissions: state.submissions);
+            return VideoScroller(
+              submissions: state.submissions,
+              reviewing: reviewing,
+            );
           } else if (state is SubmissionLoaderError) {
             return Center(child: Text(state.message));
           } else {

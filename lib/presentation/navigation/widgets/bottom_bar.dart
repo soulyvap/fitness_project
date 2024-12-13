@@ -4,59 +4,58 @@ import 'package:flutter/material.dart';
 class BottomBar extends StatelessWidget {
   final int navIndex;
   final Function(int) setIndex;
-  const BottomBar({super.key, required this.navIndex, required this.setIndex});
+  final bool hasAGroup;
+  const BottomBar(
+      {super.key,
+      required this.navIndex,
+      required this.setIndex,
+      required this.hasAGroup});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(alignment: Alignment.center, children: [
-      NavigationBar(
-        onDestinationSelected: setIndex,
-        selectedIndex: navIndex,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search),
-            label: 'Find',
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications),
-            label: 'Alerts',
-          ),
-        ],
-      ),
-      SizedBox(
-        width: 68,
-        height: 68,
-        child: InkWell(
-            splashFactory: InkRipple.splashFactory,
+    return NavigationBar(
+      backgroundColor: Colors.white.withOpacity(0.9),
+      elevation: 0,
+      onDestinationSelected: setIndex,
+      selectedIndex: navIndex,
+      destinations: [
+        const NavigationDestination(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        const NavigationDestination(
+          icon: Icon(Icons.search),
+          label: 'Find',
+        ),
+        const NavigationDestination(
+          icon: Icon(Icons.notifications),
+          label: 'Alerts',
+        ),
+        if (hasAGroup)
+          InkWell(
             onTap: () {
               showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  showDragHandle: true,
-                  backgroundColor: Colors.white,
-                  builder: (context) => const StartAChallengeSheet());
+                context: context,
+                isDismissible: false,
+                isScrollControlled: true,
+                builder: (context) => const StartAChallengeSheet(),
+              );
             },
-            child: Card(
-              color: Theme.of(context).colorScheme.secondary,
-              elevation: 4,
-              child: const Icon(
-                Icons.fitness_center,
-                size: 32,
-                color: Colors.white,
-              ),
-            )),
-      )
-    ]);
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add_circle,
+                    color: Theme.of(context).colorScheme.secondary, size: 30),
+                const SizedBox(height: 4),
+                Text('Challenge',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+          )
+      ],
+    );
   }
 }

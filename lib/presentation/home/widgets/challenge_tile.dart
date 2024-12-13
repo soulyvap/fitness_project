@@ -65,6 +65,11 @@ class _ChallengeTileState extends State<ChallengeTile> {
         .where((id) => id != widget.challenge.userId)
         .toList();
     final hasEnded = _secondsLeft <= 0;
+    final hasSubmissions = widget.challenge.completedBy
+        .where((id) => id != widget.challenge.userId)
+        .isNotEmpty;
+    final isInitiator = widget.challenge.userId == currentUserId;
+    final isReviewable = hasEnded && hasSubmissions && isInitiator;
     return InkWell(
       onTap: widget.onTap,
       child: Column(
@@ -108,7 +113,11 @@ class _ChallengeTileState extends State<ChallengeTile> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: isReviewable
+                                ? Theme.of(context).colorScheme.primary
+                                : hasEnded
+                                    ? Colors.red
+                                    : Theme.of(context).colorScheme.secondary,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 4),
@@ -119,9 +128,12 @@ class _ChallengeTileState extends State<ChallengeTile> {
                                     const Icon(Icons.hourglass_empty_rounded,
                                         size: 14, color: Colors.white),
                                   Text(
-                                    !hasEnded
-                                        ? _secondsLeft.secondsToTimeString()
-                                        : "Ended",
+                                    isReviewable
+                                        ? "Review"
+                                        : hasEnded
+                                            ? "Ended"
+                                            : _secondsLeft
+                                                .secondsToTimeString(),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
@@ -147,7 +159,8 @@ class _ChallengeTileState extends State<ChallengeTile> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            widget.exercise.name,
+                            widget.challenge.title.substring(
+                                widget.challenge.reps.toString().length + 1),
                             maxLines: 2,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,

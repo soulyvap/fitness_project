@@ -1,5 +1,5 @@
-import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
-import 'package:fitness_project/common/widgets/picture_picker.dart';
+import 'package:fitness_project/common/bloc/file_selection_cubit.dart';
+import 'package:fitness_project/common/widgets/media_picker.dart';
 import 'package:fitness_project/presentation/create_group/bloc/create_group_form_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,10 +44,10 @@ class _DetailsFormState extends State<DetailsForm> {
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: PicturePicker(
-                image: widget.image,
+              child: MediaPicker(
+                file: widget.image,
                 pickFrom: (source) {
-                  context.read<PicSelectionCubit>().pickFrom(source);
+                  context.read<FileSelectionCubit>().pickFrom(source);
                 },
                 shape: BoxShape.rectangle,
                 borderRadius: const Radius.circular(28),
@@ -64,7 +64,7 @@ class _DetailsFormState extends State<DetailsForm> {
                   ],
                 ),
                 removeFile: () {
-                  context.read<PicSelectionCubit>().clear();
+                  context.read<FileSelectionCubit>().clear();
                 },
               ),
             ),

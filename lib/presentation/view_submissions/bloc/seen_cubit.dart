@@ -41,8 +41,8 @@ class SeenCubit extends Cubit<SeenState> {
       if (submission == null) {
         return;
       }
-      final likedBy = await _fetchUsers(submission.likedBy);
-      emit(SeenLoaded(seenBy: likedBy));
+      final seenBy = await _fetchUsers(submission.seenBy);
+      emit(SeenLoaded(seenBy: seenBy));
     } catch (e) {
       emit(SeenError(e.toString()));
     }

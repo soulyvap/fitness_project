@@ -25,47 +25,47 @@ class ScoreEntity {
 enum ScoreType {
   challengeCreation(
       value: 15,
-      description: 'Challenge creation',
-      icon: Icon(Icons.add_circle, color: Colors.green)),
+      title: 'Challenge creation',
+      icon: Icon(Icons.add_circle, color: Colors.orange)),
   challengeParticipation(
       value: 10,
-      description: 'Challenge completion',
+      title: 'Challenge completion',
       icon: Icon(Icons.check_circle, color: Colors.green)),
   challengeEarlyParticipation1(
       value: 10,
-      description: '1st place bonus',
-      icon: Icon(Icons.emoji_events, color: Colors.yellow)),
+      title: '1st place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.yellowAccent)),
   challengeEarlyParticipation2(
       value: 8,
-      description: '2nd place bonus',
+      title: '2nd place bonus',
       icon: Icon(Icons.emoji_events, color: Colors.grey)),
   challengeEarlyParticipation3(
       value: 6,
-      description: '3rd place bonus',
+      title: '3rd place bonus',
       icon: Icon(Icons.emoji_events, color: Colors.brown)),
   challengeEarlyParticipation4(
       value: 4,
-      description: '4th place bonus',
-      icon: Icon(Icons.emoji_events, color: Colors.blue)),
+      title: '4th place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.black)),
   challengeEarlyParticipation5(
       value: 2,
-      description: '5th place bonus',
-      icon: Icon(Icons.emoji_events, color: Colors.red)),
+      title: '5th place bonus',
+      icon: Icon(Icons.emoji_events, color: Colors.black)),
   challengeParticipationStreak(
       value: 5,
-      description: 'Streak bonus',
-      icon: Icon(Icons.emoji_events, color: Colors.green)),
+      title: 'Streak bonus',
+      icon: Icon(Icons.star, color: Colors.blue)),
   challengeParticipationAll(
       value: 20,
-      description: 'Participation in all challenges',
+      title: 'Participation in all challenges',
       icon: Icon(Icons.checklist, color: Colors.green)),
   ;
 
   const ScoreType(
-      {required this.value, required this.description, required this.icon});
+      {required this.value, required this.title, required this.icon});
 
   final int value;
-  final String description;
+  final String title;
   final Widget icon;
 
   String get name {
@@ -74,6 +74,24 @@ enum ScoreType {
 
   static ScoreType fromName(String name) {
     return ScoreType.values.firstWhere((element) => element.name == name);
+  }
+
+  String get explanation {
+    switch (this) {
+      case challengeCreation:
+        return 'Everytime you initiate a challenge';
+      case challengeParticipation:
+        return 'Everytime you submit a valid attempt';
+      case challengeParticipationStreak:
+        return 'If you have completed the most recently ended challenge';
+      case challengeParticipationAll:
+        return 'When the group expires and if you have submitted a valid attempt for every challenge';
+
+      case ScoreType.challengeEarlyParticipation1:
+        return 'If you are the first to complete the challenge';
+      default:
+        return '';
+    }
   }
 
   static ScoreType? earlyParticipation(int place) {

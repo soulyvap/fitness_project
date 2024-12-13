@@ -5,7 +5,7 @@ class GroupEntity {
   final String? imageUrl;
   final DateTime startTime;
   final DateTime endTime;
-  final int maxSimultaneousChallenges;
+  // final int maxSimultaneousChallenges;
   // final int minutesPerChallenge;
   final bool isPrivate;
   final List<String> allowedUsers;
@@ -19,7 +19,7 @@ class GroupEntity {
       this.imageUrl,
       required this.startTime,
       required this.endTime,
-      required this.maxSimultaneousChallenges,
+      // required this.maxSimultaneousChallenges,
       // required this.minutesPerChallenge,
       required this.isPrivate,
       required this.allowedUsers,
@@ -33,7 +33,7 @@ class GroupEntity {
     String? imageUrl,
     DateTime? startTime,
     DateTime? endTime,
-    int? maxSimultaneousChallenges,
+    // int? maxSimultaneousChallenges,
     // int? minutesPerChallenge,
     bool? isPrivate,
     List<String>? allowedUsers,
@@ -47,8 +47,8 @@ class GroupEntity {
       imageUrl: imageUrl ?? this.imageUrl,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      maxSimultaneousChallenges:
-          maxSimultaneousChallenges ?? this.maxSimultaneousChallenges,
+      // maxSimultaneousChallenges:
+      // maxSimultaneousChallenges ?? this.maxSimultaneousChallenges,
       // minutesPerChallenge: minutesPerChallenge ?? this.minutesPerChallenge,
       isPrivate: isPrivate ?? this.isPrivate,
       allowedUsers: allowedUsers ?? this.allowedUsers,

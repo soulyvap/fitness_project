@@ -49,7 +49,7 @@ class _CountdownState extends State<Countdown> {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
+import 'package:fitness_project/common/widgets/challenge_preview_player.dart';
+import 'package:fitness_project/common/widgets/challenge_preview_player_network.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
@@ -10,7 +12,7 @@ import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
 import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
-import 'package:fitness_project/presentation/view_submissions/pages/my_post.dart';
+import 'package:fitness_project/presentation/view_submissions/pages/video_scroller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -48,6 +50,8 @@ class ChallengeCard extends StatelessWidget {
     final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
     final isCompleted = completedBy.contains(currentUserUid);
     final hasEnded = challenge.endsAt.isBefore(DateTime.now());
+    final isReviewable = hasEnded && challenge.userId == currentUserUid;
+    final isCancelled = submission?.cancelledAt != null;
     return Card(
       child: Column(
         children: [
@@ -88,18 +92,20 @@ class ChallengeCard extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: Colors.white,
                     image: exercise.imageUrl == null
                         ? null
                         : DecorationImage(
                             image: NetworkImage(exercise.imageUrl!),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           ),
                   ),
-                  child: exercise.imageUrl != null
-                      ? null
-                      : const Center(
-                          child: Icon(Icons.fitness_center, size: 40)),
+                  child: challenge.videoUrl != null
+                      ? ChallengePreviewPlayerNetwork(url: challenge.videoUrl!)
+                      : exercise.imageUrl != null
+                          ? null
+                          : const Center(
+                              child: Icon(Icons.fitness_center, size: 40)),
                 ),
                 if (isCompleted)
                   Positioned.fill(
@@ -114,12 +120,31 @@ class ChallengeCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (isCancelled)
+                  Positioned.fill(
+                      child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Card(
+                        color: Colors.red.withOpacity(0.7),
+                        child: ListTile(
+                          dense: true,
+                          leading:
+                              const Icon(Icons.cancel, color: Colors.white),
+                          title: Text("Cancelled by ${author.displayName}:",
+                              style: const TextStyle(color: Colors.white)),
+                          subtitle: Text(submission?.cancellationReason ?? "",
+                              style: const TextStyle(color: Colors.white)),
+                        ),
+                      ),
+                    ),
+                  )),
               ],
             ),
           ),
           ListTile(
             dense: true,
-            title: Text("${challenge.reps} ${exercise.name}"),
+            title: Text(challenge.title),
             subtitle: Text("Deadline: ${challenge.endsAt.toDateTimeString()}"),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -153,10 +178,13 @@ class ChallengeCard extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SubmissionLoader(
-                            challengeId: challenge.challengeId),
+                          challengeId: challenge.challengeId,
+                          reviewing: isReviewable,
+                        ),
                       ));
                     },
-                    child: Text("View all posts (${completedBy.length})")),
+                    child: Text(
+                        "${isReviewable ? "Review" : "View"} all posts (${completedBy.length})")),
               const SizedBox(width: 8),
               isCompleted
                   ? ElevatedButton(
@@ -164,7 +192,7 @@ class ChallengeCard extends StatelessWidget {
                         if (submission != null) {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
-                                MyPost(submission: submission!),
+                                VideoScroller(submissions: [submission!]),
                           ));
                         }
                       },
@@ -205,7 +233,9 @@ class ChallengeCard extends StatelessWidget {
                                       author: author)));
                             }
                           },
-                          child: const Text("Post an attempt")),
+                          child: Text(
+                            isCancelled ? "Reattempt" : "Post an attempt",
+                          )),
             ]),
           ),
         ],

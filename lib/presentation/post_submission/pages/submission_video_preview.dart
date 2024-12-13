@@ -174,6 +174,10 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
                                                       .challenge.challengeId,
                                                   videoFile: widget.videoFile,
                                                   groupId: widget.group.groupId,
+                                                  onUploadSuccess: () {
+                                                    _controller.dispose();
+                                                    widget.videoFile.delete();
+                                                  },
                                                 ),
                                               );
                                             });

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class LeaderboardTile extends StatelessWidget {
   final LeaderboardItem item;
+  final Function() onTap;
   const LeaderboardTile({
     super.key,
     required this.item,
+    required this.onTap,
   });
 
   @override
@@ -13,43 +15,46 @@ class LeaderboardTile extends StatelessWidget {
     final difference = item.previousPosition == null
         ? 0
         : item.previousPosition! - item.position;
-    return Row(
-      children: [
-        RankingIndicator(position: item.position),
-        DifferenceIndicator(difference: difference),
-        Expanded(
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                backgroundImage: item.user.image == null
-                    ? null
-                    : NetworkImage(item.user.image!),
-                child: item.user.image == null
-                    ? Center(
-                        child: Text(item.user.displayName[0].toUpperCase()))
-                    : null,
-              ),
-              const SizedBox(width: 16),
-              Text(item.user.displayName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(right: 18),
-                child: Text(item.totalScore.toString(),
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.secondary)),
-              ),
-            ],
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          RankingIndicator(position: item.position),
+          DifferenceIndicator(difference: difference),
+          Expanded(
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  backgroundImage: item.user.image == null
+                      ? null
+                      : NetworkImage(item.user.image!),
+                  child: item.user.image == null
+                      ? Center(
+                          child: Text(item.user.displayName[0].toUpperCase()))
+                      : null,
+                ),
+                const SizedBox(width: 16),
+                Text(item.user.displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 18),
+                  child: Text(item.totalScore.toString(),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary)),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

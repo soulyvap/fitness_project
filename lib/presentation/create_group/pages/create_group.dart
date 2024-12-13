@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_project/common/bloc/pic_selection_cubit.dart';
+import 'package:fitness_project/common/bloc/file_selection_cubit.dart';
 import 'package:fitness_project/common/bloc/user_cubit.dart';
 import 'package:fitness_project/data/models/db/add_group_member_req.dart';
 import 'package:fitness_project/data/models/db/update_group_req.dart';
@@ -61,7 +61,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
             : null,
         endTime:
             editedEndTime != null ? Timestamp.fromDate(editedEndTime) : null,
-        maxSimultaneousChallenges: state.maxSimultaneousChallenges,
+        // maxSimultaneousChallenges: state.maxSimultaneousChallenges,
         // minutesPerChallenge: state.minutesPerChallenge,
         isPrivate: state.isPrivate,
         allowedUsers: state.allowedUsers.map((u) => u.userId).toList(),
@@ -114,8 +114,8 @@ class _CreateGroupPageState extends State<CreateGroupPage>
     final userState = context.read<UserCubit>().state;
     return MultiBlocProvider(
         providers: [
-          BlocProvider<PicSelectionCubit>(
-              create: (context) => PicSelectionCubit()),
+          BlocProvider<FileSelectionCubit>(
+              create: (context) => FileSelectionCubit(type: FileType.image)),
           BlocProvider<CreateGroupFormCubit>(
               create: (context) => CreateGroupFormCubit(
                     allowedUsers:
@@ -157,7 +157,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
             ),
             body: Builder(builder: (blocContext) {
               final statePicSelection =
-                  blocContext.watch<PicSelectionCubit>().state;
+                  blocContext.watch<FileSelectionCubit>().state;
               final stateCreateGroupForm =
                   blocContext.watch<CreateGroupFormCubit>().state;
               return TabBarView(

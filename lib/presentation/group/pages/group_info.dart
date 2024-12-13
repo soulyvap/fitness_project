@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
+import 'package:fitness_project/domain/usecases/db/edit_group_user_array.dart';
 import 'package:fitness_project/presentation/group/bloc/group_cubit.dart';
 import 'package:fitness_project/presentation/group/widgets/group_header.dart';
 import 'package:fitness_project/presentation/home/widgets/challenge_list.dart';
+import 'package:fitness_project/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupInfoTab extends StatelessWidget {
   final GroupLoaded groupData;
@@ -67,6 +71,26 @@ class GroupInfoTab extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          if (!isMember)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final userId = FirebaseAuth.instance.currentUser?.uid;
+                    if (userId == null) return;
+                    await sl<EditGroupUserArrayUseCase>().call(
+                        params: EditGroupUserArrayReq(
+                            groupId: groupData.group.groupId,
+                            userId: userId,
+                            groupUserArray: GroupUserArray.members,
+                            groupArrayAction: GroupArrayAction.add));
+                    if (context.mounted) {
+                      context.read<GroupCubit>().loadData();
+                    }
+                  },
+                  label: const Text('Join group'),
+                  icon: const Icon(Icons.group_add)),
             ),
         ],
       ),

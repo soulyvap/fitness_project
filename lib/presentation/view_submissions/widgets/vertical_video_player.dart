@@ -4,6 +4,7 @@ import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/usecases/db/add_submission_seen.dart';
 import 'package:fitness_project/presentation/view_submissions/bloc/video_info_cubit.dart';
+import 'package:fitness_project/presentation/view_submissions/widgets/cancel_submission_card.dart';
 import 'package:fitness_project/presentation/view_submissions/widgets/video_player_footer.dart';
 import 'package:fitness_project/presentation/view_submissions/widgets/video_player_header.dart';
 import 'package:fitness_project/presentation/view_submissions/widgets/video_player_side_buttons.dart';
@@ -16,7 +17,9 @@ class VerticalVideoPlayer extends StatefulWidget {
   final VideoPlayerController controller;
   final SubmissionEntity submission;
   final VideoInfoData? data;
+  final bool reviewing;
   final Function(VideoInfoData)? onLoadInfo;
+  final Function(bool)? onMute;
 
   const VerticalVideoPlayer({
     super.key,
@@ -24,6 +27,8 @@ class VerticalVideoPlayer extends StatefulWidget {
     required this.submission,
     this.data,
     this.onLoadInfo,
+    this.reviewing = false,
+    this.onMute,
   });
 
   @override
@@ -32,6 +37,7 @@ class VerticalVideoPlayer extends StatefulWidget {
 
 class _VerticalVideoPlayerState extends State<VerticalVideoPlayer> {
   late VideoPlayerController _controller;
+  late bool videoIsMuted;
   @override
   void initState() {
     super.initState();
@@ -48,6 +54,7 @@ class _VerticalVideoPlayerState extends State<VerticalVideoPlayer> {
               submissionId: widget.submission.submissionId,
               userId: currentUserId));
     }
+    videoIsMuted = _controller.value.volume == 0;
   }
 
   @override
@@ -55,8 +62,13 @@ class _VerticalVideoPlayerState extends State<VerticalVideoPlayer> {
     return BlocProvider<VideoInfoCubit>(
       create: (context) =>
           VideoInfoCubit(submission: widget.submission, data: widget.data),
-      child: Builder(builder: (context) {
-        final videoInfoState = context.watch<VideoInfoCubit>().state;
+      child: BlocConsumer<VideoInfoCubit, VideoInfoState>(
+          listener: (context, state) {
+        if (state is VideoInfoLoaded) {
+          widget.onLoadInfo?.call(state.data);
+        }
+      }, builder: (context, state) {
+        final isCanceled = widget.data?.submission.cancelledAt != null;
         return Material(
           color: Colors.black,
           child: Container(
@@ -101,13 +113,43 @@ class _VerticalVideoPlayerState extends State<VerticalVideoPlayer> {
                         child: SizedBox(
                           width: double.infinity,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              VideoPlayerHeader(videoInfoState: videoInfoState),
+                              VideoPlayerHeader(
+                                videoInfoData: widget.data,
+                                onCancelSubmission: () {
+                                  context.read<VideoInfoCubit>().loadData();
+                                },
+                              ),
+                              if (isCanceled || widget.reviewing)
+                                CancelSubmissionCard(
+                                  videoInfoData: widget.data,
+                                  onCancel: () {
+                                    context.read<VideoInfoCubit>().loadData();
+                                  },
+                                ),
                               const Spacer(),
-                              VideoPlayerSideButtons(state: videoInfoState),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  VideoPlayerSideButtons(
+                                    videoInfoData: widget.data,
+                                    isMuted: videoIsMuted,
+                                    onMuteChanged: (isMuted) {
+                                      setState(() {
+                                        videoIsMuted = isMuted;
+                                      });
+                                      if (isMuted) {
+                                        _controller.setVolume(0);
+                                      } else {
+                                        _controller.setVolume(1);
+                                      }
+                                      widget.onMute?.call(isMuted);
+                                    },
+                                  ),
+                                ],
+                              ),
                               VideoPlayerFooter(
-                                  state: videoInfoState,
+                                  videoInfoData: widget.data,
                                   pauseVideo: () {
                                     _controller.pause();
                                   }),

@@ -10,9 +10,10 @@ class ScoreSummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
       minTileHeight: 0,
       title: Text(title, style: const TextStyle(fontSize: 14)),
-      trailing: Text("$points points", style: const TextStyle(fontSize: 16)),
+      trailing: Text("$points pts", style: const TextStyle(fontSize: 16)),
       leading: leading,
     );
   }

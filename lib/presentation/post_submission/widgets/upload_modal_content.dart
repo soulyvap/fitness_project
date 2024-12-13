@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:fitness_project/common/bloc/user_cubit.dart';
+import 'package:fitness_project/main.dart';
 import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
+import 'package:fitness_project/presentation/navigation/pages/navigation.dart';
 import 'package:fitness_project/presentation/post_submission/bloc/submission_upload_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +13,14 @@ class UploadModalContent extends StatefulWidget {
   final String challengeId;
   final File videoFile;
   final String groupId;
+  final Function() onUploadSuccess;
 
   const UploadModalContent({
     super.key,
     required this.challengeId,
     required this.videoFile,
     required this.groupId,
+    required this.onUploadSuccess,
   });
 
   @override
@@ -45,6 +49,21 @@ class _UploadModalContentState extends State<UploadModalContent> {
     super.dispose();
   }
 
+  void popToHome() async {
+    _compressionProgressSubscription.unsubscribe();
+    Future.delayed(const Duration(seconds: 2), () {
+      navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Navigation()),
+          (route) => route.isFirst);
+      navigatorKey.currentState?.pop();
+      navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: (context) => ChallengePage(
+                challengeId: widget.challengeId,
+                showPoints: true,
+              )));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userState = context.read<UserCubit>().state;
@@ -55,97 +74,81 @@ class _UploadModalContentState extends State<UploadModalContent> {
       );
     }
     return BlocProvider<SubmissionUploadCubit>(
-        create: (context) => SubmissionUploadCubit(
-              challengeId: widget.challengeId,
-              videoFile: widget.videoFile,
-              groupId: widget.groupId,
-            ),
-        child: BlocListener<SubmissionUploadCubit, SubmissionUploadState>(
-          listener: (context, state) {
-            if (state is SubmissionDone) {
-              Future.delayed(const Duration(seconds: 2), () {
-                if (context.mounted) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChallengePage(
-                        challengeId: widget.challengeId,
-                        showPoints: true,
-                      ),
-                    ),
-                    (route) {
-                      return route.isFirst;
-                    },
-                  );
-                }
-              });
-            }
-          },
-          child: BlocBuilder<SubmissionUploadCubit, SubmissionUploadState>(
-            builder: (context, uploadState) {
-              return Container(
-                height: 300,
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                  child: !confirmed
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
+      create: (context) => SubmissionUploadCubit(
+        challengeId: widget.challengeId,
+        videoFile: widget.videoFile,
+        groupId: widget.groupId,
+      ),
+      child: BlocBuilder<SubmissionUploadCubit, SubmissionUploadState>(
+        builder: (context, uploadState) {
+          return Container(
+            height: 200,
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            child: Center(
+              child: !confirmed
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text("Confirm upload?",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 16),
+                        Row(
                           children: [
-                            const Text("Confirm upload?",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      confirmed = true;
-                                    });
-                                    context
-                                        .read<SubmissionUploadCubit>()
-                                        .uploadSubmission();
-                                  },
-                                  child: const Text("Confirm"),
-                                ),
-                                const SizedBox(width: 8),
-                                OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Cancel"),
-                                ),
-                              ],
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Cancel"),
+                              ),
                             ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              height: 80,
-                              width: 80,
-                              child: uploadState is! SubmissionDone
-                                  ? const CircularProgressIndicator()
-                                  : const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                      size: 80,
-                                    ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    confirmed = true;
+                                  });
+                                  await context
+                                      .read<SubmissionUploadCubit>()
+                                      .uploadSubmission();
+                                  widget.onUploadSuccess();
+                                  popToHome();
+                                },
+                                child: const Text("Confirm"),
+                              ),
                             ),
-                            const SizedBox(height: 16),
-                            Text(uploadState.message,
-                                style: const TextStyle(fontSize: 16)),
-                            if (uploadState is CompressingVideo)
-                              Text(
-                                  "${_compressionProgress.toStringAsFixed(0)}%")
                           ],
                         ),
-                ),
-              );
-            },
-          ),
-        ));
+                      ],
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 80,
+                          width: 80,
+                          child: uploadState is! SubmissionDone
+                              ? const CircularProgressIndicator()
+                              : const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                  size: 80,
+                                ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(uploadState.message,
+                            style: const TextStyle(fontSize: 16)),
+                        if (uploadState is CompressingVideo)
+                          Text("${_compressionProgress.toStringAsFixed(0)}%")
+                      ],
+                    ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

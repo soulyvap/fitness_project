@@ -17,6 +17,8 @@ class ChallengeList extends StatelessWidget {
   final GroupEntity? group;
   final Function()? onOpenModal;
   final Function()? onStartNewChallenge;
+  final Widget? leading;
+  final bool withAddButton;
 
   const ChallengeList({
     super.key,
@@ -29,6 +31,8 @@ class ChallengeList extends StatelessWidget {
     this.group,
     this.onOpenModal,
     this.onStartNewChallenge,
+    this.leading,
+    this.withAddButton = true,
   });
 
   List<ChallengeEntity> orderedChallenges(List<ChallengeEntity> challenges) {
@@ -49,9 +53,15 @@ class ChallengeList extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
-            child: Text(title,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Row(
+              children: [
+                if (leading != null) leading!,
+                if (leading != null) const SizedBox(width: 8),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
           ),
           const SizedBox(
             height: 16,
@@ -63,8 +73,8 @@ class ChallengeList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: challenges.length + 1,
               itemBuilder: (context, index) {
-                if (index < challenges.length) {
-                  final challenge = orderedChallenges(challenges)[index];
+                if (index > 0) {
+                  final challenge = orderedChallenges(challenges)[index - 1];
                   final exercise = exercises.firstWhere(
                       (element) => element.exerciseId == challenge.exerciseId);
                   final group = groups?.firstWhere(
@@ -88,24 +98,28 @@ class ChallengeList extends StatelessWidget {
                         }),
                   );
                 } else {
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: AddChallengeTile(onTap: () {
-                        if (onOpenModal != null) {
-                          onOpenModal!();
-                        }
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            showDragHandle: true,
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (context) => StartAChallengeSheet(
-                                  group: group,
-                                  onStartChallenge: () {
-                                    onStartNewChallenge?.call();
-                                  },
-                                ));
-                      }));
+                  return withAddButton
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: AddChallengeTile(
+                              hasChallenges: challenges.isNotEmpty,
+                              onTap: () {
+                                if (onOpenModal != null) {
+                                  onOpenModal!();
+                                }
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.white,
+                                    isDismissible: false,
+                                    context: context,
+                                    builder: (context) => StartAChallengeSheet(
+                                          group: group,
+                                          onStartChallenge: () {
+                                            onStartNewChallenge?.call();
+                                          },
+                                        ));
+                              }))
+                      : const SizedBox();
                 }
               },
             ),

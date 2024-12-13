@@ -29,7 +29,7 @@ class ChallengeShortInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "${challenge.reps} ${exercise.name}",
+              challenge.title,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,

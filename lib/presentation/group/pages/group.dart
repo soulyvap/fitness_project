@@ -105,9 +105,9 @@ class _GroupPageState extends State<GroupPage>
             });
             showModalBottomSheet(
                 isScrollControlled: true,
-                showDragHandle: true,
                 backgroundColor: Colors.white,
                 context: context,
+                isDismissible: false,
                 builder: (context) => StartAChallengeSheet(
                       group: group,
                       onStartChallenge: () {
@@ -157,7 +157,9 @@ class _GroupPageState extends State<GroupPage>
                   challenges: challenges,
                   exercises: exercises,
                 ),
-                const LeaderboardTab(),
+                LeaderboardTab(setPreventReload: (needReload) {
+                  preventReloadOnPop = needReload;
+                }),
               ],
             );
           } else {

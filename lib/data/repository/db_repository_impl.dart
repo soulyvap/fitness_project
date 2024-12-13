@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fitness_project/data/models/db/add_group_member_req.dart';
 import 'package:fitness_project/data/models/db/add_submission_seen_req.dart';
@@ -392,5 +393,26 @@ class DBRepositoryImpl extends DBRepository {
   Future<Either> deleteSubmission(String submissionId) async {
     await sl<FirestoreFirebaseService>().deleteSubmission(submissionId);
     return const Right('Submission deleted');
+  }
+
+  @override
+  Future<Either> getChallengeListener(String challengeId) async {
+    final stream =
+        await sl<FirestoreFirebaseService>().getChallengeListener(challengeId);
+    return stream.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        final snapshotStream =
+            data as Stream<DocumentSnapshot<Map<String, dynamic>>>;
+        final challengeStream = snapshotStream.map((snapshot) {
+          return snapshot.data() == null
+              ? null
+              : ChallengeModel.fromMap(snapshot.data()!).toEntity();
+        });
+        return Right(challengeStream);
+      },
+    );
   }
 }

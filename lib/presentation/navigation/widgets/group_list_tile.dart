@@ -11,6 +11,8 @@ class GroupListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.only(left: 4, right: 16),
       leading: Card(
         color: Colors.grey,
         margin: EdgeInsets.zero,
