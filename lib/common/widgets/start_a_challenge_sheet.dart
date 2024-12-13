@@ -328,7 +328,7 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                             ),
                             title: Text("Keep it short and fun!"),
                             subtitle: Text(
-                                "The challenge should take less than 2 minutes to complete"),
+                                "A challenge should take no longer than 2 minutes to complete"),
                             minVerticalPadding: 0,
                           ),
                           const SizedBox(

@@ -20,6 +20,13 @@ class UserAutocomplete extends StatefulWidget {
 
 class _UserAutocompleteState extends State<UserAutocomplete> {
   final TextEditingController controller = TextEditingController();
+  late List<String> usersAddedTemp;
+
+  @override
+  void initState() {
+    super.initState();
+    usersAddedTemp = widget.usersAdded.map((u) => u.userId).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +58,14 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
                           return UserListTile(
                             user: user,
                             onTap: () {
-                              if (!widget.usersAdded
-                                  .map((u) => u.userId)
-                                  .contains(user.userId)) {
+                              if (!usersAddedTemp.contains(user.userId)) {
                                 widget.onSelectUser(user);
+                                setState(() {
+                                  usersAddedTemp.add(user.userId);
+                                });
                               }
                             },
-                            trailing: widget.usersAdded
-                                    .map((u) => u.userId)
-                                    .contains(user.userId)
+                            trailing: usersAddedTemp.contains(user.userId)
                                 ? const Icon(Icons.check_circle,
                                     color: Colors.green)
                                 : null,

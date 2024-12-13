@@ -46,70 +46,73 @@ class MembersModalContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FilledButton.icon(
-                      icon: const Icon(Icons.qr_code, size: 16),
-                      style: const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                        Colors.grey,
-                      )),
-                      onPressed: () {},
-                      label: const Text("Show QR",
-                          style: TextStyle(fontSize: 12))),
-                  const SizedBox(
-                    width: 8,
+                  // FilledButton.icon(
+                  //     icon: const Icon(Icons.qr_code, size: 16),
+                  //     style: const ButtonStyle(
+                  //         backgroundColor: WidgetStatePropertyAll(
+                  //       Colors.grey,
+                  //     )),
+                  //     onPressed: () {},
+                  //     label: const Text("Show QR",
+                  //         style: TextStyle(fontSize: 12))),
+                  // const SizedBox(
+                  //   width: 8,
+                  // ),
+                  // FilledButton.icon(
+                  //     icon: const Icon(Icons.copy, size: 16),
+                  //     onPressed: () {},
+                  //     label: const Text("Copy link",
+                  //         style: TextStyle(fontSize: 12))),
+                  // const SizedBox(
+                  //   width: 8,
+                  // ),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                        icon: const Icon(Icons.add, size: 16),
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(groupContext).colorScheme.secondary,
+                        )),
+                        onPressed: () {
+                          showModalBottomSheet(
+                              context: groupContext,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return UserAutocomplete(
+                                  onSelectUser: (user) {
+                                    if (group.allowedUsers
+                                        .contains(user.userId)) {
+                                      return;
+                                    }
+                                    groupContext
+                                        .read<MembersCubit>()
+                                        .addMember(user);
+                                    sl<EditGroupUserArrayUseCase>().call(
+                                        params: EditGroupUserArrayReq(
+                                      groupId: group.groupId,
+                                      userId: user.userId,
+                                      groupUserArray:
+                                          GroupUserArray.allowedUsers,
+                                      groupArrayAction: GroupArrayAction.add,
+                                    ));
+                                    addAllowedUser(user.userId);
+                                  },
+                                  usersAdded: groupContext
+                                          .watch<MembersCubit>()
+                                          .state is MembersLoaded
+                                      ? (groupContext
+                                              .watch<MembersCubit>()
+                                              .state as MembersLoaded)
+                                          .members
+                                          .toList()
+                                      : [],
+                                );
+                              });
+                        },
+                        label: const Text("Invite",
+                            style: TextStyle(fontSize: 12))),
                   ),
-                  FilledButton.icon(
-                      icon: const Icon(Icons.copy, size: 16),
-                      onPressed: () {},
-                      label: const Text("Copy link",
-                          style: TextStyle(fontSize: 12))),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  FilledButton.icon(
-                      icon: const Icon(Icons.add, size: 16),
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(groupContext).colorScheme.secondary,
-                      )),
-                      onPressed: () {
-                        showModalBottomSheet(
-                            context: groupContext,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return UserAutocomplete(
-                                onSelectUser: (user) {
-                                  if (group.allowedUsers
-                                      .contains(user.userId)) {
-                                    return;
-                                  }
-                                  groupContext
-                                      .read<MembersCubit>()
-                                      .addMember(user);
-                                  sl<EditGroupUserArrayUseCase>().call(
-                                      params: EditGroupUserArrayReq(
-                                    groupId: group.groupId,
-                                    userId: user.userId,
-                                    groupUserArray: GroupUserArray.allowedUsers,
-                                    groupArrayAction: GroupArrayAction.add,
-                                  ));
-                                  addAllowedUser(user.userId);
-                                },
-                                usersAdded: groupContext
-                                        .watch<MembersCubit>()
-                                        .state is MembersLoaded
-                                    ? (groupContext.watch<MembersCubit>().state
-                                            as MembersLoaded)
-                                        .members
-                                        .toList()
-                                    : [],
-                              );
-                            });
-                      },
-                      label:
-                          const Text("Invite", style: TextStyle(fontSize: 12))),
                 ],
               ),
               const SizedBox(

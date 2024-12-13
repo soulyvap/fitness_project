@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/data/models/db/edit_group_user_array_req.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
@@ -19,61 +21,72 @@ class GroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMember = FirebaseAuth.instance.currentUser?.uid != null &&
         group.members.contains(FirebaseAuth.instance.currentUser!.uid);
-    return Row(
-      children: [
-        Card(
-          color: Colors.grey,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Card(
+            color: Colors.grey,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              image: group.imageUrl != null
-                  ? DecorationImage(
-                      image: NetworkImage(group.imageUrl!),
-                      fit: BoxFit.cover,
+            ),
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: group.imageUrl != null
+                    ? DecorationImage(
+                        image: NetworkImage(group.imageUrl!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: group.imageUrl == null
+                  ? const Center(
+                      child: Icon(
+                        Icons.fitness_center,
+                        size: 40,
+                        color: Colors.white,
+                      ),
                     )
                   : null,
             ),
-            child: group.imageUrl == null
-                ? const Center(
-                    child: Icon(
-                      Icons.fitness_center,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  )
-                : null,
           ),
-        ),
-        const SizedBox(
-          width: 16,
-        ),
-        Expanded(
-          child: SizedBox(
-            height: 120,
+          const SizedBox(
+            width: 16,
+          ),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      group.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                    if (isMember)
-                      GestureDetector(
-                          onTap: () {
+                ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  title: Text(
+                    group.name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                  subtitle: Text(
+                    group.description,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black),
+                  ),
+                  trailing: !isMember
+                      ? null
+                      : IconButton(
+                          onPressed: () {
+                            onOpenModal();
                             showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
@@ -84,26 +97,24 @@ class GroupHeader extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         if (isMember)
-                                          ElevatedButton(
-                                              onPressed: () {},
-                                              child: const Text("Leave")),
+                                          Card(
+                                            child: ListTile(
+                                                tileColor: Colors.red,
+                                                onTap: () {},
+                                                leading: const Icon(
+                                                    Icons.exit_to_app,
+                                                    color: Colors.white),
+                                                title: const Text("Leave group",
+                                                    style: TextStyle(
+                                                        color: Colors.white))),
+                                          ),
                                       ],
                                     ),
                                   );
                                 });
                           },
-                          child: const Icon(Icons.more_vert))
-                  ],
+                          icon: const Icon(Icons.more_vert)),
                 ),
-                Text(
-                  group.description,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      overflow: TextOverflow.ellipsis,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black),
-                ),
-                const Spacer(),
                 Builder(builder: (groupContext) {
                   return OutlinedButton.icon(
                       onPressed: () {
@@ -148,9 +159,9 @@ class GroupHeader extends StatelessWidget {
                 //   ElevatedButton(onPressed: () {}, child: const Text("Leave")),
               ],
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

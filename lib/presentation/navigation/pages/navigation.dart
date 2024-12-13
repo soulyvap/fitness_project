@@ -144,7 +144,7 @@ class _NavigationState extends State<Navigation> with RouteAware {
                     navIndex: state,
                     setIndex: (index) =>
                         context.read<NavIndexCubit>().setIndex(index),
-                    hasAGroup: context.read<HomeDataCubit>().state
+                    hasAGroup: context.watch<HomeDataCubit>().state
                             is HomeDataLoaded &&
                         (context.read<HomeDataCubit>().state as HomeDataLoaded)
                             .myGroups
