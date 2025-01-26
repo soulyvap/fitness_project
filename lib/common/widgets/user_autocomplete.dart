@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/common/bloc/user_autocomplete_cubit.dart';
 import 'package:fitness_project/presentation/create_group/widgets/user_list_tile.dart';
@@ -41,43 +43,63 @@ class _UserAutocompleteState extends State<UserAutocomplete> {
             children: [
               Expanded(
                 child: state is! UserAutocompleteLoaded
-                    ? const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.search, size: 64, color: Colors.grey),
-                            SizedBox(height: 16),
-                            Text("Find users to invite"),
-                          ],
-                        ),
+                    ? Center(
+                        child: controller.text.isNotEmpty
+                            ? const Text("Loading users...")
+                            : const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.search,
+                                      size: 64, color: Colors.grey),
+                                  SizedBox(height: 16),
+                                  Text("Find users to invite"),
+                                ],
+                              ),
                       )
-                    : ListView.separated(
-                        itemCount: state.users.length,
-                        itemBuilder: (context, index) {
-                          final user = state.users[index];
-                          return UserListTile(
-                            user: user,
-                            onTap: () {
-                              if (!usersAddedTemp.contains(user.userId)) {
-                                widget.onSelectUser(user);
-                                setState(() {
-                                  usersAddedTemp.add(user.userId);
-                                });
-                              }
+                    : state.users.isEmpty
+                        ? const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.search,
+                                      size: 64, color: Colors.grey),
+                                  SizedBox(height: 16),
+                                  Text(
+                                      "No users found. Please try another search."),
+                                ],
+                              )
+                            ],
+                          )
+                        : ListView.separated(
+                            itemCount: state.users.length,
+                            itemBuilder: (context, index) {
+                              final user = state.users[index];
+                              return UserListTile(
+                                user: user,
+                                onTap: () {
+                                  if (!usersAddedTemp.contains(user.userId)) {
+                                    widget.onSelectUser(user);
+                                    setState(() {
+                                      usersAddedTemp.add(user.userId);
+                                    });
+                                  }
+                                },
+                                trailing: usersAddedTemp.contains(user.userId)
+                                    ? const Icon(Icons.check_circle,
+                                        color: Colors.green)
+                                    : null,
+                              );
                             },
-                            trailing: usersAddedTemp.contains(user.userId)
-                                ? const Icon(Icons.check_circle,
-                                    color: Colors.green)
-                                : null,
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Divider(
-                            height: 0.2,
-                            color: Colors.black.withOpacity(0.1),
-                          );
-                        },
-                      ),
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Divider(
+                                height: 0.2,
+                                color: Colors.black.withOpacity(0.1),
+                              );
+                            },
+                          ),
               ),
               TextField(
                 controller: controller,

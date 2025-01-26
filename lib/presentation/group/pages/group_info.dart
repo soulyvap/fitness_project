@@ -42,7 +42,7 @@ class GroupInfoTab extends StatelessWidget {
                     },
                 title:
                     "Active challenges (${groupData.activeChallenges.length})"),
-          if (isMember)
+          if (isMember && groupData.previousChallenges.isNotEmpty)
             ChallengeList(
                 challenges: groupData.previousChallenges,
                 exercises: groupData.allExercises,
@@ -51,6 +51,7 @@ class GroupInfoTab extends StatelessWidget {
                 onOpenModal: () {
                   setPreventReload(true);
                 },
+                withAddButton: false,
                 onStartNewChallenge: () => {
                       setPreventReload(false),
                     },

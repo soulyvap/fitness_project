@@ -45,8 +45,7 @@ class _DeleteSubmissionSheetState extends State<DeleteSubmissionSheet> {
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         child: deleting
-            ? const AspectRatio(
-                aspectRatio: 1, child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

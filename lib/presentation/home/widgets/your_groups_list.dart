@@ -20,8 +20,7 @@ class YourGroupsList extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16),
             child: Row(
               children: [
-                Icon(Icons.group,
-                    size: 32, color: Theme.of(context).colorScheme.secondary),
+                const Icon(Icons.group, size: 32),
                 const SizedBox(
                   width: 8,
                 ),

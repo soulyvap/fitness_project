@@ -54,6 +54,8 @@ class SeenButton extends StatelessWidget {
                                     fontSize: 16, fontWeight: FontWeight.bold)),
                             Expanded(
                                 child: ListView.builder(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
                                     itemCount: seenByUsers.length,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -79,7 +81,7 @@ class SeenButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.visibility,
-                size: 32,
+                size: 24,
                 color: Colors.white,
                 shadows: [
                   Shadow(

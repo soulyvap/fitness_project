@@ -65,7 +65,8 @@ class _CreateGroupPageState extends State<CreateGroupPage>
         // minutesPerChallenge: state.minutesPerChallenge,
         isPrivate: state.isPrivate,
         allowedUsers: state.allowedUsers.map((u) => u.userId).toList(),
-        members: [currentUserId]);
+        members: [currentUserId],
+        admins: [currentUserId]);
     final groupUpload =
         await sl<UpdateGroupUseCase>().call(params: updateGroupReq);
     await groupUpload.fold(
@@ -75,7 +76,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
       },
       (groupId) async {
         returnGroupId = groupId;
-        await addUserToMembers(currentUserId, groupId);
+        // await addUserToMembers(currentUserId, groupId);
         if (image != null) {
           await uploadGroupPicture(groupId, image);
         }

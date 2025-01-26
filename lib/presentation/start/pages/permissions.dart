@@ -34,24 +34,37 @@ class _PermissionsPageState extends State<PermissionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Before we get started'),
+        title: const Text('Permissions'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Expanded(
+            Expanded(
               child: Center(
-                child: Text(
-                  "For you to experience the full functionality of the app, we need to ask for some permissions.",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: Colors.orangeAccent,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Icon(Icons.fitness_center,
+                            size: 128, color: Colors.white),
+                      )),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "For you to experience the app fully, please enable the following permissions.",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ]),
               ),
             ),
             Card(
               child: ListTile(
-                  leading: const Icon(Icons.notifications),
+                  leading: const Icon(Icons.notifications, color: Colors.amber),
                   title: const Text('Notification permission'),
                   subtitle: const Text(
                       'This will allow other users to tell you when a new challenge has started.'),
@@ -78,7 +91,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
             ),
             Card(
               child: ListTile(
-                leading: const Icon(Icons.camera_alt),
+                leading: const Icon(Icons.camera_alt, color: Colors.blue),
                 title: const Text('Camera permission'),
                 subtitle: const Text(
                     'This will allow you to record videos and show you have completed a challenge.'),

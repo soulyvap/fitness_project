@@ -123,10 +123,10 @@ class MembersModalContent extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Container(
+              SizedBox(
                 height: MediaQuery.of(groupContext).size.height * 0.4,
-                padding: const EdgeInsets.all(16),
                 child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 4,
                   ),

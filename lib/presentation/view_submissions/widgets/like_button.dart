@@ -65,6 +65,8 @@ class LikeButton extends StatelessWidget {
                                     fontSize: 16, fontWeight: FontWeight.bold)),
                             Expanded(
                                 child: ListView.builder(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
                                     itemCount: likedByUsers.length,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -93,7 +95,7 @@ class LikeButton extends StatelessWidget {
           children: [
             Icon(
               Icons.thumb_up,
-              size: 32,
+              size: 24,
               color: isLiked
                   ? Theme.of(context).colorScheme.primary
                   : Colors.white,

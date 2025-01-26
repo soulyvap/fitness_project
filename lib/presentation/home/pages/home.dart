@@ -44,9 +44,18 @@ class _HomePageState extends State<HomePage> {
         final previousChallenges = homeDataState.previousChallenges;
         final allChallenges = [...activeChallenges, ...previousChallenges];
         final submissions = homeDataState.activeSubmissions;
+        final currentUserId = widget.currentUser.userId;
+        final hasNewGroup = groups.any((group) =>
+            group.allowedUsers.contains(currentUserId) &&
+            !group.members.contains(currentUserId));
+        final isGroupMember =
+            groups.any((group) => group.members.contains(currentUserId));
         return Scaffold(
           appBar: AppBar(
-            title: Text("Welcome back ${widget.currentUser.displayName}"),
+            title: Text(
+              "Hello ${widget.currentUser.displayName}!",
+              style: const TextStyle(fontSize: 20),
+            ),
             actions: [
               IconButton(
                   onPressed: () {
@@ -92,14 +101,12 @@ class _HomePageState extends State<HomePage> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    YourGroupsList(groups: groups),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    if (activeChallenges.isNotEmpty || groups.isNotEmpty)
+                    if (hasNewGroup) YourGroupsList(groups: groups),
+                    if (isGroupMember)
+                      const SizedBox(
+                        height: 32,
+                      ),
+                    if (isGroupMember)
                       ChallengeList(
                         title: "Active challenges (${activeChallenges.length})",
                         groups: groups,
@@ -111,9 +118,10 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
-                    const SizedBox(
-                      height: 16,
-                    ),
+                    if (submissions.isNotEmpty)
+                      const SizedBox(
+                        height: 32,
+                      ),
                     if (submissions.isNotEmpty)
                       SubmissionList(
                           submissions: submissions,
@@ -121,9 +129,10 @@ class _HomePageState extends State<HomePage> {
                           challenges: allChallenges,
                           exercises: exercises,
                           title: "Recent submissions"),
-                    const SizedBox(
-                      height: 16,
-                    ),
+                    if (previousChallenges.isNotEmpty)
+                      const SizedBox(
+                        height: 32,
+                      ),
                     if (previousChallenges.isNotEmpty)
                       ChallengeList(
                           title: "Previous challenges",
@@ -137,6 +146,10 @@ class _HomePageState extends State<HomePage> {
                             size: 32,
                             color: Theme.of(context).colorScheme.secondary,
                           )),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    if (!hasNewGroup) YourGroupsList(groups: groups),
                     const SizedBox(
                       height: 86,
                     ),

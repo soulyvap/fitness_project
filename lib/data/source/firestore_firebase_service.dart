@@ -392,7 +392,6 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
 
     if (isAdd) {
       dataMap['createdAt'] = Timestamp.now();
-      dataMap['admins'] = updateGroupReq.allowedUsers;
     }
     try {
       _firestore

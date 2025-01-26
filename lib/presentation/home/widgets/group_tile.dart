@@ -41,12 +41,13 @@ class GroupTile extends StatelessWidget {
                 if (group.imageUrl == null)
                   const Center(
                     child: Icon(
-                      Icons.fitness_center,
+                      Icons.group,
                       size: 40,
                       color: Colors.white,
                     ),
                   ),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(

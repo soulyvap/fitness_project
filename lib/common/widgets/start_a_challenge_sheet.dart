@@ -517,16 +517,15 @@ class _StartAChallengeSheetState extends State<StartAChallengeSheet> {
                               ),
                             ),
                           AspectRatio(
-                            aspectRatio: fileState == null ? 3 : 1.3,
+                            aspectRatio: fileState == null ? 4 : 1.3,
                             child: MediaPicker(
                                 placeholder: const ListTile(
                                   dense: true,
                                   leading: Icon(Icons.video_call),
+                                  visualDensity: VisualDensity.compact,
                                   title: Text(
-                                      "Upload a video that shows the move"),
-                                  subtitle: Text(
-                                      "- e.g. One rep of the move\n- Max 1 minute long"),
-                                  trailing: Icon(Icons.arrow_right),
+                                      "Show the move with a video (optional)"),
+                                  subtitle: Text("- Max 1 minute long"),
                                 ),
                                 file: fileState,
                                 borderRadius: const Radius.circular(8),

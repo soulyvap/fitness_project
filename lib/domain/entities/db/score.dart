@@ -34,7 +34,13 @@ enum ScoreType {
   challengeEarlyParticipation1(
       value: 10,
       title: '1st place bonus',
-      icon: Icon(Icons.emoji_events, color: Colors.yellowAccent)),
+      icon: Icon(
+        Icons.emoji_events,
+        color: Colors.yellowAccent,
+        shadows: [
+          Shadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 1)
+        ],
+      )),
   challengeEarlyParticipation2(
       value: 8,
       title: '2nd place bonus',
@@ -88,7 +94,15 @@ enum ScoreType {
         return 'When the group expires and if you have submitted a valid attempt for every challenge';
 
       case ScoreType.challengeEarlyParticipation1:
-        return 'If you are the first to complete the challenge';
+        return 'If you are the first to complete the challenge.\n(Not for challenge creator)';
+      case ScoreType.challengeEarlyParticipation2:
+        return '(Not for challenge creator)';
+      case ScoreType.challengeEarlyParticipation3:
+        return '(Not for challenge creator)';
+      case ScoreType.challengeEarlyParticipation4:
+        return '(Not for challenge creator)';
+      case ScoreType.challengeEarlyParticipation5:
+        return '(Not for challenge creator)';
       default:
         return '';
     }

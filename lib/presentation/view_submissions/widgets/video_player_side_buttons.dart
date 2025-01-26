@@ -92,7 +92,7 @@ class VideoPlayerSideButtons extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(isMuted ? Icons.volume_off : Icons.volume_up,
-                                size: 32,
+                                size: 24,
                                 color: Colors.white,
                                 shadows: const [
                                   Shadow(

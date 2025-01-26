@@ -4,6 +4,8 @@ import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
+import 'package:fitness_project/main.dart';
+import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/challenge_short_info.dart';
 import 'package:fitness_project/presentation/post_submission/widgets/upload_modal_content.dart';
@@ -162,25 +164,77 @@ class _SubmissionVideoPreviewState extends State<SubmissionVideoPreview> {
                                   ElevatedButton.icon(
                                       icon: const Icon(Icons.upload),
                                       onPressed: () {
-                                        showModalBottomSheet(
-                                            enableDrag: false,
-                                            isDismissible: false,
-                                            context: context,
-                                            builder: (context) {
-                                              return PopScope(
-                                                canPop: false,
-                                                child: UploadModalContent(
-                                                  challengeId: widget
-                                                      .challenge.challengeId,
-                                                  videoFile: widget.videoFile,
-                                                  groupId: widget.group.groupId,
-                                                  onUploadSuccess: () {
-                                                    _controller.dispose();
-                                                    widget.videoFile.delete();
-                                                  },
-                                                ),
-                                              );
-                                            });
+                                        final challengeHasEnded = widget
+                                            .challenge.endsAt
+                                            .isBefore(DateTime.now());
+                                        if (challengeHasEnded) {
+                                          showModalBottomSheet(
+                                              isDismissible: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return Container(
+                                                  width: double.infinity,
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  child: Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: Icon(
+                                                            Icons
+                                                                .hourglass_disabled,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .secondary),
+                                                        title: const Text(
+                                                            "Challenge has ended"),
+                                                        subtitle: const Text(
+                                                            "You can no longer post an attempt."),
+                                                      ),
+                                                      ElevatedButton.icon(
+                                                          icon: const Icon(
+                                                              Icons.close),
+                                                          onPressed: () {
+                                                            Navigator.popUntil(
+                                                                context,
+                                                                (route) => route
+                                                                    .isFirst);
+                                                            Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            ChallengePage(
+                                                                              challengeId: widget.challenge.challengeId,
+                                                                            )));
+                                                          },
+                                                          label: const Text(
+                                                              "Close"))
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                        } else {
+                                          showModalBottomSheet(
+                                              enableDrag: false,
+                                              isDismissible: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return PopScope(
+                                                  canPop: false,
+                                                  child: UploadModalContent(
+                                                    challengeId: widget
+                                                        .challenge.challengeId,
+                                                    videoFile: widget.videoFile,
+                                                    groupId:
+                                                        widget.group.groupId,
+                                                    onUploadSuccess: () {
+                                                      _controller.dispose();
+                                                      widget.videoFile.delete();
+                                                    },
+                                                  ),
+                                                );
+                                              });
+                                        }
                                       },
                                       label: const Text("Submit"))
                                 ],

@@ -8,6 +8,7 @@ class ChallengeExplanation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -21,7 +22,7 @@ class ChallengeExplanation extends StatelessWidget {
                   enableFeedback: false,
                   color: Colors.transparent,
                 ),
-                const Text('Challenge Scoring',
+                const Text('Points system',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 IconButton(
@@ -38,6 +39,7 @@ class ChallengeExplanation extends StatelessWidget {
             Column(
               children: [
                 Card(
+                  color: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -100,6 +102,7 @@ class ScoreExplanationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

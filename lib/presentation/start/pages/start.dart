@@ -1,3 +1,4 @@
+import 'package:fitness_project/presentation/start/pages/how_it_works.dart';
 import 'package:fitness_project/presentation/start/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,6 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        color: Theme.of(context).colorScheme.secondary,
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -19,7 +19,7 @@ class StartPage extends StatelessWidget {
                 const Spacer(),
                 Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(1000),
+                      borderRadius: BorderRadius.circular(40),
                       color: Colors.orangeAccent,
                     ),
                     child: const Padding(
@@ -36,12 +36,11 @@ class StartPage extends StatelessWidget {
                   const Column(
                     children: [
                       Text(
-                        "MoveTogether",
+                        "The Fitness Project",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
                         ),
                       ),
                       SizedBox(
@@ -52,17 +51,16 @@ class StartPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                  FilledButton(
+                  ElevatedButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => const HowItWorks(),
                           ),
                         );
                       },

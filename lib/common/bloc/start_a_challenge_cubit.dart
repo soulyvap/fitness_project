@@ -52,7 +52,9 @@ class StartAChallengeCubit extends Cubit<StartAChallengeState> {
     }, (data) {
       returnValue = data;
     });
-    return returnValue;
+    return returnValue
+        ?.where((group) => group.members.contains(currentUserId))
+        .toList();
   }
 
   Future<List<ExerciseEntity>?> _fetchExercises() async {

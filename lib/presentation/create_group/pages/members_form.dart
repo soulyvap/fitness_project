@@ -78,7 +78,7 @@ class _MembersFormState extends State<MembersForm> {
           const SizedBox(
             height: 8,
           ),
-          ElevatedButton.icon(
+          FilledButton.icon(
             onPressed: () {
               widget.showAddMemberSheet();
             },

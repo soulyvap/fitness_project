@@ -30,7 +30,7 @@ class CommentButton extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.comment, size: 32, color: Colors.white, shadows: [
+            const Icon(Icons.comment, size: 24, color: Colors.white, shadows: [
               Shadow(
                 color: Colors.white,
                 offset: Offset(1, 1),

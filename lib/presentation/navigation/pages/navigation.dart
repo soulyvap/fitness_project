@@ -11,7 +11,7 @@ import 'package:fitness_project/presentation/create_account/pages/create_account
 import 'package:fitness_project/presentation/home/bloc/home_data_cubit.dart';
 import 'package:fitness_project/presentation/navigation/widgets/bottom_bar.dart';
 import 'package:fitness_project/presentation/navigation/bloc/nav_index_cubit.dart';
-import 'package:fitness_project/presentation/permissions/pages/permissions.dart';
+import 'package:fitness_project/presentation/start/pages/permissions.dart';
 import 'package:fitness_project/presentation/start/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,6 +148,8 @@ class _NavigationState extends State<Navigation> with RouteAware {
                             is HomeDataLoaded &&
                         (context.read<HomeDataCubit>().state as HomeDataLoaded)
                             .myGroups
+                            .where(
+                                (group) => group.members.contains(authUser.uid))
                             .isNotEmpty,
                   ),
                 );

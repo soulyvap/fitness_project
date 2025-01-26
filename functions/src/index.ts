@@ -158,12 +158,11 @@ const handleSubmissionCancellation = async (submission: DocumentData, removeFile
   }
   const completedBy = challenge.completedBy;
   const userPosition = completedBy.indexOf(submission.userId) + 1;
-
-  await Promise.all([
-    removeSubmissionPoints(submissionId),
-    removeFiles ? removeSubmissionFiles(submissionId, challengeId) : Promise.resolve(),
-    removeCompletedBy(submission)
-  ]);
+  await removeSubmissionPoints(submissionId);
+  await removeCompletedBy(submission);
+  if (removeFiles) {
+    await removeSubmissionFiles(submissionId, challengeId);
+  }
   if (userPosition > 5) {
     return;
   }

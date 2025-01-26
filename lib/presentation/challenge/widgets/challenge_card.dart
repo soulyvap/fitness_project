@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/extensions/datetime_extension.dart';
-import 'package:fitness_project/common/widgets/challenge_preview_player.dart';
 import 'package:fitness_project/common/widgets/challenge_preview_player_network.dart';
 import 'package:fitness_project/domain/entities/db/challenge.dart';
 import 'package:fitness_project/domain/entities/db/exercise.dart';
@@ -8,8 +7,8 @@ import 'package:fitness_project/domain/entities/db/group.dart';
 import 'package:fitness_project/domain/entities/db/submission.dart';
 import 'package:fitness_project/domain/entities/db/user.dart';
 import 'package:fitness_project/presentation/challenge/bloc/challenge_details_cubit.dart';
-import 'package:fitness_project/presentation/challenge/pages/challenge_page.dart';
 import 'package:fitness_project/presentation/challenge/pages/submission_loader.dart';
+import 'package:fitness_project/presentation/challenge/widgets/completed_by_sheet.dart';
 import 'package:fitness_project/presentation/group/pages/group.dart';
 import 'package:fitness_project/presentation/post_submission/pages/camera.dart';
 import 'package:fitness_project/presentation/view_submissions/pages/video_scroller.dart';
@@ -57,11 +56,23 @@ class ChallengeCard extends StatelessWidget {
         children: [
           ListTile(
             dense: true,
-            trailing: IconButton(
-                onPressed: () {
-                  context.read<ChallengeDetailsCubit>().loadData();
-                },
-                icon: const Icon(Icons.refresh)),
+            trailing: OutlinedButton.icon(
+              onPressed: () {
+                if (completedBy.isNotEmpty) {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return CompletedBySheet(
+                            userIds: completedBy, authorId: author.userId);
+                      });
+                }
+              },
+              icon: const Icon(Icons.people, color: Colors.green, size: 20),
+              label: Text("${completedByWithoutAuthor.length}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
             leading: CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey,
@@ -100,7 +111,7 @@ class ChallengeCard extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                   ),
-                  child: challenge.videoUrl != null
+                  child: challenge.videoUrl != null && !isCompleted
                       ? ChallengePreviewPlayerNetwork(url: challenge.videoUrl!)
                       : exercise.imageUrl != null
                           ? null
@@ -146,19 +157,6 @@ class ChallengeCard extends StatelessWidget {
             dense: true,
             title: Text(challenge.title),
             subtitle: Text("Deadline: ${challenge.endsAt.toDateTimeString()}"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 20),
-                const SizedBox(width: 4),
-                Text("${completedByWithoutAuthor.length}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-                const SizedBox(width: 8),
-              ],
-            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -206,22 +204,26 @@ class ChallengeCard extends StatelessWidget {
                             final challengeHasEnded =
                                 challenge.endsAt.isBefore(DateTime.now());
                             if (challengeHasEnded) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      "This challenge has ended. You can no longer post attempts."),
-                                ),
-                              );
-                              Future.delayed(const Duration(seconds: 1), () {
-                                if (context.mounted) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => ChallengePage(
-                                            challengeId:
-                                                challenge.challengeId)),
-                                  );
-                                }
-                              });
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(16),
+                                      child: ListTile(
+                                        leading: Icon(Icons.hourglass_disabled,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                        title:
+                                            const Text("Challenge has ended"),
+                                        subtitle: const Text(
+                                            "You can no longer post an attempt."),
+                                      ),
+                                    );
+                                  });
+                              context.read<ChallengeDetailsCubit>().loadData();
+                              return;
                             }
                             await requestCameraPermission();
                             if (context.mounted) {

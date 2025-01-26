@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_project/common/bloc/need_refresh_cubit.dart';
 import 'package:fitness_project/common/widgets/start_a_challenge_sheet.dart';
 import 'package:fitness_project/domain/entities/db/group.dart';
@@ -28,6 +29,7 @@ class _GroupPageState extends State<GroupPage>
   GroupEntity? group;
   bool preventReloadOnPop = false;
   Function()? reload;
+  final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
@@ -98,25 +100,27 @@ class _GroupPageState extends State<GroupPage>
             ),
           ]),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              preventReloadOnPop = true;
-            });
-            showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.white,
-                context: context,
-                isDismissible: false,
-                builder: (context) => StartAChallengeSheet(
-                      group: group,
-                      onStartChallenge: () {
-                        reload?.call();
-                      },
-                    ));
-          },
-          child: const Icon(Icons.fitness_center),
-        ),
+        floatingActionButton: group?.members.contains(currentUserId) == true
+            ? FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    preventReloadOnPop = true;
+                  });
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.white,
+                      context: context,
+                      isDismissible: false,
+                      builder: (context) => StartAChallengeSheet(
+                            group: group,
+                            onStartChallenge: () {
+                              reload?.call();
+                            },
+                          ));
+                },
+                child: const Icon(Icons.fitness_center),
+              )
+            : null,
         body: BlocConsumer<GroupCubit, GroupState>(
             listener: (context, groupState) {
           if (groupState is GroupLoaded) {

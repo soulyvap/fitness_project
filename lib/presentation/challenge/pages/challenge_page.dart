@@ -82,45 +82,51 @@ class _ChallengePageState extends State<ChallengePage> {
           ),
         ],
       ),
-      body: BlocProvider<ChallengeDetailsCubit>(
-        create: (context) =>
-            ChallengeDetailsCubit(challengeId: widget.challengeId),
-        child: BlocBuilder<ChallengeDetailsCubit, ChallengeDetailsState>(
-          builder: (context, state) {
-            if (state is ChallengeDetailsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ChallengeDetailsLoaded) {
-              final challenge = state.challenge;
-              final author = state.author;
-              final group = state.group;
-              final exercise = state.exercise;
-              final submission = state.submission;
-              final isAuthor =
-                  challenge.userId == FirebaseAuth.instance.currentUser?.uid;
-              final isCompleted = challenge.completedBy
-                  .contains(FirebaseAuth.instance.currentUser?.uid);
-              final completedBy = challenge.completedBy;
-              final completedByWithoutAuthor =
-                  completedBy.where((id) => id != challenge.userId).toList();
-              final potentialPlacement = completedByWithoutAuthor.length + 1;
-              final actualPlacement = isCompleted &&
-                      !isAuthor &&
-                      FirebaseAuth.instance.currentUser != null
-                  ? completedByWithoutAuthor
-                          .indexOf(FirebaseAuth.instance.currentUser!.uid) +
-                      1
-                  : null;
-              final isDone = challenge.endsAt.isBefore(DateTime.now());
-              final showPotentialPlacement = !isAuthor &&
-                  !isCompleted &&
-                  !isDone &&
-                  potentialPlacement <= 5;
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(children: [
-                  Expanded(
-                    child: Center(
-                      child: Column(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<ChallengeDetailsCubit>().loadData();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: BlocProvider<ChallengeDetailsCubit>(
+            create: (context) =>
+                ChallengeDetailsCubit(challengeId: widget.challengeId),
+            child: BlocBuilder<ChallengeDetailsCubit, ChallengeDetailsState>(
+              builder: (context, state) {
+                if (state is ChallengeDetailsLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ChallengeDetailsLoaded) {
+                  final challenge = state.challenge;
+                  final author = state.author;
+                  final group = state.group;
+                  final exercise = state.exercise;
+                  final submission = state.submission;
+                  final isAuthor = challenge.userId ==
+                      FirebaseAuth.instance.currentUser?.uid;
+                  final isCompleted = challenge.completedBy
+                      .contains(FirebaseAuth.instance.currentUser?.uid);
+                  final completedBy = challenge.completedBy;
+                  final completedByWithoutAuthor = completedBy
+                      .where((id) => id != challenge.userId)
+                      .toList();
+                  final potentialPlacement =
+                      completedByWithoutAuthor.length + 1;
+                  final actualPlacement = isCompleted &&
+                          !isAuthor &&
+                          FirebaseAuth.instance.currentUser != null
+                      ? completedByWithoutAuthor
+                              .indexOf(FirebaseAuth.instance.currentUser!.uid) +
+                          1
+                      : null;
+                  final isDone = challenge.endsAt.isBefore(DateTime.now());
+                  final showPotentialPlacement = !isAuthor &&
+                      !isCompleted &&
+                      !isDone &&
+                      potentialPlacement <= 5;
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Padding(
@@ -202,23 +208,24 @@ class _ChallengePageState extends State<ChallengePage> {
                             ),
                         ],
                       ),
-                    ),
-                  ),
-                  ChallengeCard(
-                    challenge: challenge,
-                    author: author,
-                    group: group,
-                    exercise: exercise,
-                    submission: submission,
-                  ),
-                ]),
-              );
-            } else if (state is ChallengeDetailsError) {
-              return Center(child: Text(state.errorMessage));
-            } else {
-              return const Center(child: Text('Unknown state'));
-            }
-          },
+                      const SizedBox(height: 16),
+                      ChallengeCard(
+                        challenge: challenge,
+                        author: author,
+                        group: group,
+                        exercise: exercise,
+                        submission: submission,
+                      ),
+                    ]),
+                  );
+                } else if (state is ChallengeDetailsError) {
+                  return Center(child: Text(state.errorMessage));
+                } else {
+                  return const Center(child: Text('Unknown state'));
+                }
+              },
+            ),
+          ),
         ),
       ),
     );
