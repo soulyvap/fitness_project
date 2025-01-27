@@ -38,7 +38,7 @@ class HowItWorks extends StatelessWidget {
                 child: const Text("More information on the points system")),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => Navigator.push(
+              onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const LoginPage(),
