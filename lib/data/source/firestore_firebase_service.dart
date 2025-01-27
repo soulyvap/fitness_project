@@ -294,6 +294,7 @@ class FirestoreFirebaseServiceImpl extends FirestoreFirebaseService {
       final author = challenge["userId"] as String;
       final completedBy = (challenge["completedBy"] as List<dynamic>)
           .map((e) => e.toString())
+          .where((e) => e != author)
           .toList();
       final groupId = challenge["groupId"] as String;
       final isAuthor = author == _currentUserId();
