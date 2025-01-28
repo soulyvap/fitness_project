@@ -41,6 +41,15 @@ class ChallengeCard extends StatelessWidget {
     return true;
   }
 
+  Future<bool> requestMicrophonePermission() async {
+    var status = await Permission.microphone.status;
+    if (!status.isGranted) {
+      await Permission.microphone.request();
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final completedBy = challenge.completedBy;
@@ -225,8 +234,13 @@ class ChallengeCard extends StatelessWidget {
                               context.read<ChallengeDetailsCubit>().loadData();
                               return;
                             }
-                            await requestCameraPermission();
-                            if (context.mounted) {
+                            var cameraPermission =
+                                await requestCameraPermission();
+                            var micPermission =
+                                await requestMicrophonePermission();
+                            if (context.mounted &&
+                                cameraPermission &&
+                                micPermission) {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => Camera(
                                       challenge: challenge,
