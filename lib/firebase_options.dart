@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -46,8 +47,10 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCAwtL46skblaFHVE5VBjTZaxLIgFgo8HY',
+  static String get apiKey => dotenv.env['FIREBASE_API_KEY'] ?? '';
+
+  static FirebaseOptions web = FirebaseOptions(
+    apiKey: apiKey,
     appId: '1:284329562790:web:a265eb6c9f796ebc7fda67',
     messagingSenderId: '284329562790',
     projectId: 'fitness-project-e0476',
@@ -56,23 +59,24 @@ class DefaultFirebaseOptions {
     measurementId: 'G-H96K9KVP8V',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCiibIpB_sftcv-6kGnvWo1OMKTZ9P8z5Y',
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: apiKey,
     appId: '1:284329562790:android:a4f2c60a2b3d644d7fda67',
     messagingSenderId: '284329562790',
     projectId: 'fitness-project-e0476',
     storageBucket: 'fitness-project-e0476.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAYFn_ARpMXv_jaJczHBMTqF34I_5Wvs2w',
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: apiKey,
     appId: '1:284329562790:ios:6ef5277dd60208ea7fda67',
     messagingSenderId: '284329562790',
     projectId: 'fitness-project-e0476',
     storageBucket: 'fitness-project-e0476.appspot.com',
-    androidClientId: '284329562790-49uumujrt8brfketree98o0u2h84jpog.apps.googleusercontent.com',
-    iosClientId: '284329562790-0aupsjuc2u9l79p9n8gkoh2n4h4021gi.apps.googleusercontent.com',
+    androidClientId:
+        '284329562790-49uumujrt8brfketree98o0u2h84jpog.apps.googleusercontent.com',
+    iosClientId:
+        '284329562790-0aupsjuc2u9l79p9n8gkoh2n4h4021gi.apps.googleusercontent.com',
     iosBundleId: 'com.example.fitnessProject',
   );
-
 }

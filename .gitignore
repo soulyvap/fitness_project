@@ -42,4 +42,40 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Firebase & API Keys
+.env
 *.env
+firebase_keys.json
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# macOS
+**/macos/Flutter/ephemeral/
+**/macos/build/
+
+# Linux
+**/linux/flutter/ephemeral/
+**/linux/build/
+
+# Windows
+**/windows/flutter/ephemeral/
+**/windows/build/
+
+# Web
+**/web/.dart_tool/
+**/web/build/
+
+# Xcode specific files
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdatad/
+
+# Android specific
+**/android/.gradle/
+**/android/key.properties
+
+# VS Code settings
+.vscode/
+
+# Firebase specific files
+firebase_keys.json
